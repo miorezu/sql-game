@@ -1,0 +1,17 @@
+[gd_scene format=3 uid="uid://oiwo131hxpn0"]
+
+[ext_resource type="Script" uid="uid://bhluir77x8o4y" path="res://scripts/SqlBlock.cs" id="1_josbt"]
+
+[node name="SQLBlock" type="Button" unique_id=1855077396]
+custom_minimum_size = Vector2(120, 40)
+text = "SELECT"
+script = ExtResource("1_josbt")
+
+[node name="Help" type="Label" parent="." unique_id=1786299668]
+layout_mode = 0
+offset_left = 109.72
+offset_right = 119.72
+offset_bottom = 23.0
+tooltip_text = "Повертає вибрані стовпці з таблиці."
+mouse_filter = 1
+text = "?"
