@@ -1,6 +1,7 @@
 [gd_scene format=3 uid="uid://iwyd4sgx4hd3"]
 
-[ext_resource type="PackedScene" uid="uid://oiwo131hxpn0" path="res://scenes/SQLBlock.tscn" id="1_wtcfe"]
+[ext_resource type="Script" uid="uid://clea6magiq6qh" path="res://scripts/QueryBuilder.cs" id="1_w7ipn"]
+[ext_resource type="PackedScene" uid="uid://oiwo131hxpn0" path="res://scenes/SQLBlock.tscn" id="2_20oit"]
 
 [node name="Scene" type="Control" unique_id=544648989]
 layout_mode = 3
@@ -15,6 +16,7 @@ offset_bottom = 647.0
 layout_mode = 2
 
 [node name="SourcePanel" type="PanelContainer" parent="VBoxContainer/HBoxContainer" unique_id=1732699985]
+custom_minimum_size = Vector2(400, 350)
 layout_mode = 2
 
 [node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/HBoxContainer/SourcePanel" unique_id=1956272198]
@@ -29,6 +31,7 @@ layout_mode = 2
 columns = 3
 
 [node name="Query" type="PanelContainer" parent="VBoxContainer/HBoxContainer" unique_id=1160082354]
+custom_minimum_size = Vector2(350, 200)
 layout_mode = 2
 
 [node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/HBoxContainer/Query" unique_id=1059328256]
@@ -39,13 +42,17 @@ layout_mode = 2
 text = "SQL "
 
 [node name="QueryBuilder" type="FlowContainer" parent="VBoxContainer/HBoxContainer/Query/VBoxContainer" unique_id=248195378]
+custom_minimum_size = Vector2(70, 200)
 layout_mode = 2
+script = ExtResource("1_w7ipn")
 
-[node name="Button" type="Button" parent="VBoxContainer/HBoxContainer/Query/VBoxContainer" unique_id=231781285]
+[node name="CheckButton" type="Button" parent="VBoxContainer/HBoxContainer/Query/VBoxContainer" unique_id=231781285]
+custom_minimum_size = Vector2(20, 50)
 layout_mode = 2
 text = "Check"
 
 [node name="Target" type="PanelContainer" parent="VBoxContainer/HBoxContainer" unique_id=1839835416]
+custom_minimum_size = Vector2(350, 350)
 layout_mode = 2
 
 [node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/HBoxContainer/Target" unique_id=1461588096]
@@ -56,13 +63,61 @@ layout_mode = 2
 text = "Очікуваний результат"
 
 [node name="GridContainer" type="GridContainer" parent="VBoxContainer/HBoxContainer/Target/VBoxContainer" unique_id=2045671573]
+custom_minimum_size = Vector2(50, 50)
+layout_mode = 2
+
+[node name="Output" type="RichTextLabel" parent="VBoxContainer/HBoxContainer/Target/VBoxContainer" unique_id=99261481]
+custom_minimum_size = Vector2(70, 70)
 layout_mode = 2
 
 [node name="BlockPanel" type="PanelContainer" parent="VBoxContainer" unique_id=666949860]
+custom_minimum_size = Vector2(300, 200)
 layout_mode = 2
 
-[node name="BlockContainer" type="FlowContainer" parent="VBoxContainer/BlockPanel" unique_id=313740577]
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/BlockPanel" unique_id=1325647790]
 layout_mode = 2
 
-[node name="SQLBlock" parent="VBoxContainer/BlockPanel/BlockContainer" unique_id=1855077396 instance=ExtResource("1_wtcfe")]
+[node name="BlockContainer" type="FlowContainer" parent="VBoxContainer/BlockPanel/HBoxContainer" unique_id=313740577]
+custom_minimum_size = Vector2(500, 100)
 layout_mode = 2
+
+[node name="SQLBlock" parent="VBoxContainer/BlockPanel/HBoxContainer/BlockContainer" unique_id=1855077396 instance=ExtResource("2_20oit")]
+layout_mode = 2
+
+[node name="SQLBlock2" parent="VBoxContainer/BlockPanel/HBoxContainer/BlockContainer" unique_id=1819253210 instance=ExtResource("2_20oit")]
+layout_mode = 2
+KeywordType = 1
+
+[node name="SQLBlock3" parent="VBoxContainer/BlockPanel/HBoxContainer/BlockContainer" unique_id=642126142 instance=ExtResource("2_20oit")]
+layout_mode = 2
+KeywordType = 2
+
+[node name="SQLBlock4" parent="VBoxContainer/BlockPanel/HBoxContainer/BlockContainer" unique_id=1646607380 instance=ExtResource("2_20oit")]
+layout_mode = 2
+KeywordType = 9
+
+[node name="SQLBlock5" parent="VBoxContainer/BlockPanel/HBoxContainer/BlockContainer" unique_id=127099425 instance=ExtResource("2_20oit")]
+layout_mode = 2
+KeywordType = 6
+
+[node name="AtrributesContainer" type="FlowContainer" parent="VBoxContainer/BlockPanel/HBoxContainer" unique_id=1265048404]
+custom_minimum_size = Vector2(300, 100)
+layout_mode = 2
+
+[node name="SQLBlock" parent="VBoxContainer/BlockPanel/HBoxContainer/AtrributesContainer" unique_id=1039269927 instance=ExtResource("2_20oit")]
+layout_mode = 2
+Type = 2
+BlockValue = "student"
+
+[node name="TabletContainer" type="FlowContainer" parent="VBoxContainer/BlockPanel/HBoxContainer" unique_id=1960821363]
+custom_minimum_size = Vector2(300, 300)
+layout_mode = 2
+
+[node name="SQLBlock" parent="VBoxContainer/BlockPanel/HBoxContainer/TabletContainer" unique_id=664796811 instance=ExtResource("2_20oit")]
+layout_mode = 2
+text = "UNI"
+Type = 1
+BlockValue = "UNI"
+KeywordType = 10
+
+[connection signal="pressed" from="VBoxContainer/HBoxContainer/Query/VBoxContainer/CheckButton" to="VBoxContainer/HBoxContainer/Query/VBoxContainer/QueryBuilder" method="OnCheckButtonPressed"]

@@ -1,29 +1,53 @@
 using Godot;
-using System;
 
 public partial class SqlBlock : Button
 {
-	
-	[Export] private string SQLText = "SELECT";
+    [Export] public BlockType Type = BlockType.Keyword;
+    [Export] public string BlockValue = "";
+    
+    [Export] public KeywordTypes KeywordType = KeywordTypes.SELECT;
+    [Export] private Label helpLabel;
 
-	public override void _Ready()
-	{
-		Text = SQLText;
-	}
+    public override void _Ready()
+    {
+        UpdateUI();
+    }
 
-	public override Variant _GetDragData(Vector2 atPosition)
-	{
-		Label preview = new Label();
-		preview.Text = SQLText;
+    private void UpdateUI()
+    {
+        Text = (Type == BlockType.Keyword) ? KeywordType.ToString() : BlockValue;
+        
+        SelfModulate = SqlStyle.GetColorForType(Type);
+        
+        if (helpLabel != null)
+        {
+            SetTooltip();
+        }
+    }
+    
+    private void SetTooltip()
+    {
+        if (Type == BlockType.Keyword)
+        {
+            if (SqlKeyword.Tooltips.TryGetValue(KeywordType, out string description))
+            {
+                helpLabel.TooltipText = description;
+                return;
+            }
+        }
+        
+        helpLabel.TooltipText = $"{Type}: {Text}";
+    }
 
-		SetDragPreview(preview);
+    public override Variant _GetDragData(Vector2 atPosition)
+    {
+        var data = new Godot.Collections.Dictionary {
+            { "type", (int)Type },
+            { "value", Text } 
+        };
 
-		return SQLText;
-	}
-
-
-	// Called every frame. 'delta' is the elapsed time since the previous frame.
-	public override void _Process(double delta)
-	{
-	}
+        Label preview = new Label { Text = Text };
+        SetDragPreview(preview);
+        return data;
+    }
 }

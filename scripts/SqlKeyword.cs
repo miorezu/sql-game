@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+
 public enum KeywordTypes
 {
 	SELECT,
@@ -9,5 +11,26 @@ public enum KeywordTypes
 	CREATE,
 	DROP,
 	ALTER,
-	JOIN
+	JOIN,
+	none,
+}
+
+public enum BlockType
+{
+	Keyword,
+	Table,
+	Column,
+	Operator,
+	Value
+}
+
+public static class SqlKeyword
+{
+	public static readonly Dictionary<KeywordTypes, string> Tooltips = new()
+	{
+		{ KeywordTypes.SELECT, "Вибирає колонки з таблиці.\nПриклад: SELECT * " },
+		{ KeywordTypes.FROM, "Вказує джерело даних.\nПриклад: FROM users" },
+		{ KeywordTypes.WHERE, "Умова фільтрації.\nПриклад: WHERE id = 1" },
+		{ KeywordTypes.JOIN, "Об'єднує таблиці за ключем." }
+	};
 }
