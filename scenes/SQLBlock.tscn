@@ -2,10 +2,10 @@
 
 [ext_resource type="Script" uid="uid://bhluir77x8o4y" path="res://scripts/SqlBlock.cs" id="1_josbt"]
 
-[node name="SQLBlock" type="Button" unique_id=1855077396 node_paths=PackedStringArray("helpLabel")]
+[node name="SQLBlock" type="Button" unique_id=1855077396 node_paths=PackedStringArray("_helpLabel")]
 custom_minimum_size = Vector2(120, 40)
 script = ExtResource("1_josbt")
-helpLabel = NodePath("Help")
+_helpLabel = NodePath("Help")
 
 [node name="Help" type="Label" parent="." unique_id=1786299668]
 layout_mode = 0

@@ -4,12 +4,17 @@ public partial class SqlBlock : Button
 {
     [Export] public BlockType Type = BlockType.Keyword;
     [Export] public string BlockValue = "";
-    
     [Export] public KeywordTypes KeywordType = KeywordTypes.SELECT;
-    [Export] private Label helpLabel;
+    
+    [Export] private Label _helpLabel;
 
+    private FlowContainer HomeContainer { get; set; }
+    public bool IsInBuilder { get; set; } = false;
+    
     public override void _Ready()
     {
+        if (HomeContainer == null && GetParent() is FlowContainer flow)
+            HomeContainer = flow;
         UpdateUI();
     }
 
@@ -19,7 +24,7 @@ public partial class SqlBlock : Button
         
         SelfModulate = SqlStyle.GetColorForType(Type);
         
-        if (helpLabel != null)
+        if (_helpLabel != null)
         {
             SetTooltip();
         }
@@ -31,23 +36,27 @@ public partial class SqlBlock : Button
         {
             if (SqlKeyword.Tooltips.TryGetValue(KeywordType, out string description))
             {
-                helpLabel.TooltipText = description;
+                _helpLabel.TooltipText = description;
                 return;
             }
         }
         
-        helpLabel.TooltipText = $"{Type}: {Text}";
+        _helpLabel.TooltipText = $"{Type}: {Text}";
     }
 
     public override Variant _GetDragData(Vector2 atPosition)
     {
-        var data = new Godot.Collections.Dictionary {
-            { "type", (int)Type },
-            { "value", Text } 
+        var data = new Godot.Collections.Dictionary
+        {
+            { "block", this }, //саме цей блок
+            { "home_container", HomeContainer }, //рідний блок, щоб знати куди можна повернути блок
+            { "is_in_builder", IsInBuilder }
         };
 
-        Label preview = new Label { Text = Text };
-        SetDragPreview(preview);
+        Control preview = Duplicate() as Control; //копія UI-елемента для відображення під час drag
+        if (preview != null)
+            SetDragPreview(preview);
+
         return data;
     }
 }
