@@ -57,21 +57,27 @@ public partial class QueryBuilder : FlowContainer
     private async void OnCheckButtonPressed()
     {
         string sql = BuildQuery();
-        GD.Print(sql);
+        GD.Print("[SQL] " + sql);
 
-        // try
-        // {
-        //     var data = await DatabaseManager.ExecuteQuery(sql);
-        //
-        //     foreach (var row in data)
-        //     {
-        //         string rowText = string.Join(" | ", row);
-        //         GD.Print(rowText);
-        //     }
-        // }
-        // catch (Exception e)
-        // {
-        //     GD.PrintErr($"[SQL Error]: {e.Message}");
-        // }
+        try
+        {
+            var data = await DatabaseManager.ExecuteQuery(sql);
+
+            if (data.Count == 0)
+            {
+                GD.Print("[SQL] The query is executed, but there are no rows.");
+                return;
+            }
+
+            foreach (var row in data)
+            {
+                string rowText = string.Join(" | ", row);
+                GD.Print(rowText);
+            }
+        }
+        catch (Exception e)
+        {
+            GD.PrintErr($"[SQL Error]: {e.Message}");
+        }
     }
 }

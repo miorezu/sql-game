@@ -4,6 +4,7 @@
 [ext_resource type="Script" uid="uid://clea6magiq6qh" path="res://scripts/QueryBuilder.cs" id="1_w7ipn"]
 [ext_resource type="PackedScene" uid="uid://oiwo131hxpn0" path="res://scenes/SQLBlock.tscn" id="2_20oit"]
 [ext_resource type="Script" uid="uid://dau73n48am63h" path="res://scripts/BlockPalette.cs" id="3_plqpu"]
+[ext_resource type="Script" uid="uid://jtt6p6s18eol" path="res://scripts/DatabaseManager.cs" id="5_i2t4f"]
 
 [node name="Scene" type="Control" unique_id=544648989]
 layout_mode = 3
@@ -14,6 +15,14 @@ script = ExtResource("1_20oit")
 layout_mode = 0
 offset_right = 1149.0
 offset_bottom = 647.0
+
+[node name="Header" type="HBoxContainer" parent="VBoxContainer" unique_id=327537431]
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 2
+
+[node name="Button" type="Button" parent="VBoxContainer/Header" unique_id=1955334054]
+custom_minimum_size = Vector2(30, 40)
+layout_mode = 2
 
 [node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer" unique_id=1196363404]
 layout_mode = 2
@@ -129,5 +138,11 @@ KeywordType = 10
 
 [node name="SQLBlock10" parent="VBoxContainer/BlockPanel/HBoxContainer/BlockContainer" unique_id=1202206839 instance=ExtResource("2_20oit")]
 layout_mode = 2
+
+[node name="DataBaseManager" type="Control" parent="." unique_id=623711477]
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+script = ExtResource("5_i2t4f")
 
 [connection signal="pressed" from="VBoxContainer/HBoxContainer/Query/VBoxContainer/CheckButton" to="VBoxContainer/HBoxContainer/Query/VBoxContainer/QueryBuilder" method="OnCheckButtonPressed"]
