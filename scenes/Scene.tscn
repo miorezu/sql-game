@@ -1,15 +1,18 @@
 [gd_scene format=3 uid="uid://iwyd4sgx4hd3"]
 
-[ext_resource type="Script" uid="uid://c7ogtwu6470d3" path="res://scripts/TestDB.cs" id="1_20oit"]
+[ext_resource type="Script" uid="uid://ds6povf564ckj" path="res://scripts/dd/LevelScreen.cs" id="1_d35k2"]
+[ext_resource type="Script" uid="uid://h6x153drhkj4" path="res://scripts/dd/LevelTreeView.cs" id="1_i2t4f"]
 [ext_resource type="Script" uid="uid://clea6magiq6qh" path="res://scripts/QueryBuilder.cs" id="1_w7ipn"]
 [ext_resource type="PackedScene" uid="uid://oiwo131hxpn0" path="res://scenes/SQLBlock.tscn" id="2_20oit"]
 [ext_resource type="Script" uid="uid://dau73n48am63h" path="res://scripts/BlockPalette.cs" id="3_plqpu"]
 [ext_resource type="Script" uid="uid://jtt6p6s18eol" path="res://scripts/DatabaseManager.cs" id="5_i2t4f"]
 
-[node name="Scene" type="Control" unique_id=544648989]
+[node name="Scene" type="Control" unique_id=544648989 node_paths=PackedStringArray("_sourceTreeView", "_expectedTreeView")]
 layout_mode = 3
 anchors_preset = 0
-script = ExtResource("1_20oit")
+script = ExtResource("1_d35k2")
+_sourceTreeView = NodePath("VBoxContainer/HBoxContainer/SourcePanel/VBoxContainer/Control")
+_expectedTreeView = NodePath("VBoxContainer/HBoxContainer/Target/VBoxContainer/Control")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="." unique_id=1997876332]
 layout_mode = 0
@@ -38,7 +41,23 @@ layout_mode = 2
 layout_mode = 2
 text = "Вихідна таблиця"
 
-[node name="GridContainer" type="GridContainer" parent="VBoxContainer/HBoxContainer/SourcePanel/VBoxContainer" unique_id=1239883065]
+[node name="Control" type="Control" parent="VBoxContainer/HBoxContainer/SourcePanel/VBoxContainer" unique_id=284333844 node_paths=PackedStringArray("_tree")]
+layout_mode = 2
+script = ExtResource("1_i2t4f")
+_tree = NodePath("SourceTable")
+
+[node name="SourceTable" type="Tree" parent="VBoxContainer/HBoxContainer/SourcePanel/VBoxContainer/Control" unique_id=249426984]
+custom_minimum_size = Vector2(50, 300)
+layout_mode = 0
+offset_top = 4.0
+offset_right = 400.0
+offset_bottom = 304.0
+columns = 5
+column_titles_visible = true
+hide_root = true
+
+[node name="SourceTables" type="GridContainer" parent="VBoxContainer/HBoxContainer/SourcePanel/VBoxContainer" unique_id=1239883065]
+visible = false
 layout_mode = 2
 columns = 3
 
@@ -72,14 +91,23 @@ layout_mode = 2
 
 [node name="Label" type="Label" parent="VBoxContainer/HBoxContainer/Target/VBoxContainer" unique_id=1290050258]
 layout_mode = 2
-text = "Очікуваний результат"
+text = "Очікуваний результат / завдання"
+
+[node name="Control" type="Control" parent="VBoxContainer/HBoxContainer/Target/VBoxContainer" unique_id=1929911062 node_paths=PackedStringArray("_tree")]
+layout_mode = 2
+script = ExtResource("1_i2t4f")
+_tree = NodePath("ExpectedTable")
+
+[node name="ExpectedTable" type="Tree" parent="VBoxContainer/HBoxContainer/Target/VBoxContainer/Control" unique_id=1909560617]
+custom_minimum_size = Vector2(40, 300)
+layout_mode = 0
+offset_top = 4.0
+offset_right = 350.0
+offset_bottom = 304.0
 
 [node name="GridContainer" type="GridContainer" parent="VBoxContainer/HBoxContainer/Target/VBoxContainer" unique_id=2045671573]
+visible = false
 custom_minimum_size = Vector2(50, 50)
-layout_mode = 2
-
-[node name="Output" type="RichTextLabel" parent="VBoxContainer/HBoxContainer/Target/VBoxContainer" unique_id=99261481]
-custom_minimum_size = Vector2(70, 70)
 layout_mode = 2
 
 [node name="BlockPanel" type="PanelContainer" parent="VBoxContainer" unique_id=666949860]
@@ -138,6 +166,10 @@ KeywordType = 10
 
 [node name="SQLBlock10" parent="VBoxContainer/BlockPanel/HBoxContainer/BlockContainer" unique_id=1202206839 instance=ExtResource("2_20oit")]
 layout_mode = 2
+text = "INSERT INTO level1_source (name, position)VALUES ('Svitlana', 'HR');"
+Type = 4
+BlockValue = "INSERT INTO level1_source (name, position)VALUES ('Svitlana', 'HR');"
+KeywordType = 10
 
 [node name="DataBaseManager" type="Control" parent="." unique_id=623711477]
 anchors_preset = 0

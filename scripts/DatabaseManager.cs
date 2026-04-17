@@ -19,28 +19,19 @@ public partial class DatabaseManager : Node
 
         CopyDatabaseIfNeeded();
         InitializeConnection();
-
+        GD.Print("[DB] User DB path: " + ProjectSettings.GlobalizePath("user://game.db"));
         GD.Print("[DB] User DB path: " + ProjectSettings.GlobalizePath(TargetDbPath));
     }
 
     private void CopyDatabaseIfNeeded()
     {
         if (FileAccess.FileExists(TargetDbPath))
-        {
-            GD.Print("[DB] user://game.db already exists.");
-            return;
-        }
-
-        if (!FileAccess.FileExists(SourceDbPath))
-        {
-            GD.PrintErr("[DB] Database template not found:" + SourceDbPath);
-            return;
-        }
+            DirAccess.RemoveAbsolute(ProjectSettings.GlobalizePath(TargetDbPath));
 
         using var sourceFile = FileAccess.Open(SourceDbPath, FileAccess.ModeFlags.Read);
         if (sourceFile == null)
         {
-            GD.PrintErr("[DB] Failed to open template database: " + SourceDbPath);
+            GD.PrintErr("[DB] Не вдалося відкрити шаблонну БД: " + SourceDbPath);
             return;
         }
 
@@ -49,12 +40,12 @@ public partial class DatabaseManager : Node
         using var targetFile = FileAccess.Open(TargetDbPath, FileAccess.ModeFlags.Write);
         if (targetFile == null)
         {
-            GD.PrintErr("[DB] Failed to create user database: " + TargetDbPath);
+            GD.PrintErr("[DB] Не вдалося створити user БД: " + TargetDbPath);
             return;
         }
 
         targetFile.StoreBuffer(buffer);
-        GD.Print("[DB] DB copied from res:// to user://");
+        GD.Print("[DB] БД скопійована заново в user://");
     }
 
     private void InitializeConnection()
@@ -92,5 +83,29 @@ public partial class DatabaseManager : Node
         }
 
         return result;
+        
+    }
+    
+    public static async Task<LevelData> GetLevelData(string levelCode)
+    {
+        var rows = await ExecuteQuery(
+            $"SELECT id, code, title, description, source_table_name, expected_table_name " +
+            $"FROM levels WHERE code = '{levelCode.Replace("'", "''")}' LIMIT 1"
+        );
+
+        if (rows.Count == 0)
+            return null;
+
+        var row = rows[0];
+
+        return new LevelData
+        {
+            Id = int.Parse(row[0]),
+            Code = row[1],
+            Title = row[2],
+            Description = row[3],
+            SourceTableName = row[4],
+            ExpectedTableName = row[5]
+        };
     }
 }

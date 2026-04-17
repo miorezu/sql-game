@@ -11,6 +11,13 @@ public partial class SqlBlock : Button
     private FlowContainer HomeContainer { get; set; }
     public bool IsInBuilder { get; set; } = false;
     
+    public void Init(BlockData data)
+    {
+        Type = data.Type;
+        BlockValue = data.Value;
+        KeywordType = data.KeywordType;
+    }
+    
     public override void _Ready()
     {
         if (HomeContainer == null && GetParent() is FlowContainer flow)
