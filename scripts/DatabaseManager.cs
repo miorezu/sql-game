@@ -1,6 +1,7 @@
 using Godot;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Data.Sqlite;
 
@@ -19,7 +20,7 @@ public partial class DatabaseManager : Node
 
         CopyDatabaseIfNeeded();
         InitializeConnection();
-        GD.Print("[DB] User DB path: " + ProjectSettings.GlobalizePath("user://game.db"));
+
         GD.Print("[DB] User DB path: " + ProjectSettings.GlobalizePath(TargetDbPath));
     }
 
@@ -54,12 +55,15 @@ public partial class DatabaseManager : Node
         _connectionString = $"Data Source={fullPath}";
     }
 
-    public static async Task<List<List<string>>> ExecuteQuery(string sql)
+    public static async Task<QueryResult> ExecuteSql(string sql)
     {
         if (string.IsNullOrWhiteSpace(_connectionString))
             throw new Exception("DatabaseManager not initialized.");
 
-        var result = new List<List<string>>();
+        if (string.IsNullOrWhiteSpace(sql))
+            throw new Exception("SQL is empty.");
+
+        var result = new QueryResult();
 
         await using var connection = new SqliteConnection(_connectionString);
         await connection.OpenAsync();
@@ -67,37 +71,72 @@ public partial class DatabaseManager : Node
         await using var command = connection.CreateCommand();
         command.CommandText = sql;
 
-        await using var reader = await command.ExecuteReaderAsync();
+        string normalized = sql.TrimStart().ToUpperInvariant();
 
-        while (await reader.ReadAsync())
+        bool returnsRows =
+            normalized.StartsWith("SELECT") ||
+            normalized.StartsWith("PRAGMA") ||
+            normalized.StartsWith("WITH");
+
+        if (returnsRows)
         {
-            var row = new List<string>();
+            await using var reader = await command.ExecuteReaderAsync();
+
+            result.HasRows = true;
 
             for (int i = 0; i < reader.FieldCount; i++)
-            {
-                object value = reader.GetValue(i);
-                row.Add(value?.ToString() ?? "NULL");
-            }
+                result.Columns.Add(reader.GetName(i));
 
-            result.Add(row);
+            while (await reader.ReadAsync())
+            {
+                var row = new List<string>();
+
+                for (int i = 0; i < reader.FieldCount; i++)
+                {
+                    object value = reader.GetValue(i);
+                    row.Add(value?.ToString() ?? "NULL");
+                }
+
+                result.Rows.Add(row);
+            }
+        }
+        else
+        {
+            result.HasRows = false;
+            result.AffectedRows = await command.ExecuteNonQueryAsync();
         }
 
         return result;
-        
     }
-    
+
+    public static async Task<List<List<string>>> ExecuteQuery(string sql)
+    {
+        var result = await ExecuteSql(sql);
+        return result.Rows;
+    }
+
     public static async Task<LevelData> GetLevelData(string levelCode)
     {
+        var safeCode = levelCode.Replace("'", "''");
+
         var rows = await ExecuteQuery(
             $"SELECT id, code, title, description, source_table_name, expected_table_name " +
-            $"FROM levels WHERE code = '{levelCode.Replace("'", "''")}' LIMIT 1"
+            $"FROM levels WHERE code = '{safeCode}' LIMIT 1"
         );
-
+        
         if (rows.Count == 0)
             return null;
 
         var row = rows[0];
 
+        var sqlBlocksRows = await ExecuteQuery(
+            $"SELECT block_text FROM level_blocks WHERE level_id = (SELECT id FROM levels WHERE code = '{safeCode}')"
+        );
+
+        var sqlBlocks = sqlBlocksRows
+            .Select(r => r[0])
+            .ToArray();
+        
         return new LevelData
         {
             Id = int.Parse(row[0]),
@@ -105,7 +144,13 @@ public partial class DatabaseManager : Node
             Title = row[2],
             Description = row[3],
             SourceTableName = row[4],
-            ExpectedTableName = row[5]
+            ExpectedTableName = row[5],
+            SqlBlocks = sqlBlocks
         };
+    }
+
+    public static string GetUserDbPath()
+    {
+        return ProjectSettings.GlobalizePath(TargetDbPath);
     }
 }

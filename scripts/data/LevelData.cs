@@ -6,4 +6,5 @@ public class LevelData
     public string Description;
     public string SourceTableName;
     public string ExpectedTableName;
+    public string[] SqlBlocks;
 }

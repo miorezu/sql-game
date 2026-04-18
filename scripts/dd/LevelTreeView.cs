@@ -6,8 +6,12 @@ public partial class LevelTreeView : Control
 {
     [Export] private Tree _tree;
 
-    public async Task LoadTable(string levelName)
+    private string _currentTableName;
+
+    public async Task LoadTable(string tableName)
     {
+        _currentTableName = tableName;
+
         if (_tree == null)
         {
             GD.PrintErr("[LevelTreeView] Tree node не призначено!");
@@ -16,19 +20,20 @@ public partial class LevelTreeView : Control
 
         _tree.Clear();
 
-        bool exists = await TableExists(levelName);
+        bool exists = await TableExists(tableName);
         if (!exists)
         {
-            GD.PrintErr($"[LevelTreeView] Таблиця '{levelName}' не існує!");
+            GD.PrintErr($"[LevelTreeView] Таблиця '{tableName}' не існує!");
             return;
         }
 
-        List<string> columns = await GetColumnNames(levelName);
+        List<string> columns = await GetColumnNames(tableName);
 
-        List<List<string>> rows = await DatabaseManager.ExecuteQuery(
-            $"SELECT * FROM [{levelName}]"
+        QueryResult queryResult = await DatabaseManager.ExecuteSql(
+            $"SELECT * FROM [{tableName}]"
         );
 
+        List<List<string>> rows = queryResult.Rows;
 
         _tree.Columns = columns.Count;
         for (int i = 0; i < columns.Count; i++)
@@ -36,21 +41,31 @@ public partial class LevelTreeView : Control
 
         _tree.ColumnTitlesVisible = true;
         _tree.HideRoot = true;
+
         TreeItem root = _tree.CreateItem();
-        root.SetText(0, levelName);
+        root.SetText(0, tableName);
 
         foreach (var row in rows)
         {
             TreeItem item = _tree.CreateItem(root);
 
-            for (int col = 0; col < row.Count; col++)
-            {
-                if (col < columns.Count)
-                    item.SetText(col, row[col]);
-            }
+            for (int col = 0; col < row.Count && col < columns.Count; col++)
+                item.SetText(col, row[col]);
         }
 
-        GD.Print($"[LevelTreeView] '{levelName}' завантажено: {rows.Count} рядків, {columns.Count} колонок.");
+        GD.Print($"[LevelTreeView] '{tableName}' завантажено: {rows.Count} рядків, {columns.Count} колонок.");
+    }
+
+    public async Task Refresh()
+    {
+        if (string.IsNullOrWhiteSpace(_currentTableName))
+        {
+            GD.PrintErr("[LevelTreeView] Немає таблиці для оновлення.");
+            return;
+        }
+
+        GD.Print($"[LevelTreeView] Refresh -> {_currentTableName}");
+        await LoadTable(_currentTableName);
     }
 
     private async Task<bool> TableExists(string tableName)

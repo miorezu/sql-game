@@ -4,9 +4,11 @@ using System.Collections.Generic;
 
 public partial class QueryBuilder : FlowContainer
 {
+    [Export] private LevelScreen _levelScreen;
+
     public override bool _CanDropData(Vector2 position, Variant data)
     {
-        if (data.VariantType != Variant.Type.Dictionary) //очікує саме словник
+        if (data.VariantType != Variant.Type.Dictionary)
             return false;
 
         var dict = data.AsGodotDictionary();
@@ -14,16 +16,13 @@ public partial class QueryBuilder : FlowContainer
         if (!dict.ContainsKey("block"))
             return false;
 
-        var block = dict["block"].As<SqlBlock>();//Дістає зі словника реальний блок,
-                                                 //який перетягують.
+        var block = dict["block"].As<SqlBlock>();
         if (block == null)
             return false;
 
-        // У QueryBuilder можна кидати тільки блоки, яких ще немає в builder
         return !block.IsInBuilder;
     }
 
-    //коли користувач вже відпустив блок та _CanDropData() повернув true
     public override void _DropData(Vector2 position, Variant data)
     {
         var dict = data.AsGodotDictionary();
@@ -32,7 +31,6 @@ public partial class QueryBuilder : FlowContainer
         if (block == null)
             return;
 
-        //прибираємо блок з контейнера, де був
         var oldParent = block.GetParent();
         if (oldParent != null)
             oldParent.RemoveChild(block);
@@ -59,17 +57,29 @@ public partial class QueryBuilder : FlowContainer
         string sql = BuildQuery();
         GD.Print("[SQL] " + sql);
 
+        if (_levelScreen == null)
+        {
+            GD.PrintErr("[QueryBuilder] LevelScreen не призначено в Inspector.");
+            return;
+        }
+
         try
         {
-            var data = await DatabaseManager.ExecuteQuery(sql);
+            QueryResult result = await _levelScreen.ExecutePlayerSql(sql);
 
-            if (data.Count == 0)
+            if (!result.HasRows)
             {
-                GD.Print("[SQL] The query is executed, but there are no rows.");
+                GD.Print($"[SQL] Query executed. Affected rows: {result.AffectedRows}");
                 return;
             }
 
-            foreach (var row in data)
+            if (result.Rows.Count == 0)
+            {
+                GD.Print("[SQL] Query executed, but returned 0 rows.");
+                return;
+            }
+
+            foreach (var row in result.Rows)
             {
                 string rowText = string.Join(" | ", row);
                 GD.Print(rowText);
