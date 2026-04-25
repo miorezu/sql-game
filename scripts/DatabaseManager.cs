@@ -3,7 +3,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Dapper;
 using Microsoft.Data.Sqlite;
+
 
 public partial class DatabaseManager : Node
 {
@@ -117,36 +119,40 @@ public partial class DatabaseManager : Node
 
     public static async Task<LevelData> GetLevelData(string levelCode)
     {
-        var safeCode = levelCode.Replace("'", "''");
+        await using var connection = new SqliteConnection(_connectionString);
+        await connection.OpenAsync();
 
-        var rows = await ExecuteQuery(
-            $"SELECT id, code, title, description, source_table_name, expected_table_name " +
-            $"FROM levels WHERE code = '{safeCode}' LIMIT 1"
+        var level = await connection.QueryFirstOrDefaultAsync<LevelData>(
+            $"""
+             SELECT
+                 id AS Id,
+                 code AS Code,
+                 title AS Title,
+                 description AS Description,
+                 source_table_name AS SourceTableName,
+                 expected_table_name AS ExpectedTableName
+             FROM levels
+             WHERE code = @Code
+             LIMIT 1
+             """,
+            new { Code = levelCode }
         );
-        
-        if (rows.Count == 0)
+
+        if (level == null)
             return null;
 
-        var row = rows[0];
-
-        var sqlBlocksRows = await ExecuteQuery(
-            $"SELECT block_text FROM level_blocks WHERE level_id = (SELECT id FROM levels WHERE code = '{safeCode}')"
+        var blocks = await connection.QueryAsync<string>(
+            """
+            SELECT block_text
+            FROM level_blocks
+            WHERE level_id = @LevelId
+            """,
+            new { LevelId = level.Id }
         );
 
-        var sqlBlocks = sqlBlocksRows
-            .Select(r => r[0])
-            .ToArray();
-        
-        return new LevelData
-        {
-            Id = int.Parse(row[0]),
-            Code = row[1],
-            Title = row[2],
-            Description = row[3],
-            SourceTableName = row[4],
-            ExpectedTableName = row[5],
-            SqlBlocks = sqlBlocks
-        };
+        level.SqlBlocks = blocks.ToArray();
+
+        return level;
     }
 
     public static string GetUserDbPath()
@@ -172,5 +178,74 @@ public partial class DatabaseManager : Node
             return null;
 
         return result[0][0];
+    }
+    
+
+
+    public static async Task<bool> TableExists(string tableName)
+    {
+        await using var connection = new SqliteConnection(_connectionString);
+        await connection.OpenAsync();
+
+        var count = await connection.ExecuteScalarAsync<int>(
+            """
+            SELECT COUNT(*)
+            FROM sqlite_master
+            WHERE type = 'table' AND name = @TableName
+            """,
+            new { TableName = tableName }
+        );
+
+        return count > 0;
+    }
+
+    public static async Task<List<string>> GetColumnNames(string tableName)
+    {
+        EnsureSafeIdentifier(tableName);
+
+        await using var connection = new SqliteConnection(_connectionString);
+        await connection.OpenAsync();
+
+        var columns = await connection.QueryAsync<string>(
+            $"SELECT name FROM pragma_table_info('{tableName.Replace("'", "''")}')"
+        );
+
+        return columns.ToList();
+    }
+
+    public static async Task<List<List<string>>> GetRows(string tableName)
+    {
+        EnsureSafeIdentifier(tableName);
+
+        var queryResult = await ExecuteSql($"SELECT * FROM [{tableName}]");
+        return queryResult.Rows;
+    }
+
+    public static async Task<List<List<string>>> GetOrderedRows(string tableName, List<string> columns)
+    {
+        EnsureSafeIdentifier(tableName);
+        
+        foreach (var column in columns)
+            EnsureSafeIdentifier(column);
+
+        string orderBy = string.Join(", ", columns.Select(c => $"[{c}]"));
+
+        var queryResult = await ExecuteSql(
+            $"SELECT * FROM [{tableName}] ORDER BY {orderBy}"
+        );
+
+        return queryResult.Rows;
+    }
+
+    private static void EnsureSafeIdentifier(string value)
+    {
+        if (string.IsNullOrWhiteSpace(value))
+            throw new System.Exception("Identifier is empty.");
+    
+        foreach (char c in value)
+        {
+            if (!char.IsLetterOrDigit(c) && c != '_')
+                throw new System.Exception($"Unsafe identifier: {value}");
+        }
     }
 }
