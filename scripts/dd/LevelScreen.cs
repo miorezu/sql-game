@@ -7,12 +7,15 @@ public partial class LevelScreen : Control
     [Export] private LevelTreeView _expectedTreeView;
     [Export] private FlowContainer _sqlBlocksContainer;
     [Export] private PackedScene _sqlBlocksScene;
-    
+    [Export] private Popup _levelCompletePopup;
     
     private LevelData _currentLevelData;
-
+    
     public override void _Ready()
     {
+        if (_levelCompletePopup != null)
+            _levelCompletePopup.NextLevelPressed += OnNextLevelPressed;
+        
         CallDeferred(nameof(StartLoad));
     }
 
@@ -36,8 +39,6 @@ public partial class LevelScreen : Control
 
         if (_expectedTreeView != null)
             await _expectedTreeView.LoadTable(_currentLevelData.ExpectedTableName);
-
-        
         
         GenerateSqlBlocks(_currentLevelData);
     }
@@ -79,9 +80,34 @@ public partial class LevelScreen : Control
             );
 
             if (isCompleted)
-                GD.Print($"[LevelScreen] Рівень '{_currentLevelData.Code}' пройдено: таблиці співпадають.");
+            {
+                OnLevelCompleted();
+            }
         }
 
         return result;
+    }
+
+    private void OnLevelCompleted()
+    {
+        GD.Print($"[LevelScreen] Рівень '{_currentLevelData.Code}' пройдено: таблиці співпадають.");
+        if (_levelCompletePopup != null)
+            _levelCompletePopup.ShowPopup();
+    }
+
+    private async void OnNextLevelPressed()
+    {
+        var nextLevelCode = await DatabaseManager.GetNextLevelCode(_currentLevelData.Code);
+
+        GD.Print("[LEVEL] nextLevelCode = " + nextLevelCode);
+
+        if (string.IsNullOrEmpty(nextLevelCode))
+        {
+            GD.Print("[INFO] Наступного рівня немає.");
+            //SceneLoader.LoadLevelsMenu();
+            return;
+        }
+
+        await LoadLevel(nextLevelCode);
     }
 }

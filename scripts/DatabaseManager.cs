@@ -153,4 +153,24 @@ public partial class DatabaseManager : Node
     {
         return ProjectSettings.GlobalizePath(TargetDbPath);
     }
+    
+    public static async Task<string> GetNextLevelCode(string currentCode)
+    {
+        string sql = $@"
+        SELECT code
+        FROM levels
+        WHERE level_order > (
+            SELECT level_order FROM levels WHERE code = '{currentCode}'
+        )
+        ORDER BY level_order
+        LIMIT 1;
+    ";
+
+        var result = await ExecuteQuery(sql);
+
+        if (result.Count == 0)
+            return null;
+
+        return result[0][0];
+    }
 }
