@@ -1,196 +1,41 @@
 [gd_scene format=3 uid="uid://iwyd4sgx4hd3"]
 
 [ext_resource type="Script" uid="uid://ds6povf564ckj" path="res://scripts/dd/LevelScreen.cs" id="1_d35k2"]
-[ext_resource type="Script" uid="uid://h6x153drhkj4" path="res://scripts/dd/LevelTreeView.cs" id="1_i2t4f"]
-[ext_resource type="Script" uid="uid://clea6magiq6qh" path="res://scripts/QueryBuilder.cs" id="1_w7ipn"]
-[ext_resource type="PackedScene" uid="uid://oiwo131hxpn0" path="res://scenes/SQLBlock.tscn" id="2_20oit"]
-[ext_resource type="Script" uid="uid://dau73n48am63h" path="res://scripts/BlockPalette.cs" id="3_plqpu"]
+[ext_resource type="PackedScene" uid="uid://7wfecae4ddqc" path="res://scenes/TableLevel.tscn" id="2_i2t4f"]
 [ext_resource type="Script" uid="uid://jtt6p6s18eol" path="res://scripts/DatabaseManager.cs" id="5_i2t4f"]
+[ext_resource type="PackedScene" uid="uid://du3akrir51byj" path="res://scenes/MatchLevel.tscn" id="6_2sv30"]
 [ext_resource type="PackedScene" uid="uid://x6ppuh8hnet4" path="res://scenes/Popup.tscn" id="7_5kwoq"]
 
-[node name="Scene" type="Control" unique_id=544648989 node_paths=PackedStringArray("_sourceTreeView", "_expectedTreeView", "_sqlBlocksContainer", "_levelCompletePopup")]
+[node name="Scene" type="Control" unique_id=544648989 node_paths=PackedStringArray("_levelRoot", "_levelCompletePopup")]
 layout_mode = 3
 anchors_preset = 0
+mouse_filter = 2
 script = ExtResource("1_d35k2")
-_sourceTreeView = NodePath("VBoxContainer/HBoxContainer/SourcePanel/VBoxContainer/Control")
-_expectedTreeView = NodePath("VBoxContainer/HBoxContainer/Target/VBoxContainer/Control")
-_sqlBlocksContainer = NodePath("VBoxContainer/BlockPanel/HBoxContainer/BlockContainer")
-_sqlBlocksScene = ExtResource("2_20oit")
+_levelRoot = NodePath(".")
+_tableLevelScene = ExtResource("2_i2t4f")
+_matchLevelScene = ExtResource("6_2sv30")
 _levelCompletePopup = NodePath("Popup")
 
-[node name="VBoxContainer" type="VBoxContainer" parent="." unique_id=1997876332]
+[node name="TableLevel" parent="." unique_id=679337163 instance=ExtResource("2_i2t4f")]
+visible = false
 layout_mode = 0
-offset_right = 1149.0
-offset_bottom = 647.0
+mouse_filter = 2
 
-[node name="Header" type="HBoxContainer" parent="VBoxContainer" unique_id=327537431]
-custom_minimum_size = Vector2(0, 40)
-layout_mode = 2
-
-[node name="Settings" type="Button" parent="VBoxContainer/Header" unique_id=1955334054]
-custom_minimum_size = Vector2(30, 40)
-layout_mode = 2
-
-[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer" unique_id=1196363404]
-layout_mode = 2
-
-[node name="SourcePanel" type="PanelContainer" parent="VBoxContainer/HBoxContainer" unique_id=1732699985]
-custom_minimum_size = Vector2(400, 350)
-layout_mode = 2
-
-[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/HBoxContainer/SourcePanel" unique_id=1956272198]
-layout_mode = 2
-
-[node name="Label" type="Label" parent="VBoxContainer/HBoxContainer/SourcePanel/VBoxContainer" unique_id=1073118494]
-layout_mode = 2
-text = "Вихідна таблиця"
-
-[node name="Control" type="Control" parent="VBoxContainer/HBoxContainer/SourcePanel/VBoxContainer" unique_id=284333844 node_paths=PackedStringArray("_tree")]
-layout_mode = 2
-script = ExtResource("1_i2t4f")
-_tree = NodePath("SourceTable")
-
-[node name="SourceTable" type="Tree" parent="VBoxContainer/HBoxContainer/SourcePanel/VBoxContainer/Control" unique_id=249426984]
-custom_minimum_size = Vector2(50, 300)
+[node name="MatchLevel" parent="." unique_id=289307351 instance=ExtResource("6_2sv30")]
+visible = false
 layout_mode = 0
-offset_top = 4.0
-offset_right = 400.0
-offset_bottom = 304.0
-columns = 5
-column_titles_visible = true
-hide_root = true
-
-[node name="Query" type="PanelContainer" parent="VBoxContainer/HBoxContainer" unique_id=1160082354]
-custom_minimum_size = Vector2(350, 200)
-layout_mode = 2
-
-[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/HBoxContainer/Query" unique_id=1059328256]
-layout_mode = 2
-
-[node name="Label" type="Label" parent="VBoxContainer/HBoxContainer/Query/VBoxContainer" unique_id=2089920584]
-layout_mode = 2
-text = "SQL "
-
-[node name="ScrollContainer" type="ScrollContainer" parent="VBoxContainer/HBoxContainer/Query/VBoxContainer" unique_id=1587314585]
-custom_minimum_size = Vector2(300, 300)
-layout_mode = 2
-
-[node name="QueryBuilder" type="FlowContainer" parent="VBoxContainer/HBoxContainer/Query/VBoxContainer/ScrollContainer" unique_id=248195378 node_paths=PackedStringArray("_levelScreen")]
-custom_minimum_size = Vector2(350, 300)
-layout_mode = 2
-script = ExtResource("1_w7ipn")
-_levelScreen = NodePath("../../../../../..")
-
-[node name="CheckButton" type="Button" parent="VBoxContainer/HBoxContainer/Query/VBoxContainer" unique_id=231781285]
-custom_minimum_size = Vector2(20, 50)
-layout_mode = 2
-text = "Check"
-
-[node name="Target" type="PanelContainer" parent="VBoxContainer/HBoxContainer" unique_id=1839835416]
-custom_minimum_size = Vector2(390, 350)
-layout_mode = 2
-
-[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/HBoxContainer/Target" unique_id=1461588096]
-layout_mode = 2
-
-[node name="Label" type="Label" parent="VBoxContainer/HBoxContainer/Target/VBoxContainer" unique_id=1290050258]
-layout_mode = 2
-text = "Очікуваний результат / завдання"
-
-[node name="Control" type="Control" parent="VBoxContainer/HBoxContainer/Target/VBoxContainer" unique_id=1929911062 node_paths=PackedStringArray("_tree")]
-layout_mode = 2
-script = ExtResource("1_i2t4f")
-_tree = NodePath("ExpectedTable")
-
-[node name="ExpectedTable" type="Tree" parent="VBoxContainer/HBoxContainer/Target/VBoxContainer/Control" unique_id=1909560617]
-layout_mode = 0
-offset_top = 4.0
-offset_right = 390.0
-offset_bottom = 304.0
-
-[node name="BlockPanel" type="PanelContainer" parent="VBoxContainer" unique_id=666949860]
-custom_minimum_size = Vector2(300, 200)
-layout_mode = 2
-
-[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/BlockPanel" unique_id=1325647790]
-layout_mode = 2
-
-[node name="BlockContainer" type="FlowContainer" parent="VBoxContainer/BlockPanel/HBoxContainer" unique_id=313740577]
-custom_minimum_size = Vector2(1100, 100)
-layout_mode = 2
-script = ExtResource("3_plqpu")
-
-[node name="SQLBlock" parent="VBoxContainer/BlockPanel/HBoxContainer/BlockContainer" unique_id=1855077396 instance=ExtResource("2_20oit")]
-layout_mode = 2
-
-[node name="SQLBlock2" parent="VBoxContainer/BlockPanel/HBoxContainer/BlockContainer" unique_id=1819253210 instance=ExtResource("2_20oit")]
-layout_mode = 2
-KeywordType = 1
-
-[node name="SQLBlock3" parent="VBoxContainer/BlockPanel/HBoxContainer/BlockContainer" unique_id=642126142 instance=ExtResource("2_20oit")]
-layout_mode = 2
-KeywordType = 2
-
-[node name="SQLBlock4" parent="VBoxContainer/BlockPanel/HBoxContainer/BlockContainer" unique_id=1646607380 instance=ExtResource("2_20oit")]
-layout_mode = 2
-KeywordType = 9
-
-[node name="SQLBlock5" parent="VBoxContainer/BlockPanel/HBoxContainer/BlockContainer" unique_id=127099425 instance=ExtResource("2_20oit")]
-layout_mode = 2
-KeywordType = 6
-
-[node name="SQLBlock6" parent="VBoxContainer/BlockPanel/HBoxContainer/BlockContainer" unique_id=1039269927 instance=ExtResource("2_20oit")]
-layout_mode = 2
-Type = 2
-BlockValue = "student"
-
-[node name="SQLBlock7" parent="VBoxContainer/BlockPanel/HBoxContainer/BlockContainer" unique_id=483996625 instance=ExtResource("2_20oit")]
-layout_mode = 2
-Type = 2
-BlockValue = "gpa"
-KeywordType = 10
-
-[node name="SQLBlock8" parent="VBoxContainer/BlockPanel/HBoxContainer/BlockContainer" unique_id=1480630354 instance=ExtResource("2_20oit")]
-layout_mode = 2
-Type = 3
-BlockValue = ","
-
-[node name="SQLBlock9" parent="VBoxContainer/BlockPanel/HBoxContainer/BlockContainer" unique_id=664796811 instance=ExtResource("2_20oit")]
-layout_mode = 2
-text = "UNI"
-Type = 1
-BlockValue = "UNI"
-KeywordType = 10
-
-[node name="SQLBlock10" parent="VBoxContainer/BlockPanel/HBoxContainer/BlockContainer" unique_id=1202206839 instance=ExtResource("2_20oit")]
-layout_mode = 2
-text = "INSERT INTO level1_source (name, position)VALUES ('Svitlana', 'HR');"
-Type = 4
-BlockValue = "INSERT INTO level1_source (name, position)VALUES ('Svitlana', 'HR');"
-KeywordType = 10
-
-[node name="SQLBlock11" parent="VBoxContainer/BlockPanel/HBoxContainer/BlockContainer" unique_id=903621837 instance=ExtResource("2_20oit")]
-layout_mode = 2
-text = "INSERT INTO level1_source (name, position)VALUES ('Andrii', 'Developer');"
-Type = 4
-BlockValue = "INSERT INTO level1_source (name, position)VALUES ('Andrii', 'Developer');"
-KeywordType = 10
-
-[node name="SQLBlock12" parent="VBoxContainer/BlockPanel/HBoxContainer/BlockContainer" unique_id=138321986 instance=ExtResource("2_20oit")]
-layout_mode = 2
-text = "INSERT INTO level1_source (name, position)VALUES ('Olga', 'Manager');"
-Type = 4
-BlockValue = "INSERT INTO level1_source (name, position)VALUES ('Olga', 'Manager');"
-KeywordType = 10
+mouse_filter = 2
 
 [node name="DataBaseManager" type="Control" parent="." unique_id=623711477]
 anchors_preset = 0
 offset_right = 40.0
 offset_bottom = 40.0
+mouse_filter = 2
 script = ExtResource("5_i2t4f")
 
 [node name="Popup" parent="." unique_id=1487273030 instance=ExtResource("7_5kwoq")]
 visible = false
+z_index = 4
 layout_mode = 1
-
-[connection signal="pressed" from="VBoxContainer/HBoxContainer/Query/VBoxContainer/CheckButton" to="VBoxContainer/HBoxContainer/Query/VBoxContainer/ScrollContainer/QueryBuilder" method="OnCheckButtonPressed"]
+offset_left = 416.896
+offset_right = 416.896

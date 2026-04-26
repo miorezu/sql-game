@@ -1,0 +1,31 @@
+[gd_scene format=3 uid="uid://bx64xjlv2yo6s"]
+
+[ext_resource type="Script" uid="uid://dhfjgo3obtdqx" path="res://scripts/MatchPairSlot.cs" id="1_80f7w"]
+[ext_resource type="Script" uid="uid://ws0d4rdmyw06" path="res://scripts/MatchDropArea.cs" id="2_xqk67"]
+
+[node name="MatchPairSlot" type="PanelContainer" unique_id=616134456 node_paths=PackedStringArray("_leftDropArea", "_rightDropArea")]
+custom_minimum_size = Vector2(260, 40)
+offset_right = 129.0
+offset_bottom = 23.0
+script = ExtResource("1_80f7w")
+_leftDropArea = NodePath("HBoxContainer/LeftDropArea")
+_rightDropArea = NodePath("HBoxContainer/RightDropArea")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="." unique_id=1051120892]
+layout_mode = 2
+
+[node name="LeftDropArea" type="PanelContainer" parent="HBoxContainer" unique_id=286032089]
+custom_minimum_size = Vector2(120, 0)
+layout_mode = 2
+script = ExtResource("2_xqk67")
+
+[node name="Label" type="Label" parent="HBoxContainer" unique_id=942474215]
+custom_minimum_size = Vector2(20, 0)
+layout_mode = 2
+text = "<->"
+
+[node name="RightDropArea" type="PanelContainer" parent="HBoxContainer" unique_id=993231619]
+custom_minimum_size = Vector2(120, 0)
+layout_mode = 2
+script = ExtResource("2_xqk67")
+_acceptedSide = 1

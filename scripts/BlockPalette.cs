@@ -2,6 +2,28 @@ using Godot;
 
 public partial class BlockPalette : FlowContainer
 {
+    [Export] public bool UseMatchSide { get; private set; } = false;
+    [Export] public MatchSide Side { get; private set; } = MatchSide.Left;
+
+    public void AddMatchBlock(SqlBlock block, int pairId, string text)
+    {
+        if (!UseMatchSide)
+        {
+            return;
+        }
+
+        block.Init(new BlockData
+        {
+            Type = BlockType.Value,
+            Value = text,
+            KeywordType = KeywordTypes.none,
+            PairId = pairId,
+            MatchSide = Side
+        });
+
+        AddChild(block);
+    }
+    
     public override bool _CanDropData(Vector2 position, Variant data)
     {
         if (data.VariantType != Variant.Type.Dictionary)

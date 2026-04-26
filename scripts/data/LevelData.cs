@@ -1,10 +1,11 @@
 public class LevelData
 {
-    public int Id;
-    public string Code;
-    public string Title;
-    public string Description;
-    public string SourceTableName;
-    public string ExpectedTableName;
-    public string[] SqlBlocks;
+    public int Id { get; set; }
+    public string Code { get; set; }
+    public string Title { get; set; }
+    public string Description { get; set; }
+    public string SourceTableName { get; set; }
+    public string ExpectedTableName { get; set; }
+    public string LevelType { get; set; }
+    public string[] SqlBlocks { get; set; }
 }

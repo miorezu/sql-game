@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Dapper;
 using Microsoft.Data.Sqlite;
+using SQLGame.scripts.data;
 
 
 public partial class DatabaseManager : Node
@@ -123,18 +124,19 @@ public partial class DatabaseManager : Node
         await connection.OpenAsync();
 
         var level = await connection.QueryFirstOrDefaultAsync<LevelData>(
-            $"""
-             SELECT
-                 id AS Id,
-                 code AS Code,
-                 title AS Title,
-                 description AS Description,
-                 source_table_name AS SourceTableName,
-                 expected_table_name AS ExpectedTableName
-             FROM levels
-             WHERE code = @Code
-             LIMIT 1
-             """,
+            """
+            SELECT
+                id AS Id,
+                code AS Code,
+                title AS Title,
+                description AS Description,
+                source_table_name AS SourceTableName,
+                expected_table_name AS ExpectedTableName,
+                level_type AS LevelType
+            FROM levels
+            WHERE code = @Code
+            LIMIT 1
+            """,
             new { Code = levelCode }
         );
 
@@ -151,6 +153,11 @@ public partial class DatabaseManager : Node
         );
 
         level.SqlBlocks = blocks.ToArray();
+
+        GD.Print($"[DB] Level: {level.Code}");
+        GD.Print($"[DB] Type: {level.LevelType}");
+        GD.Print($"[DB] Source: {level.SourceTableName}");
+        GD.Print($"[DB] Expected: {level.ExpectedTableName}");
 
         return level;
     }
@@ -247,5 +254,26 @@ public partial class DatabaseManager : Node
             if (!char.IsLetterOrDigit(c) && c != '_')
                 throw new System.Exception($"Unsafe identifier: {value}");
         }
+    }
+    
+    public static async Task<List<MatchPairData>> GetMatchPairs(string levelCode)
+    {
+        await using var connection = new SqliteConnection(_connectionString);
+        await connection.OpenAsync();
+
+        var pairs = await connection.QueryAsync<MatchPairData>(
+            """
+            SELECT 
+                mp.id AS Id,
+                mp.left_text AS LeftText,
+                mp.right_text AS RightText
+            FROM match_pairs mp
+            JOIN levels l ON l.id = mp.level_id
+            WHERE l.code = @LevelCode
+            """,
+            new { LevelCode = levelCode }
+        );
+
+        return pairs.ToList();
     }
 }
