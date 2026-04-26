@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 public partial class QueryBuilder : FlowContainer
 {
-    [Export] private LevelScreen _levelScreen;
+    [Export] private TableLevel _tableLevel;
 
     public override bool _CanDropData(Vector2 position, Variant data)
     {
@@ -57,7 +57,7 @@ public partial class QueryBuilder : FlowContainer
         string sql = BuildQuery();
         GD.Print("[SQL] " + sql);
 
-        if (_levelScreen == null)
+        if (_tableLevel == null)
         {
             GD.PrintErr("[QueryBuilder] LevelScreen не призначено в Inspector.");
             return;
@@ -65,7 +65,7 @@ public partial class QueryBuilder : FlowContainer
 
         try
         {
-            QueryResult result = await _levelScreen.ExecutePlayerSql(sql);
+            QueryResult result = await _tableLevel.ExecutePlayerSql(sql);
 
             if (!result.HasRows)
             {

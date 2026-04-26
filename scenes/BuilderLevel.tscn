@@ -1,0 +1,184 @@
+[gd_scene format=3 uid="uid://bkygtyl082by6"]
+
+[ext_resource type="Script" uid="uid://d1r510cveaxv0" path="res://scripts/TableLevel.cs" id="1_rybbw"]
+[ext_resource type="Script" uid="uid://h6x153drhkj4" path="res://scripts/dd/LevelTreeView.cs" id="1_wgq7g"]
+[ext_resource type="Script" uid="uid://clea6magiq6qh" path="res://scripts/QueryBuilder.cs" id="2_rybbw"]
+[ext_resource type="Script" uid="uid://dau73n48am63h" path="res://scripts/BlockPalette.cs" id="3_tolt5"]
+[ext_resource type="PackedScene" uid="uid://oiwo131hxpn0" path="res://scenes/SQLBlock.tscn" id="4_ios3q"]
+
+[node name="TableLevel" type="Control" unique_id=1969334192 node_paths=PackedStringArray("_sourceTreeView", "_expectedTreeView", "_sqlBlocksContainer")]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+script = ExtResource("1_rybbw")
+_sourceTreeView = NodePath("VBoxContainer/HBoxContainer/SourcePanel/VBoxContainer/Control/SourceTable")
+_expectedTreeView = NodePath("VBoxContainer/HBoxContainer/Target/VBoxContainer/Control/ExpectedTable")
+_sqlBlocksContainer = NodePath("VBoxContainer/BlockPanel/HBoxContainer/BlockContainer")
+_sqlBlocksScene = ExtResource("4_ios3q")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="." unique_id=804408957]
+layout_mode = 0
+offset_right = 1149.0
+offset_bottom = 647.0
+
+[node name="Header" type="HBoxContainer" parent="VBoxContainer" unique_id=573463614]
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 2
+
+[node name="Settings" type="Button" parent="VBoxContainer/Header" unique_id=1605714248]
+custom_minimum_size = Vector2(30, 40)
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer" unique_id=813853840]
+layout_mode = 2
+
+[node name="SourcePanel" type="PanelContainer" parent="VBoxContainer/HBoxContainer" unique_id=74845269]
+custom_minimum_size = Vector2(400, 350)
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/HBoxContainer/SourcePanel" unique_id=413744052]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="VBoxContainer/HBoxContainer/SourcePanel/VBoxContainer" unique_id=1559931416]
+layout_mode = 2
+text = "Вихідна таблиця"
+
+[node name="Control" type="Control" parent="VBoxContainer/HBoxContainer/SourcePanel/VBoxContainer" unique_id=1369942251 node_paths=PackedStringArray("_tree")]
+layout_mode = 2
+script = ExtResource("1_wgq7g")
+_tree = NodePath("SourceTable")
+
+[node name="SourceTable" type="Tree" parent="VBoxContainer/HBoxContainer/SourcePanel/VBoxContainer/Control" unique_id=851838794]
+custom_minimum_size = Vector2(50, 300)
+layout_mode = 0
+offset_top = 4.0
+offset_right = 400.0
+offset_bottom = 304.0
+columns = 5
+column_titles_visible = true
+hide_root = true
+
+[node name="Query" type="PanelContainer" parent="VBoxContainer/HBoxContainer" unique_id=1876960966]
+custom_minimum_size = Vector2(350, 200)
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/HBoxContainer/Query" unique_id=1796420771]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="VBoxContainer/HBoxContainer/Query/VBoxContainer" unique_id=1679012624]
+layout_mode = 2
+text = "SQL "
+
+[node name="ScrollContainer" type="ScrollContainer" parent="VBoxContainer/HBoxContainer/Query/VBoxContainer" unique_id=1878609643]
+custom_minimum_size = Vector2(300, 300)
+layout_mode = 2
+
+[node name="QueryBuilder" type="FlowContainer" parent="VBoxContainer/HBoxContainer/Query/VBoxContainer/ScrollContainer" unique_id=1912339864]
+custom_minimum_size = Vector2(350, 300)
+layout_mode = 2
+script = ExtResource("2_rybbw")
+
+[node name="CheckButton" type="Button" parent="VBoxContainer/HBoxContainer/Query/VBoxContainer" unique_id=638181707]
+custom_minimum_size = Vector2(20, 50)
+layout_mode = 2
+text = "Check"
+
+[node name="Target" type="PanelContainer" parent="VBoxContainer/HBoxContainer" unique_id=1659804274]
+custom_minimum_size = Vector2(390, 350)
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/HBoxContainer/Target" unique_id=1590991208]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="VBoxContainer/HBoxContainer/Target/VBoxContainer" unique_id=859428845]
+layout_mode = 2
+text = "Очікуваний результат / завдання"
+
+[node name="Control" type="Control" parent="VBoxContainer/HBoxContainer/Target/VBoxContainer" unique_id=288429258 node_paths=PackedStringArray("_tree")]
+layout_mode = 2
+script = ExtResource("1_wgq7g")
+_tree = NodePath("ExpectedTable")
+
+[node name="ExpectedTable" type="Tree" parent="VBoxContainer/HBoxContainer/Target/VBoxContainer/Control" unique_id=909805076]
+layout_mode = 0
+offset_top = 4.0
+offset_right = 390.0
+offset_bottom = 304.0
+
+[node name="BlockPanel" type="PanelContainer" parent="VBoxContainer" unique_id=1210894697]
+custom_minimum_size = Vector2(300, 200)
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/BlockPanel" unique_id=2020342436]
+layout_mode = 2
+
+[node name="BlockContainer" type="FlowContainer" parent="VBoxContainer/BlockPanel/HBoxContainer" unique_id=613555885]
+custom_minimum_size = Vector2(1100, 100)
+layout_mode = 2
+script = ExtResource("3_tolt5")
+
+[node name="SQLBlock" parent="VBoxContainer/BlockPanel/HBoxContainer/BlockContainer" unique_id=1855077396 instance=ExtResource("4_ios3q")]
+layout_mode = 2
+
+[node name="SQLBlock2" parent="VBoxContainer/BlockPanel/HBoxContainer/BlockContainer" unique_id=958658173 instance=ExtResource("4_ios3q")]
+layout_mode = 2
+KeywordType = 1
+
+[node name="SQLBlock3" parent="VBoxContainer/BlockPanel/HBoxContainer/BlockContainer" unique_id=349488460 instance=ExtResource("4_ios3q")]
+layout_mode = 2
+KeywordType = 2
+
+[node name="SQLBlock4" parent="VBoxContainer/BlockPanel/HBoxContainer/BlockContainer" unique_id=2114808765 instance=ExtResource("4_ios3q")]
+layout_mode = 2
+KeywordType = 9
+
+[node name="SQLBlock5" parent="VBoxContainer/BlockPanel/HBoxContainer/BlockContainer" unique_id=963993717 instance=ExtResource("4_ios3q")]
+layout_mode = 2
+KeywordType = 6
+
+[node name="SQLBlock6" parent="VBoxContainer/BlockPanel/HBoxContainer/BlockContainer" unique_id=2056243393 instance=ExtResource("4_ios3q")]
+layout_mode = 2
+Type = 2
+BlockValue = "student"
+
+[node name="SQLBlock7" parent="VBoxContainer/BlockPanel/HBoxContainer/BlockContainer" unique_id=1779572534 instance=ExtResource("4_ios3q")]
+layout_mode = 2
+Type = 2
+BlockValue = "gpa"
+KeywordType = 10
+
+[node name="SQLBlock8" parent="VBoxContainer/BlockPanel/HBoxContainer/BlockContainer" unique_id=1389296114 instance=ExtResource("4_ios3q")]
+layout_mode = 2
+Type = 3
+BlockValue = ","
+
+[node name="SQLBlock9" parent="VBoxContainer/BlockPanel/HBoxContainer/BlockContainer" unique_id=150192207 instance=ExtResource("4_ios3q")]
+layout_mode = 2
+text = "UNI"
+Type = 1
+BlockValue = "UNI"
+KeywordType = 10
+
+[node name="SQLBlock10" parent="VBoxContainer/BlockPanel/HBoxContainer/BlockContainer" unique_id=326207473 instance=ExtResource("4_ios3q")]
+layout_mode = 2
+text = "INSERT INTO level1_source (name, position)VALUES ('Svitlana', 'HR');"
+Type = 4
+BlockValue = "INSERT INTO level1_source (name, position)VALUES ('Svitlana', 'HR');"
+KeywordType = 10
+
+[node name="SQLBlock11" parent="VBoxContainer/BlockPanel/HBoxContainer/BlockContainer" unique_id=1273584951 instance=ExtResource("4_ios3q")]
+layout_mode = 2
+text = "INSERT INTO level1_source (name, position)VALUES ('Andrii', 'Developer');"
+Type = 4
+BlockValue = "INSERT INTO level1_source (name, position)VALUES ('Andrii', 'Developer');"
+KeywordType = 10
+
+[node name="SQLBlock12" parent="VBoxContainer/BlockPanel/HBoxContainer/BlockContainer" unique_id=1433126082 instance=ExtResource("4_ios3q")]
+layout_mode = 2
+text = "INSERT INTO level1_source (name, position)VALUES ('Olga', 'Manager');"
+Type = 4
+BlockValue = "INSERT INTO level1_source (name, position)VALUES ('Olga', 'Manager');"
+KeywordType = 10
+
+[connection signal="pressed" from="VBoxContainer/HBoxContainer/Query/VBoxContainer/CheckButton" to="VBoxContainer/HBoxContainer/Query/VBoxContainer/ScrollContainer/QueryBuilder" method="OnCheckButtonPressed"]

@@ -1,21 +1,24 @@
 ﻿using Godot;
 using System.Threading.Tasks;
 
+
 public partial class LevelScreen : Control
 {
-    [Export] private LevelTreeView _sourceTreeView;
-    [Export] private LevelTreeView _expectedTreeView;
-    [Export] private FlowContainer _sqlBlocksContainer;
-    [Export] private PackedScene _sqlBlocksScene;
+    [Export] private Control _levelRoot;
+
+    [Export] private PackedScene _tableLevelScene;
+    [Export] private PackedScene _matchLevelScene;
+
     [Export] private Popup _levelCompletePopup;
-    
+
+    private Control _currentLevelView;
     private LevelData _currentLevelData;
-    
+
     public override void _Ready()
     {
         if (_levelCompletePopup != null)
             _levelCompletePopup.NextLevelPressed += OnNextLevelPressed;
-        
+
         CallDeferred(nameof(StartLoad));
     }
 
@@ -34,80 +37,84 @@ public partial class LevelScreen : Control
             return;
         }
 
-        if (_sourceTreeView != null)
-            await _sourceTreeView.LoadTable(_currentLevelData.SourceTableName);
+        ClearCurrentLevel();
 
-        if (_expectedTreeView != null)
-            await _expectedTreeView.LoadTable(_currentLevelData.ExpectedTableName);
-        
-        GenerateSqlBlocks(_currentLevelData);
-    }
+        switch (_currentLevelData.LevelType)
+        {
+            case "table":
+            case "builder":
+                await CreateTableLevel();
+                break;
 
-    public void GenerateSqlBlocks(LevelData _currentLevelData)
-    {
-        foreach (Node child in _sqlBlocksContainer.GetChildren())
-        {
-            child.QueueFree();
-        }
-        if (_sqlBlocksContainer != null)
-        {
-            foreach (var query in _currentLevelData.SqlBlocks)
-            {
-                var blockScene = _sqlBlocksScene;
-                var block = blockScene.Instantiate<SqlBlock>();
-                block.BlockValue = query;
-                //поміняти типи блоків
-                block.Type = BlockType.Value;
-                block.KeywordType = KeywordTypes.none;
-                _sqlBlocksContainer.AddChild(block);
-            }
+            case "match":
+                await CreateMatchLevel();
+                break;
         }
     }
-    
 
-    public async Task<QueryResult> ExecutePlayerSql(string sql)
+    private async Task CreateTableLevel()
     {
-        var result = await DatabaseManager.ExecuteSql(sql);
+        GD.Print("[LevelScreen] Creating TableLevel");
 
-        if (_sourceTreeView != null)
-            await _sourceTreeView.Refresh();
+        var level = _tableLevelScene.Instantiate<TableLevel>();
 
-        if (_currentLevelData != null)
-        {
-            bool isCompleted = await LevelValidator.AreTablesEqual(
-                _currentLevelData.SourceTableName,
-                _currentLevelData.ExpectedTableName
-            );
+        level.OnLevelCompleted += OnLevelCompleted;
 
-            if (isCompleted)
-            {
-                OnLevelCompleted();
-            }
-        }
+        _levelRoot.AddChild(level);
+        _currentLevelView = level;
 
-        return result;
+        await level.LoadLevel(_currentLevelData);
+    }
+
+    private async Task CreateMatchLevel()
+    {
+        var level = _matchLevelScene.Instantiate<MatchLevel>();
+
+        level.OnLevelCompleted += OnLevelCompleted;
+
+        _levelRoot.AddChild(level);
+        _currentLevelView = level;
+
+        await level.LoadLevel(_currentLevelData);
     }
 
     private void OnLevelCompleted()
     {
-        GD.Print($"[LevelScreen] Рівень '{_currentLevelData.Code}' пройдено: таблиці співпадають.");
-        if (_levelCompletePopup != null)
-            _levelCompletePopup.ShowPopup();
+        GD.Print($"[LevelScreen] Рівень '{_currentLevelData.Code}' пройдено");
+
+        _levelCompletePopup?.ShowPopup();
     }
 
     private async void OnNextLevelPressed()
     {
-        var nextLevelCode = await DatabaseManager.GetNextLevelCode(_currentLevelData.Code);
+        GD.Print("[CLICK] Next level pressed"); // ← додай це
 
-        GD.Print("[LEVEL] nextLevelCode = " + nextLevelCode);
+        var nextLevelCode = await DatabaseManager.GetNextLevelCode(_currentLevelData.Code);
 
         if (string.IsNullOrEmpty(nextLevelCode))
         {
             GD.Print("[INFO] Наступного рівня немає.");
-            //SceneLoader.LoadLevelsMenu();
             return;
         }
 
         await LoadLevel(nextLevelCode);
+    }
+
+    private void ClearCurrentLevel()
+    {
+        switch (_currentLevelView)
+        {
+            case null:
+                return;
+            case MatchLevel matchLevel:
+                matchLevel.OnLevelCompleted -= OnLevelCompleted;
+                break;
+            case TableLevel tableLevel:
+                tableLevel.OnLevelCompleted -= OnLevelCompleted;
+                break;
+        }
+        
+        _currentLevelView.QueueFree();
+        _currentLevelView = null;
     }
 }

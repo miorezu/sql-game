@@ -45,6 +45,7 @@ custom_minimum_size = Vector2(350, 350)
 layout_mode = 0
 offset_right = 40.0
 offset_bottom = 40.0
+mouse_filter = 2
 
 [node name="Label" type="Label" parent="Panel/VBoxContainer" unique_id=466925843]
 custom_minimum_size = Vector2(350, 100)
@@ -54,6 +55,7 @@ text = "Вітаю! Рівень пройден!"
 [node name="HBoxContainer" type="HBoxContainer" parent="Panel/VBoxContainer" unique_id=106255572]
 custom_minimum_size = Vector2(350, 50)
 layout_mode = 2
+mouse_filter = 2
 alignment = 1
 
 [node name="AllLevels" type="TextureButton" parent="Panel/VBoxContainer/HBoxContainer" unique_id=1972533475]
@@ -64,6 +66,7 @@ stretch_mode = 0
 
 [node name="NextLevel" type="TextureButton" parent="Panel/VBoxContainer/HBoxContainer" unique_id=1345823576]
 modulate = Color(1, 0.29803923, 1, 1)
+z_index = 5
 custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
 texture_normal = ExtResource("2_64myp")

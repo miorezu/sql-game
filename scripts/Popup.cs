@@ -21,6 +21,7 @@ public partial class Popup : Control
     public void ShowPopup()
     {
         Visible = true;
+        MoveToFront();
     }
 
     private void OnNextLevelPressed()
