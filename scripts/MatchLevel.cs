@@ -68,6 +68,7 @@ public partial class MatchLevel : Control
 
     private async void OnCheckButtonPressed()
     {
+        SetColor(_matchBuilder);
         if (LevelValidator.AreAllMatchPairsCorrect(_matchBuilder))
         {
             GD.Print("[Match] Рівень пройдено");
@@ -79,4 +80,20 @@ public partial class MatchLevel : Control
         }
     }
 
+    public void SetColor(MatchBuilder matchBuilder)
+    {
+        foreach (MatchPairSlot slot in matchBuilder.GetChildren())
+        {
+            if (slot.GetLeftBlock() == null || slot.GetRightBlock() == null)
+            {
+                slot.ResetVisual();
+                continue;
+            }
+            
+            if (LevelValidator.AreMatchPairsCorrect(slot.GetLeftBlock(), slot.GetRightBlock()))
+                slot.SetCorrectColor();
+            else
+                slot.SetErrorColor();
+        }
+    }
 }

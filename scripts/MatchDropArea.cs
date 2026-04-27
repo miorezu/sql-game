@@ -31,9 +31,6 @@ public partial class MatchDropArea : PanelContainer
         if (block == null)
             return false;
 
-        if (block.IsInBuilder)
-            return false;
-
         return block.MatchSide == _acceptedSide;
     }
 
@@ -55,7 +52,7 @@ public partial class MatchDropArea : PanelContainer
 
         _currentBlock = block;
 
-        _pairSlot?.CheckPair();
+        //_pairSlot?.CheckPair();
     }
     
     public void ClearBlock()

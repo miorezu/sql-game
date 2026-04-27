@@ -1,8 +1,6 @@
 using Godot;
 
 
-using Godot;
-
 public partial class SqlBlock : Button
 {
     [Export] public BlockType Type = BlockType.Keyword;
