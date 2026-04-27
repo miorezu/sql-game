@@ -78,6 +78,10 @@ layout_mode = 2
 script = ExtResource("3_rdj73")
 _matchPairSlotScene = ExtResource("4_t7fmg")
 
+[node name="MatchPairSlot" parent="VBoxContainer/HBoxContainer/Match/VBoxContainer/MatchBuilder" unique_id=616134456 instance=ExtResource("4_t7fmg")]
+visible = false
+layout_mode = 2
+
 [node name="CheckButton" type="Button" parent="VBoxContainer/HBoxContainer/Match/VBoxContainer" unique_id=1206889110]
 custom_minimum_size = Vector2(20, 50)
 layout_mode = 2

@@ -43,5 +43,8 @@ public partial class MatchPairSlot : PanelContainer
 	{
 		return _rightDropArea.GetBlock();
 	}
-	
+	public void ResetVisual()
+	{
+		SelfModulate = Colors.White;
+	}
 }

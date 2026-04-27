@@ -44,6 +44,9 @@ public partial class MatchDropArea : PanelContainer
 
         if (block == null)
             return;
+        
+        if (block.GetParent() is MatchDropArea oldArea)
+            oldArea.ClearBlock();
 
         block.GetParent()?.RemoveChild(block);
 
@@ -54,7 +57,13 @@ public partial class MatchDropArea : PanelContainer
 
         _pairSlot?.CheckPair();
     }
-
+    
+    public void ClearBlock()
+    {
+        _currentBlock = null;
+        _pairSlot?.ResetVisual();
+    }
+    
     public SqlBlock GetBlock()
     {
         return _currentBlock;

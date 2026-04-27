@@ -42,7 +42,6 @@ public partial class LevelScreen : Control
         switch (_currentLevelData.LevelType)
         {
             case "table":
-            case "builder":
                 await CreateTableLevel();
                 break;
 

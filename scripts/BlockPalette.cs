@@ -54,9 +54,12 @@ public partial class BlockPalette : FlowContainer
             return;
 
         var oldParent = block.GetParent();
-        if (oldParent != null)
-            oldParent.RemoveChild(block);
+        
+        if (oldParent is MatchDropArea oldArea)
+            oldArea.ClearBlock();
 
+        oldParent?.RemoveChild(block);
+        
         AddChild(block);
         block.IsInBuilder = false;
     }
