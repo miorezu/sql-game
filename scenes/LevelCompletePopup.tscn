@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://x6ppuh8hnet4"]
 
-[ext_resource type="Script" uid="uid://cpe1o0vf441ec" path="res://scripts/LevelCompletePopup.cs" id="1_apapc"]
+[ext_resource type="Script" uid="uid://cpe1o0vf441ec" path="res://scripts/presentation/screens/LevelCompletePopup.cs" id="1_apapc"]
 [ext_resource type="Texture2D" uid="uid://b8d7xwovkmgvs" path="res://sprites/Sprite-0002.png" id="2_64myp"]
 
 [node name="LevelCompletePopup" type="Control" unique_id=1487273030 node_paths=PackedStringArray("_titleLabel", "_allLevelsButton", "_nextLevelButton")]

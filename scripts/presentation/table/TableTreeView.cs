@@ -1,8 +1,10 @@
-﻿using Godot;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using Godot;
 
-public partial class LevelTreeView : Control
+
+
+public partial class TableTreeView : Control
 {
     [Export] private Tree _tree;
 

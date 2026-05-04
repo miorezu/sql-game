@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
 
+
+
 public class QueryResult
 {
     public bool HasRows { get; set; }

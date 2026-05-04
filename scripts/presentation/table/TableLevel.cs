@@ -1,13 +1,13 @@
-using Godot;
 using System;
 using System.Threading.Tasks;
-using SQLGame.scripts.data;
+using Godot;
+
 
 
 public partial class TableLevel : Control
 {
-	[Export] private LevelTreeView _sourceTreeView;
-	[Export] private LevelTreeView _expectedTreeView;
+	[Export] private TableTreeView _sourceTreeView;
+	[Export] private TableTreeView _expectedTreeView;
 
 	[Export] private FlowContainer _sqlBlocksContainer;
 	[Export] private PackedScene _sqlBlockScene;

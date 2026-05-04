@@ -1,5 +1,7 @@
 using Godot;
 
+
+
 public static class SqlStyle
 {
     public static Color GetColorForType(BlockType type)

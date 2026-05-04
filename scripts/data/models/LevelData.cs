@@ -1,5 +1,3 @@
-namespace SQLGame.scripts.data;
-
 public class LevelData
 {
     public int Id { get; set; }

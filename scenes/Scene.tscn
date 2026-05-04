@@ -1,8 +1,8 @@
 [gd_scene format=3 uid="uid://iwyd4sgx4hd3"]
 
-[ext_resource type="Script" uid="uid://ds6povf564ckj" path="res://scripts/dd/LevelScreen.cs" id="1_d35k2"]
+[ext_resource type="Script" uid="uid://ds6povf564ckj" path="res://scripts/presentation/screens/LevelScreen.cs" id="1_i2t4f"]
 [ext_resource type="PackedScene" uid="uid://7wfecae4ddqc" path="res://scenes/TableLevel.tscn" id="2_i2t4f"]
-[ext_resource type="Script" uid="uid://jtt6p6s18eol" path="res://scripts/DatabaseManager.cs" id="5_i2t4f"]
+[ext_resource type="Script" uid="uid://jtt6p6s18eol" path="res://scripts/data/database/DatabaseManager.cs" id="4_i2t4f"]
 [ext_resource type="PackedScene" uid="uid://du3akrir51byj" path="res://scenes/MatchLevel.tscn" id="6_2sv30"]
 [ext_resource type="PackedScene" uid="uid://x6ppuh8hnet4" path="res://scenes/LevelCompletePopup.tscn" id="7_5kwoq"]
 
@@ -10,7 +10,7 @@
 layout_mode = 3
 anchors_preset = 0
 mouse_filter = 2
-script = ExtResource("1_d35k2")
+script = ExtResource("1_i2t4f")
 _levelRoot = NodePath(".")
 _tableLevelScene = ExtResource("2_i2t4f")
 _matchLevelScene = ExtResource("6_2sv30")
@@ -31,7 +31,7 @@ anchors_preset = 0
 offset_right = 40.0
 offset_bottom = 40.0
 mouse_filter = 2
-script = ExtResource("5_i2t4f")
+script = ExtResource("4_i2t4f")
 
 [node name="LevelCompletePopup" parent="." unique_id=1487273030 instance=ExtResource("7_5kwoq")]
 visible = false

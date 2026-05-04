@@ -1,5 +1,3 @@
-namespace SQLGame.scripts.data;
-
 public class BlockData
 {
     public BlockType Type { get; set; }

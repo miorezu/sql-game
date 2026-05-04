@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 
+
+
 public static class LevelValidator
 {
     public static async Task<bool> AreTablesEqual(string sourceTable, string expectedTable)
@@ -69,4 +71,3 @@ public static class LevelValidator
         return true;
     }
 }
-

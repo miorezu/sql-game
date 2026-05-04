@@ -1,8 +1,8 @@
 [gd_scene format=3 uid="uid://du3akrir51byj"]
 
-[ext_resource type="Script" uid="uid://dv2wiyy4vb1b1" path="res://scripts/MatchLevel.cs" id="1_jr6yi"]
-[ext_resource type="Script" uid="uid://dau73n48am63h" path="res://scripts/BlockPalette.cs" id="3_l5vuo"]
-[ext_resource type="Script" uid="uid://d4mq5y35k45w7" path="res://scripts/MatchBuilder.cs" id="3_rdj73"]
+[ext_resource type="Script" uid="uid://dv2wiyy4vb1b1" path="res://scripts/presentation/match/MatchLevel.cs" id="1_l5vuo"]
+[ext_resource type="Script" path="res://scripts/presentation/blocks/BlockPalette.cs" id="3_l0cdy"]
+[ext_resource type="Script" path="res://scripts/presentation/match/MatchBuilder.cs" id="4_470rs"]
 [ext_resource type="PackedScene" uid="uid://oiwo131hxpn0" path="res://scenes/SQLBlock.tscn" id="4_l0cdy"]
 [ext_resource type="PackedScene" uid="uid://bx64xjlv2yo6s" path="res://scenes/MatchPairSlot.tscn" id="4_t7fmg"]
 
@@ -11,7 +11,7 @@ layout_mode = 3
 anchors_preset = 0
 offset_right = 1160.0
 offset_bottom = 657.0
-script = ExtResource("1_jr6yi")
+script = ExtResource("1_l5vuo")
 _leftItemsContainer = NodePath("VBoxContainer/HBoxContainer/LeftItems/VBoxContainer/Control/BlockContainer")
 _rightItemsContainer = NodePath("VBoxContainer/HBoxContainer/RightItems/VBoxContainer/Control/BlockContainer")
 _sqlBlockScene = ExtResource("4_l0cdy")
@@ -52,14 +52,20 @@ layout_mode = 2
 layout_mode = 0
 offset_right = 399.0
 offset_bottom = 577.0
-script = ExtResource("3_l5vuo")
+script = ExtResource("3_l0cdy")
 UseMatchSide = true
 
 [node name="SQLBlock" parent="VBoxContainer/HBoxContainer/LeftItems/VBoxContainer/Control/BlockContainer" unique_id=1855077396 instance=ExtResource("4_l0cdy")]
 layout_mode = 2
+Type = null
+BlockValue = null
+KeywordType = null
 
 [node name="SQLBlock2" parent="VBoxContainer/HBoxContainer/LeftItems/VBoxContainer/Control/BlockContainer" unique_id=2082076103 instance=ExtResource("4_l0cdy")]
 layout_mode = 2
+Type = null
+BlockValue = null
+KeywordType = null
 
 [node name="Match" type="PanelContainer" parent="VBoxContainer/HBoxContainer" unique_id=1879173622]
 custom_minimum_size = Vector2(400, 200)
@@ -75,7 +81,7 @@ text = "SQL "
 [node name="MatchBuilder" type="VBoxContainer" parent="VBoxContainer/HBoxContainer/Match/VBoxContainer" unique_id=522060886]
 custom_minimum_size = Vector2(400, 500)
 layout_mode = 2
-script = ExtResource("3_rdj73")
+script = ExtResource("4_470rs")
 _matchPairSlotScene = ExtResource("4_t7fmg")
 
 [node name="MatchPairSlot" parent="VBoxContainer/HBoxContainer/Match/VBoxContainer/MatchBuilder" unique_id=616134456 instance=ExtResource("4_t7fmg")]
@@ -105,12 +111,17 @@ layout_mode = 2
 layout_mode = 0
 offset_right = 399.0
 offset_bottom = 577.0
-script = ExtResource("3_l5vuo")
+script = ExtResource("3_l0cdy")
 UseMatchSide = true
-Side = 1
 
 [node name="SQLBlock" parent="VBoxContainer/HBoxContainer/RightItems/VBoxContainer/Control/BlockContainer" unique_id=2014448469 instance=ExtResource("4_l0cdy")]
 layout_mode = 2
+Type = null
+BlockValue = null
+KeywordType = null
 
 [node name="SQLBlock2" parent="VBoxContainer/HBoxContainer/RightItems/VBoxContainer/Control/BlockContainer" unique_id=271704535 instance=ExtResource("4_l0cdy")]
 layout_mode = 2
+Type = null
+BlockValue = null
+KeywordType = null
