@@ -1,11 +1,12 @@
 using Godot;
+using SQLGame.scripts.data;
 
 
 public partial class SqlBlock : Button
 {
-    [Export] public BlockType Type = BlockType.Keyword;
-    [Export] public string BlockValue = "";
-    [Export] public KeywordTypes KeywordType = KeywordTypes.SELECT;
+    [Export] public BlockType Type { get; set; }
+    [Export] public string BlockValue { get; set; }
+    [Export] public KeywordTypes KeywordType { get; set; } 
 
     [Export] private Label _helpLabel;
 
@@ -13,13 +14,13 @@ public partial class SqlBlock : Button
 
     public bool IsInBuilder { get; set; } = false;
 
-    public int PairId { get; private set; } = -1;
+    public int? PairId { get; private set; } 
 
     public MatchSide MatchSide { get; private set; } = MatchSide.None;
 
-    public bool IsLeftItem => MatchSide == MatchSide.Left;
-    public bool IsRightItem => MatchSide == MatchSide.Right;
-    public bool IsMatchBlock => MatchSide != MatchSide.None;
+    private bool IsLeftItem => MatchSide == MatchSide.Left;
+    private bool IsRightItem => MatchSide == MatchSide.Right;
+    private bool IsMatchBlock => MatchSide != MatchSide.None;
 
     public void Init(BlockData data)
     {
@@ -32,7 +33,7 @@ public partial class SqlBlock : Button
 
         IsInBuilder = false;
 
-        UpdateUI();
+        UpdateUi();
     }
 
     public override void _Ready()
@@ -40,10 +41,10 @@ public partial class SqlBlock : Button
         if (HomeContainer == null && GetParent() is FlowContainer flow)
             HomeContainer = flow;
 
-        UpdateUI();
+        UpdateUi();
     }
 
-    private void UpdateUI()
+    private void UpdateUi()
     {
         Text = Type == BlockType.Keyword
             ? KeywordType.ToString()
@@ -76,7 +77,7 @@ public partial class SqlBlock : Button
             { "block", this },
             { "home_container", HomeContainer },
             { "is_in_builder", IsInBuilder },
-            { "pair_id", PairId },
+            { "pair_id", PairId.HasValue ? PairId.Value : -1 },
             { "match_side", (int)MatchSide }
         };
 

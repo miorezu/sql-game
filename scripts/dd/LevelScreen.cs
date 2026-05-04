@@ -1,5 +1,6 @@
 ﻿using Godot;
 using System.Threading.Tasks;
+using SQLGame.scripts.data;
 
 
 public partial class LevelScreen : Control
@@ -9,7 +10,7 @@ public partial class LevelScreen : Control
     [Export] private PackedScene _tableLevelScene;
     [Export] private PackedScene _matchLevelScene;
 
-    [Export] private Popup _levelCompletePopup;
+    [Export] private LevelCompletePopup _levelCompletePopup;
 
     private Control _currentLevelView;
     private LevelData _currentLevelData;
@@ -19,10 +20,10 @@ public partial class LevelScreen : Control
         if (_levelCompletePopup != null)
             _levelCompletePopup.NextLevelPressed += OnNextLevelPressed;
 
-        CallDeferred(nameof(StartLoad));
+        CallDeferred(nameof(LoadFirstLevel));
     }
 
-    private async void StartLoad()
+    private async void LoadFirstLevel()
     {
         await LoadLevel("level1");
     }
@@ -53,6 +54,12 @@ public partial class LevelScreen : Control
 
     private async Task CreateTableLevel()
     {
+        if (_tableLevelScene == null)
+        {
+            GD.PrintErr("[LevelScreen] TableLevel scene is not assigned.");
+            return;
+        }
+
         GD.Print("[LevelScreen] Creating TableLevel");
 
         var level = _tableLevelScene.Instantiate<TableLevel>();
@@ -67,6 +74,12 @@ public partial class LevelScreen : Control
 
     private async Task CreateMatchLevel()
     {
+        if (_matchLevelScene == null)
+        {
+            GD.PrintErr("[LevelScreen] MatchLevel scene is not assigned.");
+            return;
+        }
+
         var level = _matchLevelScene.Instantiate<MatchLevel>();
 
         level.OnLevelCompleted += OnLevelCompleted;
@@ -86,7 +99,7 @@ public partial class LevelScreen : Control
 
     private async void OnNextLevelPressed()
     {
-        GD.Print("[CLICK] Next level pressed"); // ← додай це
+        GD.Print("[CLICK] Next level pressed");
 
         var nextLevelCode = await DatabaseManager.GetNextLevelCode(_currentLevelData.Code);
 
@@ -112,7 +125,7 @@ public partial class LevelScreen : Control
                 tableLevel.OnLevelCompleted -= OnLevelCompleted;
                 break;
         }
-        
+
         _currentLevelView.QueueFree();
         _currentLevelView = null;
     }

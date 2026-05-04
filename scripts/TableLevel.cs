@@ -1,6 +1,7 @@
 using Godot;
 using System;
 using System.Threading.Tasks;
+using SQLGame.scripts.data;
 
 
 public partial class TableLevel : Control
@@ -9,7 +10,7 @@ public partial class TableLevel : Control
 	[Export] private LevelTreeView _expectedTreeView;
 
 	[Export] private FlowContainer _sqlBlocksContainer;
-	[Export] private PackedScene _sqlBlocksScene;
+	[Export] private PackedScene _sqlBlockScene;
 
 	public event Action OnLevelCompleted;
 
@@ -41,12 +42,17 @@ public partial class TableLevel : Control
 
 	private void GenerateSqlBlocks(LevelData levelData)
 	{
+		if (_sqlBlocksContainer == null || _sqlBlockScene == null)
+		{
+			GD.PrintErr("[TableLevel] SQL blocks container або scene не задані.");
+			return;
+		}
 		foreach (Node child in _sqlBlocksContainer.GetChildren())
 			child.QueueFree();
 
 		foreach (var query in levelData.SqlBlocks)
 		{
-			var block = _sqlBlocksScene.Instantiate<SqlBlock>();
+			var block = _sqlBlockScene.Instantiate<SqlBlock>();
 
 			block.BlockValue = query;
 			block.Type = BlockType.Value;

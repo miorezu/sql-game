@@ -2,14 +2,14 @@ using Godot;
 
 public partial class MatchDropArea : PanelContainer
 {
-    [Export] private MatchSide _acceptedSide = MatchSide.Left;
+    [Export] private MatchSide _acceptedMatchSide = MatchSide.Left;
 
     private SqlBlock _currentBlock;
     private MatchPairSlot _pairSlot;
 
     public override void _Ready()
     {
-        _pairSlot = GetParent().GetParent<MatchPairSlot>();
+        _pairSlot = GetParent()?.GetParent() as MatchPairSlot;
         //CustomMinimumSize = new Vector2(180, 55);
     }
 
@@ -31,7 +31,7 @@ public partial class MatchDropArea : PanelContainer
         if (block == null)
             return false;
 
-        return block.MatchSide == _acceptedSide;
+        return block.MatchSide == _acceptedMatchSide;
     }
 
     public override void _DropData(Vector2 position, Variant data)

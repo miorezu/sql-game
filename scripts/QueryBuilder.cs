@@ -59,7 +59,7 @@ public partial class QueryBuilder : FlowContainer
 
         if (_tableLevel == null)
         {
-            GD.PrintErr("[QueryBuilder] LevelScreen не призначено в Inspector.");
+            GD.PrintErr("[QueryBuilder] TableLevel не призначено в Inspector.");
             return;
         }
 

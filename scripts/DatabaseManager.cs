@@ -10,12 +10,11 @@ using SQLGame.scripts.data;
 
 public partial class DatabaseManager : Node
 {
-    private const string SourceDbPath = "res://database/game.db";
-    private const string TargetDbPath = "user://game.db";
+    private const string TemplateDbPath = "res://database/game.db";
+    private const string UserDbPath = "user://game.db";
+    private static string _connectionString;
 
     public static DatabaseManager Instance { get; private set; }
-
-    private static string _connectionString;
 
     public override void _Ready()
     {
@@ -24,27 +23,27 @@ public partial class DatabaseManager : Node
         CopyDatabaseIfNeeded();
         InitializeConnection();
 
-        GD.Print("[DB] User DB path: " + ProjectSettings.GlobalizePath(TargetDbPath));
+        GD.Print("[DB] User DB path: " + ProjectSettings.GlobalizePath(UserDbPath));
     }
 
     private void CopyDatabaseIfNeeded()
     {
-        if (FileAccess.FileExists(TargetDbPath))
-            DirAccess.RemoveAbsolute(ProjectSettings.GlobalizePath(TargetDbPath));
+        if (FileAccess.FileExists(UserDbPath))
+            DirAccess.RemoveAbsolute(ProjectSettings.GlobalizePath(UserDbPath));
 
-        using var sourceFile = FileAccess.Open(SourceDbPath, FileAccess.ModeFlags.Read);
+        using var sourceFile = FileAccess.Open(TemplateDbPath, FileAccess.ModeFlags.Read);
         if (sourceFile == null)
         {
-            GD.PrintErr("[DB] Не вдалося відкрити шаблонну БД: " + SourceDbPath);
+            GD.PrintErr("[DB] Не вдалося відкрити шаблонну БД: " + TemplateDbPath);
             return;
         }
 
         var buffer = sourceFile.GetBuffer((long)sourceFile.GetLength());
 
-        using var targetFile = FileAccess.Open(TargetDbPath, FileAccess.ModeFlags.Write);
+        using var targetFile = FileAccess.Open(UserDbPath, FileAccess.ModeFlags.Write);
         if (targetFile == null)
         {
-            GD.PrintErr("[DB] Не вдалося створити user БД: " + TargetDbPath);
+            GD.PrintErr("[DB] Не вдалося створити user БД: " + UserDbPath);
             return;
         }
 
@@ -54,7 +53,7 @@ public partial class DatabaseManager : Node
 
     private void InitializeConnection()
     {
-        string fullPath = ProjectSettings.GlobalizePath(TargetDbPath);
+        string fullPath = ProjectSettings.GlobalizePath(UserDbPath);
         _connectionString = $"Data Source={fullPath}";
     }
 
@@ -164,30 +163,29 @@ public partial class DatabaseManager : Node
 
     public static string GetUserDbPath()
     {
-        return ProjectSettings.GlobalizePath(TargetDbPath);
+        return ProjectSettings.GlobalizePath(UserDbPath);
     }
-    
+
     public static async Task<string> GetNextLevelCode(string currentCode)
     {
-        string sql = $@"
-        SELECT code
-        FROM levels
-        WHERE level_order > (
-            SELECT level_order FROM levels WHERE code = '{currentCode}'
-        )
-        ORDER BY level_order
-        LIMIT 1;
-    ";
+        await using var connection = new SqliteConnection(_connectionString);
+        await connection.OpenAsync();
 
-        var result = await ExecuteQuery(sql);
-
-        if (result.Count == 0)
-            return null;
-
-        return result[0][0];
+        return await connection.QueryFirstOrDefaultAsync<string>(
+            """
+            SELECT code
+            FROM levels
+            WHERE level_order > (
+                SELECT level_order
+                FROM levels
+                WHERE code = @CurrentCode
+            )
+            ORDER BY level_order
+            LIMIT 1
+            """,
+            new { CurrentCode = currentCode }
+        );
     }
-    
-
 
     public static async Task<bool> TableExists(string tableName)
     {
@@ -231,7 +229,7 @@ public partial class DatabaseManager : Node
     public static async Task<List<List<string>>> GetOrderedRows(string tableName, List<string> columns)
     {
         EnsureSafeIdentifier(tableName);
-        
+
         foreach (var column in columns)
             EnsureSafeIdentifier(column);
 
@@ -248,14 +246,14 @@ public partial class DatabaseManager : Node
     {
         if (string.IsNullOrWhiteSpace(value))
             throw new System.Exception("Identifier is empty.");
-    
+
         foreach (char c in value)
         {
             if (!char.IsLetterOrDigit(c) && c != '_')
                 throw new System.Exception($"Unsafe identifier: {value}");
         }
     }
-    
+
     public static async Task<List<MatchPairData>> GetMatchPairs(string levelCode)
     {
         await using var connection = new SqliteConnection(_connectionString);

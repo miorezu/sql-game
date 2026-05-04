@@ -1,7 +1,7 @@
 using Godot;
 using System;
 
-public partial class Popup : Control
+public partial class LevelCompletePopup : Control
 {
     [Export] private Label _titleLabel;
     

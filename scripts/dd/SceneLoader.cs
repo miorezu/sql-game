@@ -2,15 +2,22 @@
 
 public static class SceneLoader
 {
-    public static void LoadLevelsMenu()
+    private const string LevelsMenuPath = "res://scenes/LevelsMenu.tscn";
+    private const string LevelScreenPath = "res://scenes/LevelScreen.tscn";
+
+    private static void LoadScene(string path)
     {
         var tree = Engine.GetMainLoop() as SceneTree;
-        tree?.ChangeSceneToFile("res://scenes/LevelsMenu.tscn");
+        tree?.ChangeSceneToFile(path);
+    }
+
+    public static void LoadLevelsMenu()
+    {
+        LoadScene(LevelsMenuPath);
     }
 
     public static void LoadLevelScreen()
     {
-        var tree = Engine.GetMainLoop() as SceneTree;
-        tree?.ChangeSceneToFile("res://scenes/LevelScreen.tscn");
+        LoadScene(LevelScreenPath);
     }
 }

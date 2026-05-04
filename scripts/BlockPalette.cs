@@ -1,4 +1,5 @@
 using Godot;
+using SQLGame.scripts.data;
 
 public partial class BlockPalette : FlowContainer
 {
@@ -8,9 +9,7 @@ public partial class BlockPalette : FlowContainer
     public void AddMatchBlock(SqlBlock block, int pairId, string text)
     {
         if (!UseMatchSide)
-        {
             return;
-        }
 
         block.Init(new BlockData
         {

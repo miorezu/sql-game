@@ -4,7 +4,7 @@
 [ext_resource type="PackedScene" uid="uid://7wfecae4ddqc" path="res://scenes/TableLevel.tscn" id="2_i2t4f"]
 [ext_resource type="Script" uid="uid://jtt6p6s18eol" path="res://scripts/DatabaseManager.cs" id="5_i2t4f"]
 [ext_resource type="PackedScene" uid="uid://du3akrir51byj" path="res://scenes/MatchLevel.tscn" id="6_2sv30"]
-[ext_resource type="PackedScene" uid="uid://x6ppuh8hnet4" path="res://scenes/Popup.tscn" id="7_5kwoq"]
+[ext_resource type="PackedScene" uid="uid://x6ppuh8hnet4" path="res://scenes/LevelCompletePopup.tscn" id="7_5kwoq"]
 
 [node name="Scene" type="Control" unique_id=544648989 node_paths=PackedStringArray("_levelRoot", "_levelCompletePopup")]
 layout_mode = 3
@@ -14,7 +14,7 @@ script = ExtResource("1_d35k2")
 _levelRoot = NodePath(".")
 _tableLevelScene = ExtResource("2_i2t4f")
 _matchLevelScene = ExtResource("6_2sv30")
-_levelCompletePopup = NodePath("Popup")
+_levelCompletePopup = NodePath("LevelCompletePopup")
 
 [node name="TableLevel" parent="." unique_id=679337163 instance=ExtResource("2_i2t4f")]
 visible = false
@@ -33,7 +33,7 @@ offset_bottom = 40.0
 mouse_filter = 2
 script = ExtResource("5_i2t4f")
 
-[node name="Popup" parent="." unique_id=1487273030 instance=ExtResource("7_5kwoq")]
+[node name="LevelCompletePopup" parent="." unique_id=1487273030 instance=ExtResource("7_5kwoq")]
 visible = false
 z_index = 4
 layout_mode = 1

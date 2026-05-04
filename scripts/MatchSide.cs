@@ -1,6 +1,6 @@
 ﻿public enum MatchSide
 {
+    None,
     Left,
-    Right,
-    None
+    Right
 }

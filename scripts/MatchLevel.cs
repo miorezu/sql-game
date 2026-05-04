@@ -2,6 +2,7 @@ using System;
 using Godot;
 using System.Linq;
 using System.Threading.Tasks;
+using SQLGame.scripts.data;
 
 public partial class MatchLevel : Control
 {
@@ -66,9 +67,9 @@ public partial class MatchLevel : Control
         }
     }
 
-    private async void OnCheckButtonPressed()
+    private void OnCheckButtonPressed()
     {
-        SetColor(_matchBuilder);
+        UpdateSlotColor(_matchBuilder);
         if (LevelValidator.AreAllMatchPairsCorrect(_matchBuilder))
         {
             GD.Print("[Match] Рівень пройдено");
@@ -80,7 +81,7 @@ public partial class MatchLevel : Control
         }
     }
 
-    public void SetColor(MatchBuilder matchBuilder)
+    private void UpdateSlotColor(MatchBuilder matchBuilder)
     {
         foreach (MatchPairSlot slot in matchBuilder.GetChildren())
         {
