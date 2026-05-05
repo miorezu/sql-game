@@ -7,6 +7,7 @@ public class LevelData
 
     public string SourceTableName { get; set; }
     public string ExpectedTableName { get; set; }
+    public int LevelOrder { get; set; }
     public string LevelType { get; set; }
     public string[] SqlBlocks { get; set; }
 }

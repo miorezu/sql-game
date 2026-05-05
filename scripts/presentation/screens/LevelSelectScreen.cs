@@ -1,5 +1,4 @@
 using Godot;
-using System;
 using System.Linq;
 
 public partial class LevelSelectScreen : Control
@@ -17,9 +16,16 @@ public partial class LevelSelectScreen : Control
 		foreach (var button in buttons)
 		{
 			button.Pressed += () => OnLevelMapButtonPressed(button.LevelOrder);
+			var status = SaveManager.Instance.GetLevelStatus(button.LevelOrder);
+			button.SetStatus(status);
+			if (button.Status == LevelStatus.Locked)
+			{
+				button.Disabled = true;
+			}
 		}
-		
 	}
+	
+
 
 	private void OnLevelMapButtonPressed(int levelOrder)
 	{
@@ -27,5 +33,4 @@ public partial class LevelSelectScreen : Control
 		GameState.Instance.SelectedLevelOrder = levelOrder;
 		SceneLoader.LoadLevelScreen();
 	}
-
 }

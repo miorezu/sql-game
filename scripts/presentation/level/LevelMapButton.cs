@@ -12,14 +12,19 @@ public partial class LevelMapButton : TextureButton
     [Export] private TextureRect _lockIcon;
     [Export] private Label _numberLevelLbl;
     
-    [Export] private LevelStatus Status;
+    public LevelStatus Status { get; private set; } = LevelStatus.Locked;
     
     public string LevelCode  { get; set; } 
     public override void _Ready()
     {
         Setup(LevelCode);
     }
-
+    public void SetStatus(LevelStatus status)
+    {
+        Status = status;
+        ApplyStatusVisual();
+    }
+    
     private void ApplyDisplayLabel()
     {
         if (_numberLevelLbl == null)

@@ -15,43 +15,33 @@ public partial class LevelScreen : Control
     private Control _currentLevelView;
     private LevelData _currentLevelData;
 
-    public override void _Ready()
+    public override async void _Ready()
     {
         if (_levelCompletePopup != null)
             _levelCompletePopup.NextLevelPressed += OnNextLevelPressed;
 
-        CallDeferred(nameof(LoadSelectedLevel));
-    }
-    private async void LoadSelectedLevel()
-    {
-        var levelCode = await DatabaseManager.GetLevelCodeByOrder(GameState.Instance.SelectedLevelOrder);
-
-        if (string.IsNullOrEmpty(levelCode))
-        {
-            GD.PrintErr($"[LevelScreen] Рівень з order={GameState.Instance.SelectedLevelOrder} не знайдено.");
-            return;
-        }
-
-        await LoadLevel(levelCode);
+        await LoadSelectedLevel();
     }
 
-    private async void LoadFirstLevel()
+    private async Task LoadSelectedLevel()
     {
-        await LoadLevel("level1");
-    }
+        var order = GameState.Instance.SelectedLevelOrder;
 
-    public async Task LoadLevel(string levelCode)
-    {
-        _currentLevelData = await DatabaseManager.GetLevelData(levelCode);
+        _currentLevelData = await DatabaseManager.GetLevelData(order);
 
         if (_currentLevelData == null)
         {
-            GD.PrintErr($"[LevelScreen] Рівень '{levelCode}' не знайдено.");
+            GD.PrintErr($"[LevelScreen] Рівень з order={order} не знайдено.");
             return;
         }
 
         ClearCurrentLevel();
 
+        await CreateLevelView();
+    }
+
+    private async Task CreateLevelView()
+    {
         switch (_currentLevelData.LevelType)
         {
             case "table":
@@ -60,6 +50,10 @@ public partial class LevelScreen : Control
 
             case "match":
                 await CreateMatchLevel();
+                break;
+
+            default:
+                GD.PrintErr($"[LevelScreen] Невідомий тип рівня: {_currentLevelData.LevelType}");
                 break;
         }
     }
@@ -92,6 +86,8 @@ public partial class LevelScreen : Control
             return;
         }
 
+        GD.Print("[LevelScreen] Creating MatchLevel");
+
         var level = _matchLevelScene.Instantiate<MatchLevel>();
 
         level.OnLevelCompleted += OnLevelCompleted;
@@ -106,6 +102,8 @@ public partial class LevelScreen : Control
     {
         GD.Print($"[LevelScreen] Рівень '{_currentLevelData.Code}' пройдено");
 
+        SaveManager.Instance.RecordLevelComplete(_currentLevelData.LevelOrder);
+
         _levelCompletePopup?.ShowPopup();
     }
 
@@ -113,15 +111,19 @@ public partial class LevelScreen : Control
     {
         GD.Print("[CLICK] Next level pressed");
 
-        var nextLevelCode = await DatabaseManager.GetNextLevelCode(_currentLevelData.Code);
+        var hasNext = await DatabaseManager.HasNextLevel(_currentLevelData.LevelOrder);
 
-        if (string.IsNullOrEmpty(nextLevelCode))
+        if (!hasNext)
         {
             GD.Print("[INFO] Наступного рівня немає.");
             return;
         }
 
-        await LoadLevel(nextLevelCode);
+        GameState.Instance.SelectedLevelOrder = _currentLevelData.LevelOrder + 1;
+
+        _levelCompletePopup?.Hide();
+
+        await LoadSelectedLevel();
     }
 
     private void ClearCurrentLevel()
@@ -130,9 +132,11 @@ public partial class LevelScreen : Control
         {
             case null:
                 return;
+
             case MatchLevel matchLevel:
                 matchLevel.OnLevelCompleted -= OnLevelCompleted;
                 break;
+
             case TableLevel tableLevel:
                 tableLevel.OnLevelCompleted -= OnLevelCompleted;
                 break;
