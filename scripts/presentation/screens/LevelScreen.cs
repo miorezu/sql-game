@@ -20,7 +20,19 @@ public partial class LevelScreen : Control
         if (_levelCompletePopup != null)
             _levelCompletePopup.NextLevelPressed += OnNextLevelPressed;
 
-        CallDeferred(nameof(LoadFirstLevel));
+        CallDeferred(nameof(LoadSelectedLevel));
+    }
+    private async void LoadSelectedLevel()
+    {
+        var levelCode = await DatabaseManager.GetLevelCodeByOrder(GameState.Instance.SelectedLevelOrder);
+
+        if (string.IsNullOrEmpty(levelCode))
+        {
+            GD.PrintErr($"[LevelScreen] Рівень з order={GameState.Instance.SelectedLevelOrder} не знайдено.");
+            return;
+        }
+
+        await LoadLevel(levelCode);
     }
 
     private async void LoadFirstLevel()

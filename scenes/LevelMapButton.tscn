@@ -1,0 +1,38 @@
+[gd_scene format=3 uid="uid://dpxo7mhangn6r"]
+
+[ext_resource type="Texture2D" uid="uid://1ks47s0nwswv" path="res://sprites/Sprite-0001.png" id="1_s7o0k"]
+[ext_resource type="Script" uid="uid://7hdrdkvp2wjm" path="res://scripts/presentation/level/LevelMapButton.cs" id="2_akrqu"]
+[ext_resource type="Texture2D" uid="uid://cymbycmyn4iau" path="res://sprites/lock.png" id="3_5lj22"]
+
+[node name="LevelMapButton" type="TextureButton" unique_id=2070859198 node_paths=PackedStringArray("_lockIcon", "_numberLevelLbl")]
+anchors_preset = -1
+anchor_right = 0.056
+anchor_bottom = 0.10300001
+offset_right = -0.51200104
+offset_bottom = 0.2559967
+grow_horizontal = 2
+grow_vertical = 2
+texture_normal = ExtResource("1_s7o0k")
+script = ExtResource("2_akrqu")
+_lockIcon = NodePath("LockIcon")
+_numberLevelLbl = NodePath("Label")
+
+[node name="LockIcon" type="TextureRect" parent="." unique_id=1249942500]
+layout_mode = 0
+offset_left = 29.0
+offset_top = 37.0
+offset_right = 69.0
+offset_bottom = 77.0
+texture = ExtResource("3_5lj22")
+
+[node name="Label" type="Label" parent="." unique_id=1988776562]
+modulate = Color(0, 0, 0, 1)
+layout_mode = 1
+anchors_preset = -1
+anchor_bottom = 0.038000003
+offset_left = 26.0
+offset_top = 21.0
+offset_right = 38.0
+offset_bottom = 67.454
+text = "
+"

@@ -274,4 +274,20 @@ public partial class DatabaseManager : Node
 
         return pairs.ToList();
     }
+    
+    public static async Task<string> GetLevelCodeByOrder(int levelOrder)
+    {
+        await using var connection = new SqliteConnection(_connectionString);
+        await connection.OpenAsync();
+
+        return await connection.QueryFirstOrDefaultAsync<string>(
+            """
+            SELECT code
+            FROM levels
+            WHERE level_order = @LevelOrder
+            LIMIT 1
+            """,
+            new { LevelOrder = levelOrder }
+        );
+    }
 }

@@ -1,0 +1,31 @@
+using Godot;
+using System;
+using System.Linq;
+
+public partial class LevelSelectScreen : Control
+{
+	[Export] private Control _mapContent;
+
+	public override void _Ready()
+	{
+		SetupLevelButtons();
+	}
+
+	public void SetupLevelButtons()
+	{
+		var buttons = _mapContent.GetChildren().OfType<LevelMapButton>().OrderBy(button=>button.LevelOrder).ToList();
+		foreach (var button in buttons)
+		{
+			button.Pressed += () => OnLevelMapButtonPressed(button.LevelOrder);
+		}
+		
+	}
+
+	private void OnLevelMapButtonPressed(int levelOrder)
+	{
+		GD.Print($"[LevelSelectScreen] Open level order: {levelOrder}");
+		GameState.Instance.SelectedLevelOrder = levelOrder;
+		SceneLoader.LoadLevelScreen();
+	}
+
+}

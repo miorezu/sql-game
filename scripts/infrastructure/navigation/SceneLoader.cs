@@ -5,7 +5,7 @@
 public static class SceneLoader
 {
     private const string LevelsMenuPath = "res://scenes/LevelsMenu.tscn";
-    private const string LevelScreenPath = "res://scenes/LevelScreen.tscn";
+    private const string LevelScreenPath = "res://scenes/Scene.tscn";
 
     private static void LoadScene(string path)
     {
