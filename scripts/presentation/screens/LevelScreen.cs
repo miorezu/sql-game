@@ -24,8 +24,8 @@ public partial class LevelScreen : Control
         if (_topBar != null)
         {
             _topBar.SetMode(TopBarUi.TopBarMode.Level);
-            _topBar.HomePressed += OnSelectLevelPressed;
-            //_topBar.RestartPressed += OnRestartPressed;
+            _topBar.HomePressed += OnSelectLevelMenuPressed;
+            _topBar.RestartPressed += OnRestartPressed;
             //_topBar.SettingsPressed += OnSettingsPressed;
             _topBar.SetTime(0);
         }
@@ -34,7 +34,7 @@ public partial class LevelScreen : Control
             _levelCompletePopup.NextLevelPressed += OnNextLevelPressed;
         
         if (_levelCompletePopup != null)
-            _levelCompletePopup.SelectLevelPressed += OnSelectLevelPressed;
+            _levelCompletePopup.SelectLevelPressed += OnSelectLevelMenuPressed;
         await LoadSelectedLevel();
     }
     
@@ -155,11 +155,22 @@ public partial class LevelScreen : Control
         });
     }
 
-    private async void OnSelectLevelPressed()
+    private async void OnSelectLevelMenuPressed()
     {
         StopTimer();
         GD.Print("[LevelScreen] All level pressed");
         SceneLoader.LoadSelectLevelMenu();
+    }
+
+    private async void OnRestartPressed()
+    {
+        StopTimer();
+        await SceneTransitionManager.Instance.FadeWithoutChangeScene(async () =>
+        {
+            DatabaseManager.ResetUserDb();
+            GameState.Instance.SelectedLevelOrder = _currentLevelData.LevelOrder;
+            await LoadSelectedLevel();
+        });
     }
     
     private void ClearCurrentLevel()
@@ -181,6 +192,7 @@ public partial class LevelScreen : Control
         _currentLevelView.QueueFree();
         _currentLevelView = null;
     }
+    
     private void ResetTimer()
     {
         _elapsedTime = 0f;

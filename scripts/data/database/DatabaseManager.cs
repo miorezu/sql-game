@@ -17,40 +17,73 @@ public partial class DatabaseManager : Node
     public override void _Ready()
     {
         Instance = this;
-        CopyDatabaseIfNeeded();
-        InitializeConnection();
+        ResetUserDb();
+        //InitializeConnection();
         GD.Print("[DB] User DB path: " + ProjectSettings.GlobalizePath(UserDbPath));
     }
 
-    private void CopyDatabaseIfNeeded()
+    public static void ResetUserDb()
     {
+        string userPath = ProjectSettings.GlobalizePath(UserDbPath);
+
+        GD.Print("[DB RESET] Template path: " + TemplateDbPath);
+        GD.Print("[DB RESET] User path: " + userPath);
+
+        SqliteConnection.ClearAllPools();
+
+        if (!FileAccess.FileExists(TemplateDbPath))
+        {
+            GD.PrintErr("[DB RESET] Template DB не знайдена: " + TemplateDbPath);
+            return;
+        }
+
         if (FileAccess.FileExists(UserDbPath))
-            DirAccess.RemoveAbsolute(ProjectSettings.GlobalizePath(UserDbPath));
+        {
+            var removeError = DirAccess.RemoveAbsolute(userPath);
+
+            if (removeError != Error.Ok)
+            {
+                GD.PrintErr("[DB RESET] Не вдалося видалити стару user DB: " + removeError);
+                return;
+            }
+
+            GD.Print("[DB RESET] Стара user DB видалена.");
+        }
 
         using var sourceFile = FileAccess.Open(TemplateDbPath, FileAccess.ModeFlags.Read);
         if (sourceFile == null)
         {
-            GD.PrintErr("[DB] Не вдалося відкрити шаблонну БД: " + TemplateDbPath);
+            GD.PrintErr("[DB RESET] Не вдалося відкрити template DB: " + TemplateDbPath);
             return;
         }
 
         var buffer = sourceFile.GetBuffer((long)sourceFile.GetLength());
 
+        if (buffer.Length == 0)
+        {
+            GD.PrintErr("[DB RESET] Template DB порожня!");
+            return;
+        }
+
         using var targetFile = FileAccess.Open(UserDbPath, FileAccess.ModeFlags.Write);
         if (targetFile == null)
         {
-            GD.PrintErr("[DB] Не вдалося створити user БД: " + UserDbPath);
+            GD.PrintErr("[DB RESET] Не вдалося створити user DB: " + UserDbPath);
             return;
         }
 
         targetFile.StoreBuffer(buffer);
-        GD.Print("[DB] БД скопійована заново в user://");
+        targetFile.Flush();
+
+        _connectionString = $"Data Source={userPath};Pooling=False";
+
+        GD.Print("[DB RESET] User DB успішно скинута.");
     }
 
     private void InitializeConnection()
     {
         string fullPath = ProjectSettings.GlobalizePath(UserDbPath);
-        _connectionString = $"Data Source={fullPath}";
+        _connectionString = $"Data Source={fullPath};Pooling=False";
     }
 
     public static async Task<QueryResult> ExecuteSql(string sql)

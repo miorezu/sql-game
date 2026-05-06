@@ -12,7 +12,7 @@ offset_right = 50.0
 offset_bottom = 50.0
 script = ExtResource("1_66sx5")
 _homeButton = NodePath("TopBar/Home")
-_timerLabel = NodePath("TopBar/Label")
+_timerLabel = NodePath("TopBar/TimeLabel")
 _restartButton = NodePath("TopBar/RestartLevel")
 _profileButton = NodePath("TopBar/Profile")
 _settingsButton = NodePath("TopBar/Settings")
@@ -29,10 +29,15 @@ layout_mode = 2
 texture_normal = ExtResource("1_gf307")
 stretch_mode = 0
 
-[node name="Label" type="Label" parent="TopBar" unique_id=1749809055]
+[node name="Task?" type="Label" parent="TopBar" unique_id=1313350857]
+visible = false
+layout_mode = 2
+
+[node name="TimeLabel" type="Label" parent="TopBar" unique_id=1749809055]
 visible = false
 custom_minimum_size = Vector2(1000, 40)
 layout_mode = 2
+horizontal_alignment = 1
 
 [node name="RestartLevel" type="TextureButton" parent="TopBar" unique_id=1615295748]
 visible = false
