@@ -5,6 +5,7 @@ using Godot;
 
 public partial class LevelScreen : Control
 {
+    [Export] private TopBarUi _topBar;
     [Export] private Control _levelRoot;
 
     [Export] private PackedScene _tableLevelScene;
@@ -14,9 +15,21 @@ public partial class LevelScreen : Control
 
     private Control _currentLevelView;
     private LevelData _currentLevelData;
+    
+    private float _elapsedTime;
+    private bool _isTimerRunning;
 
     public override async void _Ready()
     {
+        if (_topBar != null)
+        {
+            _topBar.SetMode(TopBarUi.TopBarMode.Level);
+            _topBar.HomePressed += OnSelectLevelPressed;
+            //_topBar.RestartPressed += OnRestartPressed;
+            //_topBar.SettingsPressed += OnSettingsPressed;
+            _topBar.SetTime(0);
+        }
+        
         if (_levelCompletePopup != null)
             _levelCompletePopup.NextLevelPressed += OnNextLevelPressed;
         
@@ -24,7 +37,16 @@ public partial class LevelScreen : Control
             _levelCompletePopup.SelectLevelPressed += OnSelectLevelPressed;
         await LoadSelectedLevel();
     }
+    
+    public override void _Process(double delta)
+    {
+        if (!_isTimerRunning || _topBar == null)
+            return;
 
+        _elapsedTime += (float)delta;
+        _topBar.SetTime(_elapsedTime);
+    }
+    
     private async Task LoadSelectedLevel()
     {
         var order = GameState.Instance.SelectedLevelOrder;
@@ -38,8 +60,9 @@ public partial class LevelScreen : Control
         }
 
         ClearCurrentLevel();
-
+        ResetTimer();
         await CreateLevelView();
+        StartTimer();
     }
 
     private async Task CreateLevelView()
@@ -102,6 +125,7 @@ public partial class LevelScreen : Control
 
     private void OnLevelCompleted()
     {
+        StopTimer();
         GD.Print($"[LevelScreen] Рівень '{_currentLevelData.Code}' пройдено");
 
         SaveManager.Instance.RecordLevelComplete(_currentLevelData.LevelOrder);
@@ -133,6 +157,7 @@ public partial class LevelScreen : Control
 
     private async void OnSelectLevelPressed()
     {
+        StopTimer();
         GD.Print("[LevelScreen] All level pressed");
         SceneLoader.LoadSelectLevelMenu();
     }
@@ -155,5 +180,21 @@ public partial class LevelScreen : Control
 
         _currentLevelView.QueueFree();
         _currentLevelView = null;
+    }
+    private void ResetTimer()
+    {
+        _elapsedTime = 0f;
+        _isTimerRunning = false;
+        _topBar?.SetTime(0);
+    }
+
+    private void StartTimer()
+    {
+        _isTimerRunning = true;
+    }
+
+    private void StopTimer()
+    {
+        _isTimerRunning = false;
     }
 }

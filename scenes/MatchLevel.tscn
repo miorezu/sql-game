@@ -1,8 +1,8 @@
 [gd_scene format=3 uid="uid://du3akrir51byj"]
 
 [ext_resource type="Script" uid="uid://dv2wiyy4vb1b1" path="res://scripts/presentation/match/MatchLevel.cs" id="1_l5vuo"]
-[ext_resource type="Script" path="res://scripts/presentation/blocks/BlockPalette.cs" id="3_l0cdy"]
-[ext_resource type="Script" path="res://scripts/presentation/match/MatchBuilder.cs" id="4_470rs"]
+[ext_resource type="Script" uid="uid://dau73n48am63h" path="res://scripts/presentation/blocks/BlockPalette.cs" id="3_l0cdy"]
+[ext_resource type="Script" uid="uid://d4mq5y35k45w7" path="res://scripts/presentation/match/MatchBuilder.cs" id="4_470rs"]
 [ext_resource type="PackedScene" uid="uid://oiwo131hxpn0" path="res://scenes/SQLBlock.tscn" id="4_l0cdy"]
 [ext_resource type="PackedScene" uid="uid://bx64xjlv2yo6s" path="res://scenes/MatchPairSlot.tscn" id="4_t7fmg"]
 
@@ -22,14 +22,6 @@ _checkButton = NodePath("VBoxContainer/HBoxContainer/Match/VBoxContainer/CheckBu
 layout_mode = 0
 offset_right = 1149.0
 offset_bottom = 647.0
-
-[node name="Header" type="HBoxContainer" parent="VBoxContainer" unique_id=1199089267]
-custom_minimum_size = Vector2(0, 40)
-layout_mode = 2
-
-[node name="Settings" type="Button" parent="VBoxContainer/Header" unique_id=909002592]
-custom_minimum_size = Vector2(30, 40)
-layout_mode = 2
 
 [node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer" unique_id=1411474196]
 layout_mode = 2
@@ -57,15 +49,9 @@ UseMatchSide = true
 
 [node name="SQLBlock" parent="VBoxContainer/HBoxContainer/LeftItems/VBoxContainer/Control/BlockContainer" unique_id=1855077396 instance=ExtResource("4_l0cdy")]
 layout_mode = 2
-Type = null
-BlockValue = null
-KeywordType = null
 
 [node name="SQLBlock2" parent="VBoxContainer/HBoxContainer/LeftItems/VBoxContainer/Control/BlockContainer" unique_id=2082076103 instance=ExtResource("4_l0cdy")]
 layout_mode = 2
-Type = null
-BlockValue = null
-KeywordType = null
 
 [node name="Match" type="PanelContainer" parent="VBoxContainer/HBoxContainer" unique_id=1879173622]
 custom_minimum_size = Vector2(400, 200)
@@ -116,12 +102,6 @@ UseMatchSide = true
 
 [node name="SQLBlock" parent="VBoxContainer/HBoxContainer/RightItems/VBoxContainer/Control/BlockContainer" unique_id=2014448469 instance=ExtResource("4_l0cdy")]
 layout_mode = 2
-Type = null
-BlockValue = null
-KeywordType = null
 
 [node name="SQLBlock2" parent="VBoxContainer/HBoxContainer/RightItems/VBoxContainer/Control/BlockContainer" unique_id=271704535 instance=ExtResource("4_l0cdy")]
 layout_mode = 2
-Type = null
-BlockValue = null
-KeywordType = null

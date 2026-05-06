@@ -1,0 +1,54 @@
+[gd_scene format=3 uid="uid://c07kdefxleccp"]
+
+[ext_resource type="Script" uid="uid://d02n5a46du1h7" path="res://scripts/presentation/level/TopBarUi.cs" id="1_66sx5"]
+[ext_resource type="Texture2D" uid="uid://eg2p066s5twj" path="res://sprites/home.png" id="1_gf307"]
+[ext_resource type="Texture2D" uid="uid://b2khyj6ktuup5" path="res://sprites/restart.png" id="2_66sx5"]
+[ext_resource type="Texture2D" uid="uid://du84aus3558g2" path="res://sprites/settings.png" id="3_upp2f"]
+[ext_resource type="Texture2D" uid="uid://c0gihh8u141de" path="res://sprites/profile.png" id="4_ry612"]
+
+[node name="TopBarUi" type="PanelContainer" unique_id=2080252660 node_paths=PackedStringArray("_homeButton", "_timerLabel", "_restartButton", "_profileButton", "_settingsButton")]
+custom_minimum_size = Vector2(1155, 50)
+offset_right = 50.0
+offset_bottom = 50.0
+script = ExtResource("1_66sx5")
+_homeButton = NodePath("TopBar/Home")
+_timerLabel = NodePath("TopBar/Label")
+_restartButton = NodePath("TopBar/RestartLevel")
+_profileButton = NodePath("TopBar/Profile")
+_settingsButton = NodePath("TopBar/Settings")
+
+[node name="TopBar" type="HBoxContainer" parent="." unique_id=1513706239]
+custom_minimum_size = Vector2(5, 50)
+layout_direction = 2
+layout_mode = 2
+
+[node name="Home" type="TextureButton" parent="TopBar" unique_id=1600006803]
+visible = false
+custom_minimum_size = Vector2(40, 0)
+layout_mode = 2
+texture_normal = ExtResource("1_gf307")
+stretch_mode = 0
+
+[node name="Label" type="Label" parent="TopBar" unique_id=1749809055]
+visible = false
+custom_minimum_size = Vector2(1000, 40)
+layout_mode = 2
+
+[node name="RestartLevel" type="TextureButton" parent="TopBar" unique_id=1615295748]
+visible = false
+custom_minimum_size = Vector2(40, 40)
+layout_mode = 2
+texture_normal = ExtResource("2_66sx5")
+stretch_mode = 0
+
+[node name="Profile" type="TextureButton" parent="TopBar" unique_id=2069115542]
+custom_minimum_size = Vector2(40, 40)
+layout_mode = 2
+texture_normal = ExtResource("4_ry612")
+stretch_mode = 0
+
+[node name="Settings" type="TextureButton" parent="TopBar" unique_id=1755487969]
+custom_minimum_size = Vector2(40, 40)
+layout_mode = 2
+texture_normal = ExtResource("3_upp2f")
+stretch_mode = 0

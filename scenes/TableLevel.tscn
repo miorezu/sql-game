@@ -23,14 +23,6 @@ layout_mode = 0
 offset_right = 1149.0
 offset_bottom = 647.0
 
-[node name="Header" type="HBoxContainer" parent="VBoxContainer" unique_id=1533695229]
-custom_minimum_size = Vector2(0, 40)
-layout_mode = 2
-
-[node name="Settings" type="Button" parent="VBoxContainer/Header" unique_id=2075495281]
-custom_minimum_size = Vector2(30, 40)
-layout_mode = 2
-
 [node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer" unique_id=2071413819]
 layout_mode = 2
 
@@ -122,39 +114,27 @@ script = ExtResource("5_7oj3h")
 
 [node name="SQLBlock" parent="VBoxContainer/BlockPanel/HBoxContainer/BlockContainer" unique_id=1855077396 instance=ExtResource("4_etb3l")]
 layout_mode = 2
-Type = null
-BlockValue = null
-KeywordType = null
 
 [node name="SQLBlock2" parent="VBoxContainer/BlockPanel/HBoxContainer/BlockContainer" unique_id=1726466568 instance=ExtResource("4_etb3l")]
 layout_mode = 2
-Type = null
-BlockValue = null
 KeywordType = 1
 
 [node name="SQLBlock3" parent="VBoxContainer/BlockPanel/HBoxContainer/BlockContainer" unique_id=193179531 instance=ExtResource("4_etb3l")]
 layout_mode = 2
-Type = null
-BlockValue = null
 KeywordType = 2
 
 [node name="SQLBlock4" parent="VBoxContainer/BlockPanel/HBoxContainer/BlockContainer" unique_id=2066350771 instance=ExtResource("4_etb3l")]
 layout_mode = 2
-Type = null
-BlockValue = null
 KeywordType = 9
 
 [node name="SQLBlock5" parent="VBoxContainer/BlockPanel/HBoxContainer/BlockContainer" unique_id=1913354110 instance=ExtResource("4_etb3l")]
 layout_mode = 2
-Type = null
-BlockValue = null
 KeywordType = 6
 
 [node name="SQLBlock6" parent="VBoxContainer/BlockPanel/HBoxContainer/BlockContainer" unique_id=664584157 instance=ExtResource("4_etb3l")]
 layout_mode = 2
 Type = 2
 BlockValue = "student"
-KeywordType = null
 
 [node name="SQLBlock7" parent="VBoxContainer/BlockPanel/HBoxContainer/BlockContainer" unique_id=1592286086 instance=ExtResource("4_etb3l")]
 layout_mode = 2
@@ -166,7 +146,6 @@ KeywordType = 10
 layout_mode = 2
 Type = 3
 BlockValue = ","
-KeywordType = null
 
 [node name="SQLBlock9" parent="VBoxContainer/BlockPanel/HBoxContainer/BlockContainer" unique_id=129737501 instance=ExtResource("4_etb3l")]
 layout_mode = 2
