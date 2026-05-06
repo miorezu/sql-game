@@ -19,6 +19,7 @@ config/icon="res://icon.svg"
 
 GameState="*uid://xtwlafyyi3p7"
 SaveManager="*uid://dfci4sov1f8q2"
+SceneTransitionManager="*uid://c3ttt1y06ypol"
 
 [dotnet]
 

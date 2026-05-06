@@ -65,7 +65,6 @@ offset_bottom = 314.0
 grow_horizontal = 1
 grow_vertical = 1
 LevelOrder = 2
-Status = 1
 
 [node name="LevelMapButton3" parent="VBoxContainer/ScrollContainer/Container" unique_id=2020481225 instance=ExtResource("2_b6wlh")]
 layout_mode = 0
@@ -79,7 +78,6 @@ offset_bottom = 143.0
 grow_horizontal = 1
 grow_vertical = 1
 LevelOrder = 3
-Status = 2
 
 [node name="LevelMapButton4" parent="VBoxContainer/ScrollContainer/Container" unique_id=527930565 instance=ExtResource("2_b6wlh")]
 layout_mode = 0

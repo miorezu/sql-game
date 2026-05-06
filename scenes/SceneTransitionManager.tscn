@@ -1,0 +1,21 @@
+[gd_scene format=3 uid="uid://c3ttt1y06ypol"]
+
+[ext_resource type="Script" uid="uid://bxokjiws6dwhn" path="res://scripts/infrastructure/navigation/SceneTransitionManager.cs" id="1_i4aeb"]
+
+[node name="SceneTransitionManager" type="CanvasLayer" unique_id=1589322718 node_paths=PackedStringArray("_fadeRect", "_loadingLabel")]
+script = ExtResource("1_i4aeb")
+_fadeRect = NodePath("ColorRect")
+_loadingLabel = NodePath("Label")
+_fadeDuration = 0.7
+
+[node name="ColorRect" type="ColorRect" parent="." unique_id=527804550]
+offset_right = 1158.0
+offset_bottom = 648.0
+color = Color(0.08748532, 6.8105014e-06, 0.08748444, 1)
+
+[node name="Label" type="Label" parent="." unique_id=2104476304]
+offset_left = 406.0
+offset_top = 479.0
+offset_right = 696.0
+offset_bottom = 534.0
+theme_override_font_sizes/font_size = 35

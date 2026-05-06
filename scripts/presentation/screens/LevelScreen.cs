@@ -119,11 +119,14 @@ public partial class LevelScreen : Control
             return;
         }
 
-        GameState.Instance.SelectedLevelOrder = _currentLevelData.LevelOrder + 1;
+        await SceneTransitionManager.Instance.FadeWithoutChangeScene(async () =>
+        {
+            GameState.Instance.SelectedLevelOrder = _currentLevelData.LevelOrder + 1;
 
-        _levelCompletePopup?.Hide();
+            _levelCompletePopup?.Hide();
 
-        await LoadSelectedLevel();
+            await LoadSelectedLevel();
+        });
     }
 
     private void ClearCurrentLevel()
