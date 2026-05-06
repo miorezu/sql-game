@@ -3,7 +3,7 @@
 [ext_resource type="Script" uid="uid://cpe1o0vf441ec" path="res://scripts/presentation/screens/LevelCompletePopup.cs" id="1_apapc"]
 [ext_resource type="Texture2D" uid="uid://b8d7xwovkmgvs" path="res://sprites/Sprite-0002.png" id="2_64myp"]
 
-[node name="LevelCompletePopup" type="Control" unique_id=1487273030 node_paths=PackedStringArray("_titleLabel", "_allLevelsButton", "_nextLevelButton")]
+[node name="LevelCompletePopup" type="Control" unique_id=1487273030 node_paths=PackedStringArray("_titleLabel", "_selectLevelButton", "_nextLevelButton")]
 layout_mode = 3
 anchor_right = 0.30400002
 anchor_bottom = 0.54
@@ -16,7 +16,7 @@ grow_vertical = 2
 mouse_filter = 1
 script = ExtResource("1_apapc")
 _titleLabel = NodePath("Panel/VBoxContainer/Label")
-_allLevelsButton = NodePath("Panel/VBoxContainer/HBoxContainer/AllLevels")
+_selectLevelButton = NodePath("Panel/VBoxContainer/HBoxContainer/AllLevels")
 _nextLevelButton = NodePath("Panel/VBoxContainer/HBoxContainer/NextLevel")
 
 [node name="ColorRect" type="ColorRect" parent="." unique_id=1811899080]

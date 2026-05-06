@@ -4,7 +4,7 @@
 [ext_resource type="Script" uid="uid://h6x153drhkj4" path="res://scripts/presentation/table/TableTreeView.cs" id="3_etb3l"]
 [ext_resource type="Script" uid="uid://clea6magiq6qh" path="res://scripts/presentation/table/QueryBuilder.cs" id="4_7oj3h"]
 [ext_resource type="PackedScene" uid="uid://oiwo131hxpn0" path="res://scenes/SQLBlock.tscn" id="4_etb3l"]
-[ext_resource type="Script" path="res://scripts/presentation/blocks/BlockPalette.cs" id="5_7oj3h"]
+[ext_resource type="Script" uid="uid://dau73n48am63h" path="res://scripts/presentation/blocks/BlockPalette.cs" id="5_7oj3h"]
 
 [node name="TableLevel" type="Control" unique_id=679337163 node_paths=PackedStringArray("_sourceTreeView", "_expectedTreeView", "_sqlBlocksContainer")]
 layout_mode = 3

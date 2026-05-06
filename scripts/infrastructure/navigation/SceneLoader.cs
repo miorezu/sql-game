@@ -4,7 +4,7 @@
 
 public static class SceneLoader
 {
-    private const string LevelsMenuPath = "res://scenes/LevelsMenu.tscn";
+    private const string SelectLevelMenuPath = "res://scenes/LevelSelectScreen.tscn";
     private const string LevelScreenPath = "res://scenes/Scene.tscn";
 
     private static void LoadScene(string path, bool showLoadingText = true)
@@ -19,9 +19,9 @@ public static class SceneLoader
         tree?.ChangeSceneToFile(path);
     }
 
-    public static void LoadLevelsMenu()
+    public static void LoadSelectLevelMenu()
     {
-        LoadScene(LevelsMenuPath, false);
+        LoadScene(SelectLevelMenuPath, false);
     }
 
     public static void LoadLevelScreen()

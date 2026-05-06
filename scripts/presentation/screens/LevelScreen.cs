@@ -19,7 +19,9 @@ public partial class LevelScreen : Control
     {
         if (_levelCompletePopup != null)
             _levelCompletePopup.NextLevelPressed += OnNextLevelPressed;
-
+        
+        if (_levelCompletePopup != null)
+            _levelCompletePopup.SelectLevelPressed += OnSelectLevelPressed;
         await LoadSelectedLevel();
     }
 
@@ -109,7 +111,7 @@ public partial class LevelScreen : Control
 
     private async void OnNextLevelPressed()
     {
-        GD.Print("[CLICK] Next level pressed");
+        GD.Print("[LevelScreen] Next level pressed");
 
         var hasNext = await DatabaseManager.HasNextLevel(_currentLevelData.LevelOrder);
 
@@ -129,6 +131,12 @@ public partial class LevelScreen : Control
         });
     }
 
+    private async void OnSelectLevelPressed()
+    {
+        GD.Print("[LevelScreen] All level pressed");
+        SceneLoader.LoadSelectLevelMenu();
+    }
+    
     private void ClearCurrentLevel()
     {
         switch (_currentLevelView)

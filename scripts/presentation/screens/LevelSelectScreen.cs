@@ -25,8 +25,6 @@ public partial class LevelSelectScreen : Control
 		}
 	}
 	
-
-
 	private void OnLevelMapButtonPressed(int levelOrder)
 	{
 		GD.Print($"[LevelSelectScreen] Open level order: {levelOrder}");
