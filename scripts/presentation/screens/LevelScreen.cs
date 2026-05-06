@@ -7,6 +7,7 @@ public partial class LevelScreen : Control
 {
     [Export] private TopBarUi _topBar;
     [Export] private Control _levelRoot;
+    [Export] private Control _gameplayUi;
 
     [Export] private PackedScene _tableLevelScene;
     [Export] private PackedScene _matchLevelScene;
@@ -50,7 +51,7 @@ public partial class LevelScreen : Control
     private async Task LoadSelectedLevel()
     {
         var order = GameState.Instance.SelectedLevelOrder;
-
+        SetGameplayInputEnabled(true);
         _currentLevelData = await DatabaseManager.GetLevelData(order);
 
         if (_currentLevelData == null)
@@ -126,8 +127,8 @@ public partial class LevelScreen : Control
     private void OnLevelCompleted()
     {
         StopTimer();
+        SetGameplayInputEnabled(false);
         GD.Print($"[LevelScreen] Рівень '{_currentLevelData.Code}' пройдено");
-
         SaveManager.Instance.RecordLevelComplete(_currentLevelData.LevelOrder);
 
         _levelCompletePopup?.ShowPopup();
@@ -208,5 +209,14 @@ public partial class LevelScreen : Control
     private void StopTimer()
     {
         _isTimerRunning = false;
+    }
+    private void SetGameplayInputEnabled(bool enabled)
+    {
+        if (_gameplayUi == null)
+            return;
+
+        _gameplayUi.ProcessMode = enabled
+            ? Node.ProcessModeEnum.Inherit
+            : Node.ProcessModeEnum.Disabled;
     }
 }
