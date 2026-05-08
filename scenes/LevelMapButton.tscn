@@ -4,7 +4,7 @@
 [ext_resource type="Script" uid="uid://7hdrdkvp2wjm" path="res://scripts/presentation/level/LevelMapButton.cs" id="2_akrqu"]
 [ext_resource type="Texture2D" uid="uid://cymbycmyn4iau" path="res://sprites/lock.png" id="3_5lj22"]
 
-[node name="LevelMapButton" type="TextureButton" unique_id=2070859198 node_paths=PackedStringArray("_lockIcon", "_numberLevelLbl")]
+[node name="LevelMapButton" type="TextureButton" unique_id=2070859198 node_paths=PackedStringArray("_bestTimeLbl", "_lockIcon", "_numberLevelLbl")]
 anchors_preset = -1
 anchor_right = 0.056
 anchor_bottom = 0.10300001
@@ -14,6 +14,7 @@ grow_horizontal = 2
 grow_vertical = 2
 texture_normal = ExtResource("1_s7o0k")
 script = ExtResource("2_akrqu")
+_bestTimeLbl = NodePath("BestTime")
 _lockIcon = NodePath("LockIcon")
 _numberLevelLbl = NodePath("Label")
 
@@ -36,3 +37,10 @@ offset_right = 38.0
 offset_bottom = 67.454
 text = "
 "
+
+[node name="BestTime" type="Label" parent="." unique_id=950711135]
+layout_mode = 0
+offset_left = 1.0
+offset_top = 64.0
+offset_right = 75.0
+offset_bottom = 87.0

@@ -158,8 +158,12 @@ public partial class LevelScreen : Control
         SetGameplayInputEnabled(false);
 
         GD.Print($"[LevelScreen] Рівень {_currentLevelData.LevelOrder} — '{_currentLevelData.Title}' пройдено");
+        GD.Print($"[LevelScreen] Час проходження: {SaveManager.FormatTime(_elapsedTime)}");
 
-        SaveManager.Instance.RecordLevelComplete(_currentLevelData.LevelOrder);
+        SaveManager.Instance.RecordLevelComplete(
+            _currentLevelData.LevelOrder,
+            _elapsedTime
+        );
 
         _levelCompletePopup?.ShowPopup();
     }
