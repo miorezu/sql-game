@@ -17,10 +17,10 @@ public partial class QueryBuilder : FlowContainer
             return false;
 
         var block = dict["block"].As<SqlBlock>();
-        if (block == null)
-            return false;
+        // if (block == null)
+        //     return false;
 
-        return !block.IsInBuilder;
+        return block != null;
     }
 
     public override void _DropData(Vector2 position, Variant data)
@@ -30,12 +30,16 @@ public partial class QueryBuilder : FlowContainer
 
         if (block == null)
             return;
-
+        
+        int insertIndex = GetInsertIndex(position, block);
+        
         var oldParent = block.GetParent();
         if (oldParent != null)
             oldParent.RemoveChild(block);
 
         AddChild(block);
+        MoveChild(block, insertIndex);
+        
         block.IsInBuilder = true;
     }
 
@@ -55,5 +59,33 @@ public partial class QueryBuilder : FlowContainer
             .Replace(" )", ")")
             .Replace(" ,", ",")
             .Trim();
+    }
+    private int GetInsertIndex(Vector2 position, SqlBlock draggedBlock)
+    {
+        int index = 0;
+
+        foreach (Node child in GetChildren())
+        {
+            if (child == draggedBlock)
+                continue;
+
+            if (child is not Control control)
+                continue;
+
+            Vector2 childCenter = control.Position + control.Size / 2f;
+
+            if (position.Y < childCenter.Y)
+            {
+                if (Mathf.Abs(position.Y - childCenter.Y) > control.Size.Y / 2f)
+                    return index;
+
+                if (position.X < childCenter.X)
+                    return index;
+            }
+
+            index++;
+        }
+
+        return index;
     }
 }
