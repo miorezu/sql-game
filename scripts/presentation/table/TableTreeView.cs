@@ -22,15 +22,15 @@ public partial class TableTreeView : Control
 
         _tree.Clear();
 
-        bool exists = await DatabaseManager.TableExists(tableName);
+        bool exists = await TableRepository.TableExists(tableName);
         if (!exists)
         {
             GD.PrintErr($"[LevelTreeView] Таблиця '{tableName}' не існує!");
             return;
         }
 
-        List<string> columns = await DatabaseManager.GetColumnNames(tableName);
-        List<List<string>> rows = await DatabaseManager.GetRows(tableName);
+        List<string> columns = await TableRepository.GetColumnNames(tableName);
+        List<List<string>> rows = await TableRepository.GetRows(tableName);
 
         _tree.Columns = columns.Count;
 

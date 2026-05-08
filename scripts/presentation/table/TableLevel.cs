@@ -67,7 +67,7 @@ public partial class TableLevel : Control
 
     public async Task<QueryResult> ExecutePlayerSql(string sql)
     {
-        var result = await DatabaseManager.ExecuteSql(sql);
+        var result = await RawQueryService.ExecuteSql(sql);
 
         if (_sourceTreeView != null)
             await _sourceTreeView.Refresh();

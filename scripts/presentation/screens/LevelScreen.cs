@@ -31,12 +31,13 @@ public partial class LevelScreen : Control
             //_topBar.SettingsPressed += OnSettingsPressed;
             _topBar.SetTime(0);
         }
-        
+
         if (_levelCompletePopup != null)
+        {
             _levelCompletePopup.NextLevelPressed += OnNextLevelPressed;
-        
-        if (_levelCompletePopup != null)
             _levelCompletePopup.SelectLevelPressed += OnSelectLevelMenuPressed;
+        }
+
         await LoadSelectedLevel();
     }
     
@@ -53,7 +54,7 @@ public partial class LevelScreen : Control
     {
         var order = GameState.Instance.SelectedLevelOrder;
         SetGameplayInputEnabled(true);
-        _currentLevelData = await DatabaseManager.GetLevelData(order);
+        _currentLevelData = await LevelRepository.GetLevelData(order);
 
         if (_currentLevelData == null)
         {
@@ -167,7 +168,7 @@ public partial class LevelScreen : Control
     {
         GD.Print("[LevelScreen] Next level pressed");
 
-        var hasNext = await DatabaseManager.HasNextLevel(_currentLevelData.LevelOrder);
+        var hasNext = await LevelRepository.HasNextLevel(_currentLevelData.LevelOrder);
 
         if (!hasNext)
         {

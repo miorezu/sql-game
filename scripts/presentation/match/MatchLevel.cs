@@ -49,7 +49,7 @@ public partial class MatchLevel : Control
             return;
         }
 
-        var pairs = await DatabaseManager.GetMatchPairs(levelData.LevelOrder);
+        var pairs = await MatchRepository.GetMatchPairs(levelData.LevelOrder);
 
         GD.Print("[MatchLevel] Pairs count = " + pairs.Count);
 
