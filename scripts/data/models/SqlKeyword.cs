@@ -23,7 +23,8 @@ public enum BlockType
 	Table,
 	Column,
 	Operator,
-	Value
+	Value,
+	Statement
 }
 
 public static class SqlKeyword

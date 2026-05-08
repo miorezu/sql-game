@@ -1,3 +1,5 @@
+using System;
+
 public class LevelData
 {
     public int Id { get; set; }
@@ -10,4 +12,6 @@ public class LevelData
     public int LevelOrder { get; set; }
     public string LevelType { get; set; }
     public string[] SqlBlocks { get; set; }
+    public string[] BuilderSolutionBlocks { get; set; } = Array.Empty<string>();
+
 }

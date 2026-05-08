@@ -2,6 +2,7 @@
 
 [ext_resource type="Script" uid="uid://ds6povf564ckj" path="res://scripts/presentation/screens/LevelScreen.cs" id="1_i2t4f"]
 [ext_resource type="PackedScene" uid="uid://7wfecae4ddqc" path="res://scenes/TableLevel.tscn" id="2_i2t4f"]
+[ext_resource type="PackedScene" uid="uid://bkygtyl082by6" path="res://scenes/BuilderLevel.tscn" id="4_5kwoq"]
 [ext_resource type="PackedScene" uid="uid://c07kdefxleccp" path="res://scenes/TopBarUI.tscn" id="4_d35k2"]
 [ext_resource type="Script" uid="uid://jtt6p6s18eol" path="res://scripts/data/database/DatabaseManager.cs" id="4_i2t4f"]
 [ext_resource type="PackedScene" uid="uid://du3akrir51byj" path="res://scenes/MatchLevel.tscn" id="6_2sv30"]
@@ -17,6 +18,7 @@ _levelRoot = NodePath("GameplayUi/LevelContainer")
 _gameplayUi = NodePath("GameplayUi")
 _tableLevelScene = ExtResource("2_i2t4f")
 _matchLevelScene = ExtResource("6_2sv30")
+_builderLevelScene = ExtResource("4_5kwoq")
 _levelCompletePopup = NodePath("LevelCompletePopup")
 
 [node name="GameplayUi" type="VBoxContainer" parent="." unique_id=1979240649]
@@ -43,6 +45,10 @@ layout_mode = 0
 offset_top = -54.0
 offset_bottom = 603.0
 mouse_filter = 2
+
+[node name="BuilderLevel" parent="GameplayUi/LevelContainer" unique_id=456598566 instance=ExtResource("4_5kwoq")]
+visible = false
+layout_mode = 0
 
 [node name="DataBaseManager" type="Control" parent="." unique_id=623711477]
 anchors_preset = 0

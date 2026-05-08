@@ -1,4 +1,4 @@
-using System;
+    using System;
 using System.Collections.Generic;
 using Godot;
 
@@ -6,8 +6,6 @@ using Godot;
 
 public partial class QueryBuilder : FlowContainer
 {
-    [Export] private TableLevel _tableLevel;
-
     public override bool _CanDropData(Vector2 position, Variant data)
     {
         if (data.VariantType != Variant.Type.Dictionary)
@@ -48,48 +46,14 @@ public partial class QueryBuilder : FlowContainer
         foreach (Node child in GetChildren())
         {
             if (child is SqlBlock block)
-                parts.Add(block.Text);
+                parts.Add(block.BlockValue.Trim());
         }
 
-        return string.Join(" ", parts);
-    }
-
-    private async void OnCheckButtonPressed()
-    {
-        string sql = BuildQuery();
-        GD.Print("[SQL] " + sql);
-
-        if (_tableLevel == null)
-        {
-            GD.PrintErr("[QueryBuilder] TableLevel не призначено в Inspector.");
-            return;
-        }
-
-        try
-        {
-            QueryResult result = await _tableLevel.ExecutePlayerSql(sql);
-
-            if (!result.HasRows)
-            {
-                GD.Print($"[SQL] Query executed. Affected rows: {result.AffectedRows}");
-                return;
-            }
-
-            if (result.Rows.Count == 0)
-            {
-                GD.Print("[SQL] Query executed, but returned 0 rows.");
-                return;
-            }
-
-            foreach (var row in result.Rows)
-            {
-                string rowText = string.Join(" | ", row);
-                GD.Print(rowText);
-            }
-        }
-        catch (Exception e)
-        {
-            GD.PrintErr($"[SQL Error]: {e.Message}");
-        }
+        return string.Join(" ", parts)
+            .Replace(" ;", ";")
+            .Replace("( ", "(")
+            .Replace(" )", ")")
+            .Replace(" ,", ",")
+            .Trim();
     }
 }

@@ -11,6 +11,7 @@ public partial class LevelScreen : Control
 
     [Export] private PackedScene _tableLevelScene;
     [Export] private PackedScene _matchLevelScene;
+    [Export] private PackedScene _builderLevelScene;
 
     [Export] private LevelCompletePopup _levelCompletePopup;
 
@@ -77,7 +78,11 @@ public partial class LevelScreen : Control
             case "match":
                 await CreateMatchLevel();
                 break;
-
+            
+            case "builder":
+                await CreateBuilderLevel();
+                break;
+            
             default:
                 GD.PrintErr($"[LevelScreen] Невідомий тип рівня: {_currentLevelData.LevelType}");
                 break;
@@ -123,7 +128,29 @@ public partial class LevelScreen : Control
 
         await level.LoadLevel(_currentLevelData);
     }
+    
+    private Task CreateBuilderLevel()
+    {
+        if (_builderLevelScene == null)
+        {
+            GD.PrintErr("[LevelScreen] BuilderLevel scene is not assigned.");
+            return Task.CompletedTask;
+        }
 
+        GD.Print("[LevelScreen] Creating BuilderLevel");
+
+        var level = _builderLevelScene.Instantiate<BuilderLevel>();
+
+        level.OnLevelCompleted += OnLevelCompleted;
+
+        _levelRoot.AddChild(level);
+        _currentLevelView = level;
+
+        level.LoadLevel(_currentLevelData);
+
+        return Task.CompletedTask;
+    }
+    
     private void OnLevelCompleted()
     {
         StopTimer();
@@ -187,6 +214,10 @@ public partial class LevelScreen : Control
 
             case TableLevel tableLevel:
                 tableLevel.OnLevelCompleted -= OnLevelCompleted;
+                break;
+            
+            case BuilderLevel builderLevel:
+                builderLevel.OnLevelCompleted -= OnLevelCompleted;
                 break;
         }
 

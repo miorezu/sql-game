@@ -11,6 +11,7 @@ public partial class TableLevel : Control
 
 	[Export] private FlowContainer _sqlBlocksContainer;
 	[Export] private PackedScene _sqlBlockScene;
+	[Export] private QueryBuilder _queryBuilder;
 
 	public event Action OnLevelCompleted;
 
@@ -81,5 +82,44 @@ public partial class TableLevel : Control
 		}
 
 		return result;
+	}
+	
+	private async void OnCheckButtonPressed()
+	{
+		if (_queryBuilder == null)
+		{
+			GD.PrintErr("[TableLevel] QueryBuilder не призначено в Inspector.");
+			return;
+		}
+
+		string sql = _queryBuilder.BuildQuery();
+		GD.Print("[SQL] " + sql);
+
+		try
+		{
+			QueryResult result = await ExecutePlayerSql(sql);
+
+			if (!result.HasRows)
+			{
+				GD.Print($"[SQL] Query executed. Affected rows: {result.AffectedRows}");
+				return;
+			}
+
+			if (result.Rows.Count == 0)
+			{
+				GD.Print("[SQL] Query executed, but returned 0 rows.");
+				return;
+			}
+
+			foreach (var row in result.Rows)
+			{
+				string rowText = string.Join(" | ", row);
+				GD.Print(rowText);
+			}
+		}
+		catch (Exception e)
+		{
+			GD.PrintErr($"[SQL Error]: {e.Message}");
+		}
 	}
 }

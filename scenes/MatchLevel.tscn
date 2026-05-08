@@ -47,12 +47,6 @@ offset_bottom = 577.0
 script = ExtResource("3_l0cdy")
 UseMatchSide = true
 
-[node name="SQLBlock" parent="VBoxContainer/HBoxContainer/LeftItems/VBoxContainer/Control/BlockContainer" unique_id=1855077396 instance=ExtResource("4_l0cdy")]
-layout_mode = 2
-
-[node name="SQLBlock2" parent="VBoxContainer/HBoxContainer/LeftItems/VBoxContainer/Control/BlockContainer" unique_id=2082076103 instance=ExtResource("4_l0cdy")]
-layout_mode = 2
-
 [node name="Match" type="PanelContainer" parent="VBoxContainer/HBoxContainer" unique_id=1879173622]
 custom_minimum_size = Vector2(400, 200)
 layout_mode = 2
@@ -99,9 +93,3 @@ offset_right = 399.0
 offset_bottom = 577.0
 script = ExtResource("3_l0cdy")
 UseMatchSide = true
-
-[node name="SQLBlock" parent="VBoxContainer/HBoxContainer/RightItems/VBoxContainer/Control/BlockContainer" unique_id=2014448469 instance=ExtResource("4_l0cdy")]
-layout_mode = 2
-
-[node name="SQLBlock2" parent="VBoxContainer/HBoxContainer/RightItems/VBoxContainer/Control/BlockContainer" unique_id=271704535 instance=ExtResource("4_l0cdy")]
-layout_mode = 2

@@ -143,50 +143,74 @@ public partial class DatabaseManager : Node
         return result.Rows;
     }
 
-    public static async Task<LevelData> GetLevelData(int levelOrder)
+public static async Task<LevelData> GetLevelData(int levelOrder)
+{
+    await using var connection = new SqliteConnection(_connectionString);
+    await connection.OpenAsync();
+
+    var level = await connection.QueryFirstOrDefaultAsync<LevelData>(
+        """
+        SELECT
+            id                  AS Id,
+            code                AS Code,
+            title               AS Title,
+            description         AS Description,
+            source_table_name   AS SourceTableName,
+            expected_table_name AS ExpectedTableName,
+            level_type          AS LevelType,
+            level_order         AS LevelOrder
+        FROM levels
+        WHERE level_order = @LevelOrder
+        LIMIT 1
+        """,
+        new { LevelOrder = levelOrder }
+    );
+
+    if (level == null)
+        return null;
+
+    var blocks = await connection.QueryAsync<string>(
+        """
+        SELECT block_text
+        FROM level_blocks
+        WHERE level_id = @LevelId
+        """,
+        new { LevelId = level.Id }
+    );
+
+    level.SqlBlocks = blocks.ToArray();
+
+    if (level.LevelType == "builder")
     {
-        await using var connection = new SqliteConnection(_connectionString);
-        await connection.OpenAsync();
-
-        var level = await connection.QueryFirstOrDefaultAsync<LevelData>(
+        var solutionBlocks = await connection.QueryAsync<string>(
             """
-            SELECT
-                id              AS Id,
-                code            AS Code,
-                title           AS Title,
-                description     AS Description,
-                source_table_name  AS SourceTableName,
-                expected_table_name AS ExpectedTableName,
-                level_type      AS LevelType,
-                level_order     AS LevelOrder
-            FROM levels
-            WHERE level_order = @LevelOrder
-            LIMIT 1
-            """,
-            new { LevelOrder = levelOrder }
-        );
-
-        if (level == null)
-            return null;
-
-        var blocks = await connection.QueryAsync<string>(
-            """
-            SELECT block_text
-            FROM level_blocks
-            WHERE level_id = @LevelId
+            SELECT lb.block_text
+            FROM builder_solution_steps bss
+            JOIN level_blocks lb
+                ON lb.id = bss.expected_block_id
+               AND lb.level_id = bss.level_id
+            WHERE bss.level_id = @LevelId
+            ORDER BY bss.step_order
             """,
             new { LevelId = level.Id }
         );
 
-        level.SqlBlocks = blocks.ToArray();
-
-        GD.Print($"[DB] Level: {level.Code} (order: {level.LevelOrder})");
-        GD.Print($"[DB] Type: {level.LevelType}");
-        GD.Print($"[DB] Source: {level.SourceTableName}");
-        GD.Print($"[DB] Expected: {level.ExpectedTableName}");
-
-        return level;
+        level.BuilderSolutionBlocks = solutionBlocks.ToArray();
     }
+    else
+    {
+        level.BuilderSolutionBlocks = Array.Empty<string>();
+    }
+
+    GD.Print($"[DB] Level: {level.Code} (order: {level.LevelOrder})");
+    GD.Print($"[DB] Type: {level.LevelType}");
+    GD.Print($"[DB] Source: {level.SourceTableName}");
+    GD.Print($"[DB] Expected: {level.ExpectedTableName}");
+    GD.Print($"[DB] Blocks count: {level.SqlBlocks.Length}");
+    GD.Print($"[DB] Builder solution count: {level.BuilderSolutionBlocks.Length}");
+
+    return level;
+}
 
     public static async Task<LevelData> GetNextLevelData(int currentLevelOrder)
     {
