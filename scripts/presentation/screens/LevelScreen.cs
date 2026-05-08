@@ -155,7 +155,9 @@ public partial class LevelScreen : Control
     {
         StopTimer();
         SetGameplayInputEnabled(false);
-        GD.Print($"[LevelScreen] Рівень '{_currentLevelData.Code}' пройдено");
+
+        GD.Print($"[LevelScreen] Рівень {_currentLevelData.LevelOrder} — '{_currentLevelData.Title}' пройдено");
+
         SaveManager.Instance.RecordLevelComplete(_currentLevelData.LevelOrder);
 
         _levelCompletePopup?.ShowPopup();

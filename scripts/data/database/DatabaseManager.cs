@@ -10,6 +10,7 @@ public partial class DatabaseManager : Node
 {
     private const string TemplateDbPath = "res://database/game.db";
     private const string UserDbPath = "user://game.db";
+
     private static string _connectionString;
 
     public static DatabaseManager Instance { get; private set; }
@@ -17,8 +18,11 @@ public partial class DatabaseManager : Node
     public override void _Ready()
     {
         Instance = this;
+
+        // Під час розробки зручно кожного разу копіювати шаблонну БД.
+        // У фінальній версії гри це можна буде замінити на InitializeConnection().
         ResetUserDb();
-        //InitializeConnection();
+
         GD.Print("[DB] User DB path: " + ProjectSettings.GlobalizePath(UserDbPath));
     }
 
@@ -75,7 +79,7 @@ public partial class DatabaseManager : Node
         targetFile.StoreBuffer(buffer);
         targetFile.Flush();
 
-        _connectionString = $"Data Source={userPath};Pooling=False";
+        _connectionString = BuildConnectionString(userPath);
 
         GD.Print("[DB RESET] User DB успішно скинута.");
     }
@@ -83,26 +87,47 @@ public partial class DatabaseManager : Node
     private void InitializeConnection()
     {
         string fullPath = ProjectSettings.GlobalizePath(UserDbPath);
-        _connectionString = $"Data Source={fullPath};Pooling=False";
+        _connectionString = BuildConnectionString(fullPath);
     }
 
-    public static async Task<QueryResult> ExecuteSql(string sql)
+    private static string BuildConnectionString(string dbPath)
+    {
+        return $"Data Source={dbPath};Pooling=False;Foreign Keys=True";
+    }
+
+    private static async Task<SqliteConnection> OpenConnection()
     {
         if (string.IsNullOrWhiteSpace(_connectionString))
             throw new Exception("DatabaseManager not initialized.");
 
+        var connection = new SqliteConnection(_connectionString);
+        await connection.OpenAsync();
+
+        // Дублюємо ввімкнення FK для надійності, бо в SQLite це налаштування працює на рівні підключення.
+        await connection.ExecuteAsync("PRAGMA foreign_keys = ON;");
+
+        return connection;
+    }
+
+    private static string NormalizeLevelType(string levelType)
+    {
+        return levelType?.Trim().ToLowerInvariant() ?? "";
+    }
+
+    public static async Task<QueryResult> ExecuteSql(string sql)
+    {
         if (string.IsNullOrWhiteSpace(sql))
             throw new Exception("SQL is empty.");
 
         var result = new QueryResult();
 
-        await using var connection = new SqliteConnection(_connectionString);
-        await connection.OpenAsync();
+        await using var connection = await OpenConnection();
 
         await using var command = connection.CreateCommand();
         command.CommandText = sql;
 
         string normalized = sql.TrimStart().ToUpperInvariant();
+
         bool returnsRows =
             normalized.StartsWith("SELECT") ||
             normalized.StartsWith("PRAGMA") ||
@@ -111,6 +136,7 @@ public partial class DatabaseManager : Node
         if (returnsRows)
         {
             await using var reader = await command.ExecuteReaderAsync();
+
             result.HasRows = true;
 
             for (int i = 0; i < reader.FieldCount; i++)
@@ -119,6 +145,7 @@ public partial class DatabaseManager : Node
             while (await reader.ReadAsync())
             {
                 var row = new List<string>();
+
                 for (int i = 0; i < reader.FieldCount; i++)
                 {
                     object value = reader.GetValue(i);
@@ -143,95 +170,104 @@ public partial class DatabaseManager : Node
         return result.Rows;
     }
 
-public static async Task<LevelData> GetLevelData(int levelOrder)
-{
-    await using var connection = new SqliteConnection(_connectionString);
-    await connection.OpenAsync();
-
-    var level = await connection.QueryFirstOrDefaultAsync<LevelData>(
-        """
-        SELECT
-            id                  AS Id,
-            code                AS Code,
-            title               AS Title,
-            description         AS Description,
-            source_table_name   AS SourceTableName,
-            expected_table_name AS ExpectedTableName,
-            level_type          AS LevelType,
-            level_order         AS LevelOrder
-        FROM levels
-        WHERE level_order = @LevelOrder
-        LIMIT 1
-        """,
-        new { LevelOrder = levelOrder }
-    );
-
-    if (level == null)
-        return null;
-
-    var blocks = await connection.QueryAsync<string>(
-        """
-        SELECT block_text
-        FROM level_blocks
-        WHERE level_id = @LevelId
-        """,
-        new { LevelId = level.Id }
-    );
-
-    level.SqlBlocks = blocks.ToArray();
-
-    if (level.LevelType == "builder")
+    public static async Task<LevelData> GetLevelData(int levelOrder)
     {
-        var solutionBlocks = await connection.QueryAsync<string>(
+        await using var connection = await OpenConnection();
+
+        var level = await connection.QueryFirstOrDefaultAsync<LevelData>(
             """
-            SELECT lb.block_text
-            FROM builder_solution_steps bss
-            JOIN level_blocks lb
-                ON lb.id = bss.expected_block_id
-               AND lb.level_id = bss.level_id
-            WHERE bss.level_id = @LevelId
-            ORDER BY bss.step_order
+            SELECT
+                id                  AS Id,
+                title               AS Title,
+                description         AS Description,
+                source_table_name   AS SourceTableName,
+                expected_table_name AS ExpectedTableName,
+                LOWER(level_type)   AS LevelType,
+                level_order         AS LevelOrder
+            FROM levels
+            WHERE level_order = @LevelOrder
+            LIMIT 1
+            """,
+            new { LevelOrder = levelOrder }
+        );
+
+        if (level == null)
+            return null;
+
+        level.LevelType = NormalizeLevelType(level.LevelType);
+
+        var blocks = await connection.QueryAsync<string>(
+            """
+            SELECT block_text
+            FROM level_blocks
+            WHERE level_id = @LevelId
+            ORDER BY block_order
             """,
             new { LevelId = level.Id }
         );
 
-        level.BuilderSolutionBlocks = solutionBlocks.ToArray();
+        level.SqlBlocks = blocks.ToArray();
+
+        if (level.LevelType == "builder")
+        {
+            var solutionBlocks = await connection.QueryAsync<string>(
+                """
+                SELECT lb.block_text
+                FROM builder_solution_steps bss
+                JOIN level_blocks lb
+                    ON lb.id = bss.expected_block_id
+                   AND lb.level_id = bss.level_id
+                WHERE bss.level_id = @LevelId
+                ORDER BY bss.step_order
+                """,
+                new { LevelId = level.Id }
+            );
+
+            level.BuilderSolutionBlocks = solutionBlocks.ToArray();
+        }
+        else
+        {
+            level.BuilderSolutionBlocks = Array.Empty<string>();
+        }
+
+        GD.Print($"[DB] Level: {level.Title} (order: {level.LevelOrder})");
+        GD.Print($"[DB] Type: {level.LevelType}");
+        GD.Print($"[DB] Source: {level.SourceTableName}");
+        GD.Print($"[DB] Expected: {level.ExpectedTableName}");
+        GD.Print($"[DB] Blocks count: {level.SqlBlocks.Length}");
+        GD.Print($"[DB] Builder solution count: {level.BuilderSolutionBlocks.Length}");
+
+        return level;
     }
-    else
+
+    public static async Task<int?> GetNextLevelOrder(int currentLevelOrder)
     {
-        level.BuilderSolutionBlocks = Array.Empty<string>();
+        await using var connection = await OpenConnection();
+
+        return await connection.QueryFirstOrDefaultAsync<int?>(
+            """
+            SELECT MIN(level_order)
+            FROM levels
+            WHERE level_order > @CurrentLevelOrder
+            """,
+            new { CurrentLevelOrder = currentLevelOrder }
+        );
     }
-
-    GD.Print($"[DB] Level: {level.Code} (order: {level.LevelOrder})");
-    GD.Print($"[DB] Type: {level.LevelType}");
-    GD.Print($"[DB] Source: {level.SourceTableName}");
-    GD.Print($"[DB] Expected: {level.ExpectedTableName}");
-    GD.Print($"[DB] Blocks count: {level.SqlBlocks.Length}");
-    GD.Print($"[DB] Builder solution count: {level.BuilderSolutionBlocks.Length}");
-
-    return level;
-}
 
     public static async Task<LevelData> GetNextLevelData(int currentLevelOrder)
     {
-        return await GetLevelData(currentLevelOrder + 1);
+        var nextLevelOrder = await GetNextLevelOrder(currentLevelOrder);
+
+        if (nextLevelOrder == null)
+            return null;
+
+        return await GetLevelData(nextLevelOrder.Value);
     }
 
     public static async Task<bool> HasNextLevel(int currentLevelOrder)
     {
-        await using var connection = new SqliteConnection(_connectionString);
-        await connection.OpenAsync();
-
-        var count = await connection.ExecuteScalarAsync<int>(
-            """
-            SELECT COUNT(*)
-            FROM levels
-            WHERE level_order = @NextOrder
-            """,
-            new { NextOrder = currentLevelOrder + 1 }
-        );
-
-        return count > 0;
+        var nextLevelOrder = await GetNextLevelOrder(currentLevelOrder);
+        return nextLevelOrder.HasValue;
     }
 
     public static string GetUserDbPath()
@@ -241,8 +277,9 @@ public static async Task<LevelData> GetLevelData(int levelOrder)
 
     public static async Task<bool> TableExists(string tableName)
     {
-        await using var connection = new SqliteConnection(_connectionString);
-        await connection.OpenAsync();
+        EnsureSafeIdentifier(tableName);
+
+        await using var connection = await OpenConnection();
 
         var count = await connection.ExecuteScalarAsync<int>(
             """
@@ -260,8 +297,7 @@ public static async Task<LevelData> GetLevelData(int levelOrder)
     {
         EnsureSafeIdentifier(tableName);
 
-        await using var connection = new SqliteConnection(_connectionString);
-        await connection.OpenAsync();
+        await using var connection = await OpenConnection();
 
         var columns = await connection.QueryAsync<string>(
             $"SELECT name FROM pragma_table_info('{tableName.Replace("'", "''")}')"
@@ -273,6 +309,7 @@ public static async Task<LevelData> GetLevelData(int levelOrder)
     public static async Task<List<List<string>>> GetRows(string tableName)
     {
         EnsureSafeIdentifier(tableName);
+
         var queryResult = await ExecuteSql($"SELECT * FROM [{tableName}]");
         return queryResult.Rows;
     }
@@ -285,8 +322,74 @@ public static async Task<LevelData> GetLevelData(int levelOrder)
             EnsureSafeIdentifier(column);
 
         string orderBy = string.Join(", ", columns.Select(c => $"[{c}]"));
+
         var queryResult = await ExecuteSql($"SELECT * FROM [{tableName}] ORDER BY {orderBy}");
         return queryResult.Rows;
+    }
+
+    public static async Task<List<MatchPairData>> GetMatchPairs(int levelOrder)
+    {
+        await using var connection = await OpenConnection();
+
+        var pairs = await connection.QueryAsync<MatchPairData>(
+            """
+            SELECT
+                mp.id          AS Id,
+                mp.level_id    AS LevelId,
+                mp.left_text   AS LeftText,
+                mp.right_text  AS RightText,
+                mp.pair_order  AS PairOrder
+            FROM match_pairs mp
+            JOIN levels l ON l.id = mp.level_id
+            WHERE l.level_order = @LevelOrder
+            ORDER BY mp.pair_order
+            """,
+            new { LevelOrder = levelOrder }
+        );
+
+        return pairs.ToList();
+    }
+
+    public static async Task<List<MatchPairData>> GetMatchPairsByLevelId(int levelId)
+    {
+        await using var connection = await OpenConnection();
+
+        var pairs = await connection.QueryAsync<MatchPairData>(
+            """
+            SELECT
+                id          AS Id,
+                level_id    AS LevelId,
+                left_text   AS LeftText,
+                right_text  AS RightText,
+                pair_order  AS PairOrder
+            FROM match_pairs
+            WHERE level_id = @LevelId
+            ORDER BY pair_order
+            """,
+            new { LevelId = levelId }
+        );
+
+        return pairs.ToList();
+    }
+
+    public static async Task<List<string>> GetBuilderSolutionBlocks(int levelId)
+    {
+        await using var connection = await OpenConnection();
+
+        var solutionBlocks = await connection.QueryAsync<string>(
+            """
+            SELECT lb.block_text
+            FROM builder_solution_steps bss
+            JOIN level_blocks lb
+                ON lb.id = bss.expected_block_id
+               AND lb.level_id = bss.level_id
+            WHERE bss.level_id = @LevelId
+            ORDER BY bss.step_order
+            """,
+            new { LevelId = levelId }
+        );
+
+        return solutionBlocks.ToList();
     }
 
     private static void EnsureSafeIdentifier(string value)
@@ -299,26 +402,5 @@ public static async Task<LevelData> GetLevelData(int levelOrder)
             if (!char.IsLetterOrDigit(c) && c != '_')
                 throw new Exception($"Unsafe identifier: {value}");
         }
-    }
-
-    public static async Task<List<MatchPairData>> GetMatchPairs(int levelOrder)
-    {
-        await using var connection = new SqliteConnection(_connectionString);
-        await connection.OpenAsync();
-
-        var pairs = await connection.QueryAsync<MatchPairData>(
-            """
-            SELECT 
-                mp.id       AS Id,
-                mp.left_text  AS LeftText,
-                mp.right_text AS RightText
-            FROM match_pairs mp
-            JOIN levels l ON l.id = mp.level_id
-            WHERE l.level_order = @LevelOrder
-            """,
-            new { LevelOrder = levelOrder }
-        );
-
-        return pairs.ToList();
     }
 }
