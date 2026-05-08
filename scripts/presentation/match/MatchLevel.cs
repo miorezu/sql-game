@@ -13,6 +13,17 @@ public partial class MatchLevel : Control
     [Export] private PackedScene _sqlBlockScene;
     [Export] private MatchBuilder _matchBuilder;
     [Export] private Button _checkButton;
+    
+    [Export] private Control _leftBlocksContainer;
+    [Export] private Control _rightBlocksContainer;
+
+    [Export] private Control _targetSlot;
+
+    public Control LeftBlocksContainer => _leftBlocksContainer;
+    public Control RightBlocksContainer => _rightBlocksContainer;
+
+    public Control TargetSlot => _targetSlot;
+    
     public event Action OnLevelCompleted;
 
     public override void _Ready()

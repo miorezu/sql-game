@@ -17,11 +17,13 @@ public partial class TopBarUi : PanelContainer
 	[Export] private TextureButton _restartButton;
 	[Export] private TextureButton _profileButton;
 	[Export] private TextureButton _settingsButton;
+	[Export] private TextureButton _hintButton;
 
 	public event  Action HomePressed;
 	public event  Action RestartPressed;
 	public event  Action ProfilePressed;
 	public event  Action SettingsPressed;
+	public event  Action HintPressed;
 
 	public override void _Ready()
 	{
@@ -41,6 +43,7 @@ public partial class TopBarUi : PanelContainer
 		_homeButton.Visible = isLevel;
 		_timerLabel.Visible = isLevel;
 		_restartButton.Visible = isLevel;
+		_hintButton.Visible = isLevel;
 
 		_profileButton.Visible = !isLevel;
 		_settingsButton.Visible = true;
@@ -63,6 +66,9 @@ public partial class TopBarUi : PanelContainer
 
 		if (_settingsButton != null)
 			_settingsButton.Pressed += () => SettingsPressed?.Invoke();
+		
+		if (_hintButton != null)
+			_hintButton.Pressed += () => HintPressed?.Invoke();
 	}
 	
 	public void SetTime(float seconds)

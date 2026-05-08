@@ -11,7 +11,12 @@ public partial class TableLevel : Control
     [Export] private FlowContainer _sqlBlocksContainer;
     [Export] private PackedScene _sqlBlockScene;
     [Export] private QueryBuilder _queryBuilder;
+    
+    [Export] private Control _blocksContainer;
+    [Export] private Control _queryDropArea;
 
+    public Control BlocksContainer => _blocksContainer;
+    public Control QueryDropArea => _queryDropArea;
     public event Action OnLevelCompleted;
 
     private LevelData _currentLevelData;

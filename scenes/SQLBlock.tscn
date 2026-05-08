@@ -8,6 +8,7 @@ script = ExtResource("1_josbt")
 _helpLabel = NodePath("Help")
 
 [node name="Help" type="Label" parent="." unique_id=1786299668]
+visible = false
 layout_mode = 0
 offset_left = 109.72
 offset_right = 119.72

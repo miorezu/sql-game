@@ -6,7 +6,7 @@
 [ext_resource type="PackedScene" uid="uid://oiwo131hxpn0" path="res://scenes/SQLBlock.tscn" id="4_etb3l"]
 [ext_resource type="Script" uid="uid://dau73n48am63h" path="res://scripts/presentation/blocks/BlockPalette.cs" id="5_7oj3h"]
 
-[node name="TableLevel" type="Control" unique_id=679337163 node_paths=PackedStringArray("_sourceTreeView", "_expectedTreeView", "_sqlBlocksContainer", "_queryBuilder")]
+[node name="TableLevel" type="Control" unique_id=679337163 node_paths=PackedStringArray("_sourceTreeView", "_expectedTreeView", "_sqlBlocksContainer", "_queryBuilder", "_blocksContainer", "_queryDropArea")]
 layout_mode = 3
 anchors_preset = 0
 offset_right = 40.0
@@ -15,9 +15,11 @@ mouse_filter = 1
 script = ExtResource("1_7oj3h")
 _sourceTreeView = NodePath("VBoxContainer/HBoxContainer/SourcePanel/VBoxContainer/Control")
 _expectedTreeView = NodePath("VBoxContainer/HBoxContainer/Target/VBoxContainer/Control")
-_sqlBlocksContainer = NodePath("VBoxContainer/BlockPanel/HBoxContainer/BlockContainer")
+_sqlBlocksContainer = NodePath("VBoxContainer/BlockPanel/HBoxContainer/BlocksContainer")
 _sqlBlockScene = ExtResource("4_etb3l")
 _queryBuilder = NodePath("VBoxContainer/HBoxContainer/Query/VBoxContainer/ScrollContainer/QueryBuilder")
+_blocksContainer = NodePath("VBoxContainer/BlockPanel/HBoxContainer/BlocksContainer")
+_queryDropArea = NodePath("VBoxContainer/HBoxContainer/Query/VBoxContainer/ScrollContainer/QueryBuilder")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="." unique_id=46182614]
 layout_mode = 0
@@ -109,68 +111,68 @@ layout_mode = 2
 [node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/BlockPanel" unique_id=396458713]
 layout_mode = 2
 
-[node name="BlockContainer" type="FlowContainer" parent="VBoxContainer/BlockPanel/HBoxContainer" unique_id=1639618772]
+[node name="BlocksContainer" type="FlowContainer" parent="VBoxContainer/BlockPanel/HBoxContainer" unique_id=1639618772]
 custom_minimum_size = Vector2(1100, 100)
 layout_mode = 2
 script = ExtResource("5_7oj3h")
 
-[node name="SQLBlock" parent="VBoxContainer/BlockPanel/HBoxContainer/BlockContainer" unique_id=1855077396 instance=ExtResource("4_etb3l")]
+[node name="SQLBlock" parent="VBoxContainer/BlockPanel/HBoxContainer/BlocksContainer" unique_id=1855077396 instance=ExtResource("4_etb3l")]
 layout_mode = 2
 
-[node name="SQLBlock2" parent="VBoxContainer/BlockPanel/HBoxContainer/BlockContainer" unique_id=1726466568 instance=ExtResource("4_etb3l")]
+[node name="SQLBlock2" parent="VBoxContainer/BlockPanel/HBoxContainer/BlocksContainer" unique_id=1726466568 instance=ExtResource("4_etb3l")]
 layout_mode = 2
 KeywordType = 1
 
-[node name="SQLBlock3" parent="VBoxContainer/BlockPanel/HBoxContainer/BlockContainer" unique_id=193179531 instance=ExtResource("4_etb3l")]
+[node name="SQLBlock3" parent="VBoxContainer/BlockPanel/HBoxContainer/BlocksContainer" unique_id=193179531 instance=ExtResource("4_etb3l")]
 layout_mode = 2
 KeywordType = 2
 
-[node name="SQLBlock4" parent="VBoxContainer/BlockPanel/HBoxContainer/BlockContainer" unique_id=2066350771 instance=ExtResource("4_etb3l")]
+[node name="SQLBlock4" parent="VBoxContainer/BlockPanel/HBoxContainer/BlocksContainer" unique_id=2066350771 instance=ExtResource("4_etb3l")]
 layout_mode = 2
 KeywordType = 9
 
-[node name="SQLBlock5" parent="VBoxContainer/BlockPanel/HBoxContainer/BlockContainer" unique_id=1913354110 instance=ExtResource("4_etb3l")]
+[node name="SQLBlock5" parent="VBoxContainer/BlockPanel/HBoxContainer/BlocksContainer" unique_id=1913354110 instance=ExtResource("4_etb3l")]
 layout_mode = 2
 KeywordType = 6
 
-[node name="SQLBlock6" parent="VBoxContainer/BlockPanel/HBoxContainer/BlockContainer" unique_id=664584157 instance=ExtResource("4_etb3l")]
+[node name="SQLBlock6" parent="VBoxContainer/BlockPanel/HBoxContainer/BlocksContainer" unique_id=664584157 instance=ExtResource("4_etb3l")]
 layout_mode = 2
 Type = 2
 BlockValue = "student"
 
-[node name="SQLBlock7" parent="VBoxContainer/BlockPanel/HBoxContainer/BlockContainer" unique_id=1592286086 instance=ExtResource("4_etb3l")]
+[node name="SQLBlock7" parent="VBoxContainer/BlockPanel/HBoxContainer/BlocksContainer" unique_id=1592286086 instance=ExtResource("4_etb3l")]
 layout_mode = 2
 Type = 2
 BlockValue = "gpa"
 KeywordType = 10
 
-[node name="SQLBlock8" parent="VBoxContainer/BlockPanel/HBoxContainer/BlockContainer" unique_id=645606479 instance=ExtResource("4_etb3l")]
+[node name="SQLBlock8" parent="VBoxContainer/BlockPanel/HBoxContainer/BlocksContainer" unique_id=645606479 instance=ExtResource("4_etb3l")]
 layout_mode = 2
 Type = 3
 BlockValue = ","
 
-[node name="SQLBlock9" parent="VBoxContainer/BlockPanel/HBoxContainer/BlockContainer" unique_id=129737501 instance=ExtResource("4_etb3l")]
+[node name="SQLBlock9" parent="VBoxContainer/BlockPanel/HBoxContainer/BlocksContainer" unique_id=129737501 instance=ExtResource("4_etb3l")]
 layout_mode = 2
 text = "UNI"
 Type = 1
 BlockValue = "UNI"
 KeywordType = 10
 
-[node name="SQLBlock10" parent="VBoxContainer/BlockPanel/HBoxContainer/BlockContainer" unique_id=673304655 instance=ExtResource("4_etb3l")]
+[node name="SQLBlock10" parent="VBoxContainer/BlockPanel/HBoxContainer/BlocksContainer" unique_id=673304655 instance=ExtResource("4_etb3l")]
 layout_mode = 2
 text = "INSERT INTO level1_source (name, position)VALUES ('Svitlana', 'HR');"
 Type = 4
 BlockValue = "INSERT INTO level1_source (name, position)VALUES ('Svitlana', 'HR');"
 KeywordType = 10
 
-[node name="SQLBlock11" parent="VBoxContainer/BlockPanel/HBoxContainer/BlockContainer" unique_id=1419822334 instance=ExtResource("4_etb3l")]
+[node name="SQLBlock11" parent="VBoxContainer/BlockPanel/HBoxContainer/BlocksContainer" unique_id=1419822334 instance=ExtResource("4_etb3l")]
 layout_mode = 2
 text = "INSERT INTO level1_source (name, position)VALUES ('Andrii', 'Developer');"
 Type = 4
 BlockValue = "INSERT INTO level1_source (name, position)VALUES ('Andrii', 'Developer');"
 KeywordType = 10
 
-[node name="SQLBlock12" parent="VBoxContainer/BlockPanel/HBoxContainer/BlockContainer" unique_id=849346681 instance=ExtResource("4_etb3l")]
+[node name="SQLBlock12" parent="VBoxContainer/BlockPanel/HBoxContainer/BlocksContainer" unique_id=849346681 instance=ExtResource("4_etb3l")]
 layout_mode = 2
 text = "INSERT INTO level1_source (name, position)VALUES ('Olga', 'Manager');"
 Type = 4

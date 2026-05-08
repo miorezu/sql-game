@@ -14,33 +14,24 @@ public partial class LevelScreen : Control
     [Export] private PackedScene _builderLevelScene;
 
     [Export] private LevelCompletePopup _levelCompletePopup;
-
+    
+    [Export] private TutorialController _tutorialController;
+    
     private Control _currentLevelView;
     private LevelData _currentLevelData;
     
     private float _elapsedTime;
     private bool _isTimerRunning;
+    private bool _isLevelCompleted;
 
     public override async void _Ready()
     {
-        if (_topBar != null)
-        {
-            _topBar.SetMode(TopBarUi.TopBarMode.Level);
-            _topBar.HomePressed += OnSelectLevelMenuPressed;
-            _topBar.RestartPressed += OnRestartPressed;
-            //_topBar.SettingsPressed += OnSettingsPressed;
-            _topBar.SetTime(0);
-        }
-
-        if (_levelCompletePopup != null)
-        {
-            _levelCompletePopup.NextLevelPressed += OnNextLevelPressed;
-            _levelCompletePopup.SelectLevelPressed += OnSelectLevelMenuPressed;
-        }
+        SetupTopBar();
+        SetupLevelCompletePopup();
 
         await LoadSelectedLevel();
     }
-    
+
     public override void _Process(double delta)
     {
         if (!_isTimerRunning || _topBar == null)
@@ -49,11 +40,38 @@ public partial class LevelScreen : Control
         _elapsedTime += (float)delta;
         _topBar.SetTime(_elapsedTime);
     }
-    
+
+    private void SetupTopBar()
+    {
+        if (_topBar == null)
+            return;
+
+        _topBar.SetMode(TopBarUi.TopBarMode.Level);
+
+        _topBar.HomePressed += OnSelectLevelMenuPressed;
+        _topBar.RestartPressed += OnRestartPressed;
+        _topBar.HintPressed += OnHintPressed;
+
+        _topBar.SetTime(0);
+    }
+
+    private void SetupLevelCompletePopup()
+    {
+        if (_levelCompletePopup == null)
+            return;
+
+        _levelCompletePopup.NextLevelPressed += OnNextLevelPressed;
+        _levelCompletePopup.SelectLevelPressed += OnSelectLevelMenuPressed;
+    }
+
     private async Task LoadSelectedLevel()
     {
         var order = GameState.Instance.SelectedLevelOrder;
+
+        _isLevelCompleted = false;
+
         SetGameplayInputEnabled(true);
+
         _currentLevelData = await LevelRepository.GetLevelData(order);
 
         if (_currentLevelData == null)
@@ -64,8 +82,36 @@ public partial class LevelScreen : Control
 
         ClearCurrentLevel();
         ResetTimer();
+
         await CreateLevelView();
+
+        if (_currentLevelView == null)
+        {
+            GD.PrintErr("[LevelScreen] Level view was not created.");
+            return;
+        }
+
         StartTimer();
+
+        await ShowAutomaticTutorial();
+
+        SetGameplayInputEnabled(true);
+    }
+
+    private async Task ShowAutomaticTutorial()
+    {
+        if (_tutorialController == null)
+            return;
+
+        SetGameplayInputEnabled(false);
+
+        await _tutorialController.ShowForLevel(
+            _currentLevelData,
+            _currentLevelView,
+            forceShow: false
+        );
+
+        SetGameplayInputEnabled(true);
     }
 
     private async Task CreateLevelView()
@@ -79,11 +125,11 @@ public partial class LevelScreen : Control
             case "match":
                 await CreateMatchLevel();
                 break;
-            
+
             case "builder":
                 await CreateBuilderLevel();
                 break;
-            
+
             default:
                 GD.PrintErr($"[LevelScreen] Невідомий тип рівня: {_currentLevelData.LevelType}");
                 break;
@@ -129,7 +175,7 @@ public partial class LevelScreen : Control
 
         await level.LoadLevel(_currentLevelData);
     }
-    
+
     private Task CreateBuilderLevel()
     {
         if (_builderLevelScene == null)
@@ -151,9 +197,14 @@ public partial class LevelScreen : Control
 
         return Task.CompletedTask;
     }
-    
+
     private void OnLevelCompleted()
     {
+        if (_isLevelCompleted)
+            return;
+
+        _isLevelCompleted = true;
+
         StopTimer();
         SetGameplayInputEnabled(false);
 
@@ -170,13 +221,16 @@ public partial class LevelScreen : Control
 
     private async void OnNextLevelPressed()
     {
+        if (_currentLevelData == null)
+            return;
+
         GD.Print("[LevelScreen] Next level pressed");
 
         var hasNext = await LevelRepository.HasNextLevel(_currentLevelData.LevelOrder);
 
         if (!hasNext)
         {
-            GD.Print("[INFO] Наступного рівня немає.");
+            GD.Print("[LevelScreen] Наступного рівня немає.");
             return;
         }
 
@@ -190,24 +244,59 @@ public partial class LevelScreen : Control
         });
     }
 
-    private async void OnSelectLevelMenuPressed()
+    private void OnSelectLevelMenuPressed()
     {
         StopTimer();
-        GD.Print("[LevelScreen] All level pressed");
+
+        GD.Print("[LevelScreen] Select level menu pressed");
+
         SceneLoader.LoadSelectLevelMenu();
     }
 
     private async void OnRestartPressed()
     {
+        if (_currentLevelData == null)
+            return;
+
         StopTimer();
+
         await SceneTransitionManager.Instance.FadeWithoutChangeScene(async () =>
         {
             DatabaseManager.ResetUserDb();
+
             GameState.Instance.SelectedLevelOrder = _currentLevelData.LevelOrder;
+
+            _levelCompletePopup?.Hide();
+
             await LoadSelectedLevel();
         });
     }
-    
+
+    private async void OnHintPressed()
+    {
+        if (_tutorialController == null)
+            return;
+
+        if (_currentLevelData == null || _currentLevelView == null)
+            return;
+
+        if (_isLevelCompleted)
+            return;
+
+        SetGameplayInputEnabled(false);
+
+        await _tutorialController.ShowForLevel(
+            _currentLevelData,
+            _currentLevelView,
+            forceShow: true
+        );
+
+        if (_isLevelCompleted)
+            return;
+
+        SetGameplayInputEnabled(true);
+    }
+
     private void ClearCurrentLevel()
     {
         switch (_currentLevelView)
@@ -222,7 +311,7 @@ public partial class LevelScreen : Control
             case TableLevel tableLevel:
                 tableLevel.OnLevelCompleted -= OnLevelCompleted;
                 break;
-            
+
             case BuilderLevel builderLevel:
                 builderLevel.OnLevelCompleted -= OnLevelCompleted;
                 break;
@@ -231,11 +320,12 @@ public partial class LevelScreen : Control
         _currentLevelView.QueueFree();
         _currentLevelView = null;
     }
-    
+
     private void ResetTimer()
     {
         _elapsedTime = 0f;
         _isTimerRunning = false;
+
         _topBar?.SetTime(0);
     }
 
@@ -248,6 +338,7 @@ public partial class LevelScreen : Control
     {
         _isTimerRunning = false;
     }
+
     private void SetGameplayInputEnabled(bool enabled)
     {
         if (_gameplayUi == null)

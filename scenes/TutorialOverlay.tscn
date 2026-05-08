@@ -1,0 +1,47 @@
+[gd_scene format=3 uid="uid://iqnggwbx2ald"]
+
+[ext_resource type="Script" uid="uid://ccqgon83kd3g7" path="res://scripts/presentation/level/TutorialOverlay.cs" id="1_xi232"]
+[ext_resource type="PackedScene" uid="uid://oiwo131hxpn0" path="res://scenes/SQLBlock.tscn" id="2_jc0cb"]
+
+[node name="TutorialOverlay" type="CanvasLayer" unique_id=207871910 node_paths=PackedStringArray("_darkBackground", "_ghostBlock", "_ghostLeftBlock", "_ghostRightBlock", "_hintLabel")]
+script = ExtResource("1_xi232")
+_darkBackground = NodePath("DarkBackground")
+_ghostBlock = NodePath("GhostBlock")
+_ghostLeftBlock = NodePath("GhostBlock")
+_ghostRightBlock = NodePath("GhostBlock2")
+_hintLabel = NodePath("PanelContainer/HintLabel")
+
+[node name="DarkBackground" type="ColorRect" parent="." unique_id=623766508]
+visible = false
+offset_left = -5.0
+offset_top = -3.0
+offset_right = 1164.0
+offset_bottom = 652.0
+color = Color(1, 1, 1, 0.31764707)
+
+[node name="GhostBlock" parent="." unique_id=1855077396 instance=ExtResource("2_jc0cb")]
+visible = false
+offset_left = 116.0
+offset_top = 455.0
+offset_right = 236.0
+offset_bottom = 495.0
+
+[node name="GhostBlock2" parent="." unique_id=1862246875 instance=ExtResource("2_jc0cb")]
+visible = false
+offset_left = 116.0
+offset_top = 455.0
+offset_right = 236.0
+offset_bottom = 495.0
+
+[node name="PanelContainer" type="PanelContainer" parent="." unique_id=1822790425]
+offset_left = 334.0
+offset_top = 67.0
+offset_right = 715.0
+offset_bottom = 240.0
+
+[node name="HintLabel" type="Label" parent="PanelContainer" unique_id=1423934745]
+layout_mode = 2
+autowrap_mode = 3
+
+[node name="TextureRect" type="TextureRect" parent="PanelContainer" unique_id=1620786007]
+layout_mode = 2

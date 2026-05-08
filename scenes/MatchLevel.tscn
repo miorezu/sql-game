@@ -6,17 +6,20 @@
 [ext_resource type="PackedScene" uid="uid://oiwo131hxpn0" path="res://scenes/SQLBlock.tscn" id="4_l0cdy"]
 [ext_resource type="PackedScene" uid="uid://bx64xjlv2yo6s" path="res://scenes/MatchPairSlot.tscn" id="4_t7fmg"]
 
-[node name="MatchLevel" type="Control" unique_id=289307351 node_paths=PackedStringArray("_leftItemsContainer", "_rightItemsContainer", "_matchBuilder", "_checkButton")]
+[node name="MatchLevel" type="Control" unique_id=289307351 node_paths=PackedStringArray("_leftItemsContainer", "_rightItemsContainer", "_matchBuilder", "_checkButton", "_leftBlocksContainer", "_rightBlocksContainer", "_targetSlot")]
 layout_mode = 3
 anchors_preset = 0
 offset_right = 1160.0
 offset_bottom = 657.0
 script = ExtResource("1_l5vuo")
-_leftItemsContainer = NodePath("VBoxContainer/HBoxContainer/LeftItems/VBoxContainer/Control/BlockContainer")
-_rightItemsContainer = NodePath("VBoxContainer/HBoxContainer/RightItems/VBoxContainer/Control/BlockContainer")
+_leftItemsContainer = NodePath("VBoxContainer/HBoxContainer/LeftItems/VBoxContainer/Control/BlocksContainer")
+_rightItemsContainer = NodePath("VBoxContainer/HBoxContainer/RightItems/VBoxContainer/Control/BlocksContainer")
 _sqlBlockScene = ExtResource("4_l0cdy")
 _matchBuilder = NodePath("VBoxContainer/HBoxContainer/Match/VBoxContainer/MatchBuilder")
 _checkButton = NodePath("VBoxContainer/HBoxContainer/Match/VBoxContainer/CheckButton")
+_leftBlocksContainer = NodePath("VBoxContainer/HBoxContainer/LeftItems/VBoxContainer/Control/BlocksContainer")
+_rightBlocksContainer = NodePath("VBoxContainer/HBoxContainer/RightItems/VBoxContainer/Control/BlocksContainer")
+_targetSlot = NodePath("VBoxContainer/HBoxContainer/Match/VBoxContainer/MatchBuilder")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="." unique_id=1437699240]
 layout_mode = 0
@@ -40,7 +43,7 @@ text = "Вихідна таблиця"
 [node name="Control" type="Control" parent="VBoxContainer/HBoxContainer/LeftItems/VBoxContainer" unique_id=1691292518]
 layout_mode = 2
 
-[node name="BlockContainer" type="FlowContainer" parent="VBoxContainer/HBoxContainer/LeftItems/VBoxContainer/Control" unique_id=1691791095]
+[node name="BlocksContainer" type="FlowContainer" parent="VBoxContainer/HBoxContainer/LeftItems/VBoxContainer/Control" unique_id=1691791095]
 layout_mode = 0
 offset_right = 399.0
 offset_bottom = 577.0
@@ -87,7 +90,7 @@ text = "Очікуваний результат / завдання"
 [node name="Control" type="Control" parent="VBoxContainer/HBoxContainer/RightItems/VBoxContainer" unique_id=882039001]
 layout_mode = 2
 
-[node name="BlockContainer" type="FlowContainer" parent="VBoxContainer/HBoxContainer/RightItems/VBoxContainer/Control" unique_id=2027176859]
+[node name="BlocksContainer" type="FlowContainer" parent="VBoxContainer/HBoxContainer/RightItems/VBoxContainer/Control" unique_id=2027176859]
 layout_mode = 0
 offset_right = 399.0
 offset_bottom = 577.0

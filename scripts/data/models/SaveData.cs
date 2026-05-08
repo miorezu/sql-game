@@ -10,4 +10,8 @@ public partial class SaveData : Resource
     [Export] public int Xp { get; set; } = 0;
     
     [Export] public Dictionary<int, double> BestLevelTimes { get; set; } = new();
+    
+    [Export] public bool TableTutorialShown { get; set; } = false;
+    [Export] public bool BuilderTutorialShown { get; set; } = false;
+    [Export] public bool MatchTutorialShown { get; set; } = false;
 }

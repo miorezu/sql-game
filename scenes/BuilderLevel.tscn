@@ -5,7 +5,7 @@
 [ext_resource type="Script" uid="uid://clea6magiq6qh" path="res://scripts/presentation/table/QueryBuilder.cs" id="3_tolt5"]
 [ext_resource type="Script" uid="uid://dau73n48am63h" path="res://scripts/presentation/blocks/BlockPalette.cs" id="4_ios3q"]
 
-[node name="BuilderLevel" type="Control" unique_id=679337163 node_paths=PackedStringArray("_taskLabel", "_availableBlocksContainer", "_queryBlocksContainer", "_checkButton")]
+[node name="BuilderLevel" type="Control" unique_id=679337163 node_paths=PackedStringArray("_taskLabel", "_availableBlocksContainer", "_queryBlocksContainer", "_checkButton", "_blocksContainer", "_queryBuilder")]
 layout_mode = 3
 anchors_preset = 0
 offset_right = 40.0
@@ -17,6 +17,8 @@ _availableBlocksContainer = NodePath("VBoxContainer/BlockPanel/BlockContainer")
 _queryBlocksContainer = NodePath("VBoxContainer/HBoxContainer/Query/VBoxContainer/ScrollContainer/QueryBuilder")
 _sqlBlockScene = ExtResource("2_rybbw")
 _checkButton = NodePath("VBoxContainer/HBoxContainer/Query/VBoxContainer/Button")
+_blocksContainer = NodePath("VBoxContainer/BlockPanel/BlockContainer")
+_queryBuilder = NodePath("VBoxContainer/HBoxContainer/Query/VBoxContainer/ScrollContainer/QueryBuilder")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="." unique_id=46182614]
 layout_mode = 0

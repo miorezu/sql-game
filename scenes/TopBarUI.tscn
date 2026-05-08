@@ -5,8 +5,9 @@
 [ext_resource type="Texture2D" uid="uid://b2khyj6ktuup5" path="res://sprites/restart.png" id="2_66sx5"]
 [ext_resource type="Texture2D" uid="uid://du84aus3558g2" path="res://sprites/settings.png" id="3_upp2f"]
 [ext_resource type="Texture2D" uid="uid://c0gihh8u141de" path="res://sprites/profile.png" id="4_ry612"]
+[ext_resource type="Texture2D" uid="uid://d4jlg8fk3s2pu" path="res://sprites/hint.png" id="6_upp2f"]
 
-[node name="TopBarUi" type="PanelContainer" unique_id=2080252660 node_paths=PackedStringArray("_homeButton", "_timerLabel", "_restartButton", "_profileButton", "_settingsButton")]
+[node name="TopBarUi" type="PanelContainer" unique_id=2080252660 node_paths=PackedStringArray("_homeButton", "_timerLabel", "_restartButton", "_profileButton", "_settingsButton", "_hintButton")]
 custom_minimum_size = Vector2(1155, 50)
 offset_right = 50.0
 offset_bottom = 50.0
@@ -16,6 +17,7 @@ _timerLabel = NodePath("TopBar/TimeLabel")
 _restartButton = NodePath("TopBar/RestartLevel")
 _profileButton = NodePath("TopBar/Profile")
 _settingsButton = NodePath("TopBar/Settings")
+_hintButton = NodePath("TopBar/HintButton")
 
 [node name="TopBar" type="HBoxContainer" parent="." unique_id=1513706239]
 custom_minimum_size = Vector2(5, 50)
@@ -23,7 +25,6 @@ layout_direction = 2
 layout_mode = 2
 
 [node name="Home" type="TextureButton" parent="TopBar" unique_id=1600006803]
-visible = false
 custom_minimum_size = Vector2(40, 0)
 layout_mode = 2
 texture_normal = ExtResource("1_gf307")
@@ -34,8 +35,7 @@ visible = false
 layout_mode = 2
 
 [node name="TimeLabel" type="Label" parent="TopBar" unique_id=1749809055]
-visible = false
-custom_minimum_size = Vector2(1000, 40)
+custom_minimum_size = Vector2(950, 40)
 layout_mode = 2
 horizontal_alignment = 1
 
@@ -56,4 +56,10 @@ stretch_mode = 0
 custom_minimum_size = Vector2(40, 40)
 layout_mode = 2
 texture_normal = ExtResource("3_upp2f")
+stretch_mode = 0
+
+[node name="HintButton" type="TextureButton" parent="TopBar" unique_id=679064973]
+custom_minimum_size = Vector2(40, 40)
+layout_mode = 2
+texture_normal = ExtResource("6_upp2f")
 stretch_mode = 0

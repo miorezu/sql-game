@@ -13,6 +13,12 @@ public partial class BuilderLevel : Control
     [Export] private PackedScene _sqlBlockScene;
     [Export] private Button _checkButton;
 
+    [Export] private Control _blocksContainer;
+    [Export] private QueryBuilder _queryBuilder;
+
+    public Control BlocksContainer => _blocksContainer;
+    public QueryBuilder QueryBuilder => _queryBuilder;
+    
     public event Action OnLevelCompleted;
 
     private LevelData _currentLevelData;
