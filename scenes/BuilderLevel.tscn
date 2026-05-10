@@ -8,8 +8,8 @@
 [node name="BuilderLevel" type="Control" unique_id=679337163 node_paths=PackedStringArray("_taskLabel", "_availableBlocksContainer", "_queryBlocksContainer", "_checkButton", "_blocksContainer", "_queryBuilder")]
 layout_mode = 3
 anchors_preset = 0
-offset_right = 40.0
-offset_bottom = 40.0
+offset_right = 1280.0
+offset_bottom = 640.0
 mouse_filter = 1
 script = ExtResource("1_wgq7g")
 _taskLabel = NodePath("VBoxContainer/HBoxContainer/SourcePanel/VBoxContainer/Label2")
@@ -29,7 +29,7 @@ offset_bottom = 647.0
 layout_mode = 2
 
 [node name="SourcePanel" type="PanelContainer" parent="VBoxContainer/HBoxContainer" unique_id=957335526]
-custom_minimum_size = Vector2(400, 350)
+custom_minimum_size = Vector2(415, 415)
 layout_mode = 2
 
 [node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/HBoxContainer/SourcePanel" unique_id=747723436]
@@ -45,7 +45,7 @@ text = "Завдання текстом"
 autowrap_mode = 3
 
 [node name="Query" type="PanelContainer" parent="VBoxContainer/HBoxContainer" unique_id=1085344398]
-custom_minimum_size = Vector2(750, 200)
+custom_minimum_size = Vector2(865, 415)
 layout_mode = 2
 
 [node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/HBoxContainer/Query" unique_id=1475481279]
@@ -72,7 +72,7 @@ layout_mode = 2
 text = "Check"
 
 [node name="BlockPanel" type="PanelContainer" parent="VBoxContainer" unique_id=921544722]
-custom_minimum_size = Vector2(300, 225)
+custom_minimum_size = Vector2(1280, 225)
 layout_mode = 2
 
 [node name="BlockContainer" type="FlowContainer" parent="VBoxContainer/BlockPanel" unique_id=419255911]

@@ -10,7 +10,7 @@
 layout_mode = 3
 anchors_preset = 0
 offset_right = 1280.0
-offset_bottom = 720.0
+offset_bottom = 640.0
 script = ExtResource("1_l5vuo")
 _leftItemsContainer = NodePath("VBoxContainer/HBoxContainer/LeftItems/VBoxContainer/Control/BlocksContainer")
 _rightItemsContainer = NodePath("VBoxContainer/HBoxContainer/RightItems/VBoxContainer/Control/BlocksContainer")
@@ -23,14 +23,14 @@ _targetSlot = NodePath("VBoxContainer/HBoxContainer/Match/VBoxContainer/MatchBui
 
 [node name="VBoxContainer" type="VBoxContainer" parent="." unique_id=1437699240]
 layout_mode = 0
-offset_right = 1149.0
-offset_bottom = 647.0
+offset_right = 1280.0
+offset_bottom = 640.0
 
 [node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer" unique_id=1411474196]
 layout_mode = 2
 
 [node name="LeftItems" type="PanelContainer" parent="VBoxContainer/HBoxContainer" unique_id=1033531899]
-custom_minimum_size = Vector2(350, 600)
+custom_minimum_size = Vector2(400, 640)
 layout_mode = 2
 
 [node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/HBoxContainer/LeftItems" unique_id=1007407989]
@@ -51,7 +51,7 @@ script = ExtResource("3_l0cdy")
 UseMatchSide = true
 
 [node name="Match" type="PanelContainer" parent="VBoxContainer/HBoxContainer" unique_id=1879173622]
-custom_minimum_size = Vector2(400, 200)
+custom_minimum_size = Vector2(480, 640)
 layout_mode = 2
 
 [node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/HBoxContainer/Match" unique_id=2091981050]
@@ -64,11 +64,11 @@ text = "SQL "
 [node name="MatchBuilder" type="VBoxContainer" parent="VBoxContainer/HBoxContainer/Match/VBoxContainer" unique_id=522060886]
 custom_minimum_size = Vector2(400, 500)
 layout_mode = 2
+theme_override_constants/separation = 10
 script = ExtResource("4_470rs")
 _matchPairSlotScene = ExtResource("4_t7fmg")
 
 [node name="MatchPairSlot" parent="VBoxContainer/HBoxContainer/Match/VBoxContainer/MatchBuilder" unique_id=616134456 instance=ExtResource("4_t7fmg")]
-visible = false
 layout_mode = 2
 
 [node name="CheckButton" type="Button" parent="VBoxContainer/HBoxContainer/Match/VBoxContainer" unique_id=1206889110]
@@ -77,7 +77,7 @@ layout_mode = 2
 text = "Check"
 
 [node name="RightItems" type="PanelContainer" parent="VBoxContainer/HBoxContainer" unique_id=203187341]
-custom_minimum_size = Vector2(350, 350)
+custom_minimum_size = Vector2(400, 640)
 layout_mode = 2
 
 [node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/HBoxContainer/RightItems" unique_id=25570251]

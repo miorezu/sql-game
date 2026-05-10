@@ -6,6 +6,7 @@
 [node name="SQLBlock" type="Button" unique_id=1855077396 node_paths=PackedStringArray("_helpLabel")]
 custom_minimum_size = Vector2(120, 40)
 theme_override_fonts/font = ExtResource("1_cfnci")
+theme_override_font_sizes/font_size = 20
 script = ExtResource("1_josbt")
 _helpLabel = NodePath("Help")
 

@@ -20,6 +20,7 @@ _selectLevelButton = NodePath("Panel/VBoxContainer/HBoxContainer/AllLevels")
 _nextLevelButton = NodePath("Panel/VBoxContainer/HBoxContainer/NextLevel")
 
 [node name="ColorRect" type="ColorRect" parent="." unique_id=1811899080]
+visible = false
 custom_minimum_size = Vector2(350, 350)
 layout_mode = 1
 anchors_preset = -1
