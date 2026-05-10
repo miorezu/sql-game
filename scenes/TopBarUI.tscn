@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://d02n5a46du1h7" path="res://scripts/presentation/level/TopBarUi.cs" id="1_66sx5"]
 [ext_resource type="Texture2D" uid="uid://toikuvurcgn7" path="res://sprites/ui/icons/Home.svg" id="2_upp2f"]
-[ext_resource type="Texture2D" uid="uid://qsysikgybj01" path="res://sprites/ui/icons/Replay.svg" id="3_upp2f"]
+[ext_resource type="Texture2D" uid="uid://cl82uymico1xk" path="res://sprites/ui/icons/Replay.svg" id="3_upp2f"]
 [ext_resource type="Texture2D" uid="uid://ctyql0ao3dm46" path="res://sprites/ui/icons/Player.svg" id="4_ry612"]
 [ext_resource type="Texture2D" uid="uid://qhhx7a2qmtnx" path="res://sprites/ui/icons/Gear.svg" id="5_x1gth"]
 [ext_resource type="Texture2D" uid="uid://b4jje56foh0hk" path="res://sprites/ui/icons/Question.svg" id="6_l530g"]
@@ -30,7 +30,6 @@ texture_normal = ExtResource("2_upp2f")
 stretch_mode = 3
 
 [node name="Task?" type="Label" parent="TopBar" unique_id=1313350857]
-visible = false
 layout_mode = 2
 
 [node name="TimeLabel" type="Label" parent="TopBar" unique_id=1749809055]
