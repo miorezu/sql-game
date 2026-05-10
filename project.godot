@@ -21,6 +21,13 @@ GameState="*uid://xtwlafyyi3p7"
 SaveManager="*uid://dfci4sov1f8q2"
 SceneTransitionManager="*uid://c3ttt1y06ypol"
 
+[display]
+
+window/size/viewport_width=1280
+window/size/viewport_height=720
+window/stretch/mode="canvas_items"
+window/stretch/aspect="expand"
+
 [dotnet]
 
 project/assembly_name="SQLGame"

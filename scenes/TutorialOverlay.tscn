@@ -2,6 +2,16 @@
 
 [ext_resource type="Script" uid="uid://ccqgon83kd3g7" path="res://scripts/presentation/level/TutorialOverlay.cs" id="1_xi232"]
 [ext_resource type="PackedScene" uid="uid://oiwo131hxpn0" path="res://scenes/SQLBlock.tscn" id="2_jc0cb"]
+[ext_resource type="Texture2D" uid="uid://dhf2umsy21i1t" path="res://sprites/ui/panel/Dummy.svg" id="3_pg1uw"]
+[ext_resource type="Texture2D" uid="uid://bts012j216j20" path="res://sprites/ui/panel/Titled.svg" id="5_67end"]
+[ext_resource type="FontFile" uid="uid://g8u2codjci8x" path="res://sprites/fonts/Westhorn-Regular.ttf" id="6_67end"]
+[ext_resource type="FontFile" uid="uid://dqr62o5tmeojj" path="res://sprites/fonts/Kurland-Regular.ttf" id="6_pg1uw"]
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_nxns2"]
+texture = ExtResource("3_pg1uw")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_c12qd"]
+texture = ExtResource("5_67end")
 
 [node name="TutorialOverlay" type="CanvasLayer" unique_id=207871910 node_paths=PackedStringArray("_darkBackground", "_ghostBlock", "_ghostLeftBlock", "_ghostRightBlock", "_hintLabel")]
 script = ExtResource("1_xi232")
@@ -9,39 +19,81 @@ _darkBackground = NodePath("DarkBackground")
 _ghostBlock = NodePath("GhostBlock")
 _ghostLeftBlock = NodePath("GhostBlock")
 _ghostRightBlock = NodePath("GhostBlock2")
-_hintLabel = NodePath("PanelContainer/HintLabel")
+_hintLabel = NodePath("VBoxContainer/PanelContainer/MarginContainer/HintLabel")
 
 [node name="DarkBackground" type="ColorRect" parent="." unique_id=623766508]
-visible = false
 offset_left = -5.0
 offset_top = -3.0
-offset_right = 1164.0
-offset_bottom = 652.0
-color = Color(1, 1, 1, 0.31764707)
+offset_right = 1275.0
+offset_bottom = 717.0
+color = Color(0.28627452, 0.6156863, 0.9607843, 0.4509804)
 
 [node name="GhostBlock" parent="." unique_id=1855077396 instance=ExtResource("2_jc0cb")]
-visible = false
-offset_left = 116.0
-offset_top = 455.0
-offset_right = 236.0
-offset_bottom = 495.0
+self_modulate = Color(0.0627451, 0.45882353, 0.8117647, 1)
+z_index = -1
+offset_left = 276.0
+offset_top = 458.0
+offset_right = 396.0
+offset_bottom = 498.0
+theme_override_font_sizes/font_size = 20
 
 [node name="GhostBlock2" parent="." unique_id=1862246875 instance=ExtResource("2_jc0cb")]
-visible = false
+self_modulate = Color(0.0627451, 0.45882353, 0.8117647, 1)
+z_index = -1
 offset_left = 116.0
 offset_top = 455.0
 offset_right = 236.0
 offset_bottom = 495.0
+theme_override_font_sizes/font_size = 20
 
-[node name="PanelContainer" type="PanelContainer" parent="." unique_id=1822790425]
-offset_left = 334.0
-offset_top = 67.0
-offset_right = 715.0
-offset_bottom = 240.0
+[node name="VBoxContainer" type="VBoxContainer" parent="." unique_id=497678282]
+z_index = 5
+offset_left = 445.0
+offset_top = 233.0
+offset_right = 835.0
+offset_bottom = 416.0
+theme_override_constants/separation = -33
 
-[node name="HintLabel" type="Label" parent="PanelContainer" unique_id=1423934745]
+[node name="HeaderContainer" type="PanelContainer" parent="VBoxContainer" unique_id=407037056]
+z_index = 5
 layout_mode = 2
+size_flags_vertical = 0
+theme_override_styles/panel = SubResource("StyleBoxTexture_nxns2")
+
+[node name="TutorialLabel" type="Label" parent="VBoxContainer/HeaderContainer" unique_id=1165866602]
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 0, 0.3882353, 1)
+theme_override_colors/font_shadow_color = Color(0.16470589, 0.16470589, 0.16470589, 0.5294118)
+theme_override_constants/line_spacing = -17
+theme_override_fonts/font = ExtResource("6_67end")
+theme_override_font_sizes/font_size = 45
+text = "Туторіал
+"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="PanelContainer" type="PanelContainer" parent="VBoxContainer" unique_id=2019110538]
+z_index = 5
+custom_minimum_size = Vector2(390, 0)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxTexture_c12qd")
+
+[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer/PanelContainer" unique_id=504080028]
+layout_mode = 2
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 5
+
+[node name="HintLabel" type="Label" parent="VBoxContainer/PanelContainer/MarginContainer" unique_id=1423934745]
+custom_minimum_size = Vector2(300, 0)
+layout_mode = 2
+size_flags_vertical = 0
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_colors/font_outline_color = Color(1, 1, 1, 1)
+theme_override_fonts/font = ExtResource("6_pg1uw")
+theme_override_font_sizes/font_size = 25
+text = "цукпернеопп нк555555555555555555555555555555 н555555555555 5555555"
+horizontal_alignment = 3
+vertical_alignment = 3
 autowrap_mode = 3
-
-[node name="TextureRect" type="TextureRect" parent="PanelContainer" unique_id=1620786007]
-layout_mode = 2

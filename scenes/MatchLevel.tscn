@@ -9,8 +9,8 @@
 [node name="MatchLevel" type="Control" unique_id=289307351 node_paths=PackedStringArray("_leftItemsContainer", "_rightItemsContainer", "_matchBuilder", "_checkButton", "_leftBlocksContainer", "_rightBlocksContainer", "_targetSlot")]
 layout_mode = 3
 anchors_preset = 0
-offset_right = 1160.0
-offset_bottom = 657.0
+offset_right = 1280.0
+offset_bottom = 720.0
 script = ExtResource("1_l5vuo")
 _leftItemsContainer = NodePath("VBoxContainer/HBoxContainer/LeftItems/VBoxContainer/Control/BlocksContainer")
 _rightItemsContainer = NodePath("VBoxContainer/HBoxContainer/RightItems/VBoxContainer/Control/BlocksContainer")
