@@ -14,8 +14,8 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_rd6qf")
-_mapContent = NodePath("VBoxContainer/ScrollContainer/Container")
-_topBar = NodePath("TopBar")
+_mapContent = NodePath("VBoxContainer2/VBoxContainer/ScrollContainer/Container")
+_topBar = NodePath("VBoxContainer2/TopBar")
 _welcomeScreen = NodePath("WelcomeScreen")
 
 [node name="ColorRect" type="ColorRect" parent="." unique_id=1914221549]
@@ -27,34 +27,28 @@ offset_right = -0.30407715
 offset_bottom = -1.0
 color = Color(0, 0.48582184, 0.39470935, 1)
 
-[node name="TopBar" parent="." unique_id=2080252660 instance=ExtResource("2_4a4xe")]
-layout_mode = 0
-offset_right = 1155.0
-offset_bottom = 72.0
-
-[node name="LeaderboardView" parent="." unique_id=1275561435 instance=ExtResource("3_4a4xe")]
-layout_mode = 1
-offset_left = 769.0
-offset_top = 134.0
-offset_right = -201.0
-offset_bottom = -185.0
-
-[node name="VBoxContainer" type="VBoxContainer" parent="." unique_id=2125423821]
+[node name="VBoxContainer2" type="VBoxContainer" parent="." unique_id=975206104]
 layout_mode = 0
 offset_right = 1280.0
-offset_bottom = 720.0
+offset_bottom = 796.0
 
-[node name="ScrollContainer" type="ScrollContainer" parent="VBoxContainer" unique_id=112101930]
-custom_minimum_size = Vector2(0, 720)
+[node name="TopBar" parent="VBoxContainer2" unique_id=2080252660 instance=ExtResource("2_4a4xe")]
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer2" unique_id=2125423821]
+layout_mode = 2
+
+[node name="ScrollContainer" type="ScrollContainer" parent="VBoxContainer2/VBoxContainer" unique_id=112101930]
+custom_minimum_size = Vector2(0, 648)
 layout_direction = 2
 layout_mode = 2
 vertical_scroll_mode = 0
 
-[node name="Container" type="Control" parent="VBoxContainer/ScrollContainer" unique_id=1695330128]
+[node name="Container" type="Control" parent="VBoxContainer2/VBoxContainer/ScrollContainer" unique_id=1695330128]
 custom_minimum_size = Vector2(1800, 620)
 layout_mode = 2
 
-[node name="LevelMapButton" parent="VBoxContainer/ScrollContainer/Container" unique_id=2070859198 instance=ExtResource("2_b6wlh")]
+[node name="LevelMapButton" parent="VBoxContainer2/VBoxContainer/ScrollContainer/Container" unique_id=2070859198 instance=ExtResource("2_b6wlh")]
 layout_mode = 0
 anchors_preset = 0
 anchor_right = 0.0
@@ -67,7 +61,7 @@ grow_horizontal = 1
 grow_vertical = 1
 LevelOrder = 1
 
-[node name="LevelMapButton2" parent="VBoxContainer/ScrollContainer/Container" unique_id=851631413 instance=ExtResource("2_b6wlh")]
+[node name="LevelMapButton2" parent="VBoxContainer2/VBoxContainer/ScrollContainer/Container" unique_id=851631413 instance=ExtResource("2_b6wlh")]
 layout_mode = 0
 anchors_preset = 0
 anchor_right = 0.0
@@ -80,7 +74,7 @@ grow_horizontal = 1
 grow_vertical = 1
 LevelOrder = 2
 
-[node name="LevelMapButton3" parent="VBoxContainer/ScrollContainer/Container" unique_id=2020481225 instance=ExtResource("2_b6wlh")]
+[node name="LevelMapButton3" parent="VBoxContainer2/VBoxContainer/ScrollContainer/Container" unique_id=2020481225 instance=ExtResource("2_b6wlh")]
 layout_mode = 0
 anchors_preset = 0
 anchor_right = 0.0
@@ -93,7 +87,7 @@ grow_horizontal = 1
 grow_vertical = 1
 LevelOrder = 3
 
-[node name="LevelMapButton4" parent="VBoxContainer/ScrollContainer/Container" unique_id=527930565 instance=ExtResource("2_b6wlh")]
+[node name="LevelMapButton4" parent="VBoxContainer2/VBoxContainer/ScrollContainer/Container" unique_id=527930565 instance=ExtResource("2_b6wlh")]
 layout_mode = 0
 anchors_preset = 0
 anchor_right = 0.0
@@ -106,7 +100,7 @@ grow_horizontal = 1
 grow_vertical = 1
 LevelOrder = 4
 
-[node name="LevelMapButton5" parent="VBoxContainer/ScrollContainer/Container" unique_id=1686874048 instance=ExtResource("2_b6wlh")]
+[node name="LevelMapButton5" parent="VBoxContainer2/VBoxContainer/ScrollContainer/Container" unique_id=1686874048 instance=ExtResource("2_b6wlh")]
 layout_mode = 0
 anchors_preset = 0
 anchor_right = 0.0
@@ -119,5 +113,13 @@ grow_horizontal = 1
 grow_vertical = 1
 LevelOrder = 5
 
+[node name="LeaderboardView" parent="." unique_id=1275561435 instance=ExtResource("3_4a4xe")]
+layout_mode = 1
+offset_left = 769.0
+offset_top = 134.0
+offset_right = -201.0
+offset_bottom = -185.0
+
 [node name="WelcomeScreen" parent="." unique_id=2128121447 instance=ExtResource("5_u0a2w")]
+visible = false
 layout_mode = 1

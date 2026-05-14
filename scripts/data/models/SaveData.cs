@@ -10,6 +10,8 @@ public partial class SaveData : Resource
     [Export] public int LastCompletedLevelOrder { get; set; } = 0;
     [Export] public int Xp { get; set; } = 0;
     
+    [Export] public string ProfileCreatedAt { get; set; } = "";
+    [Export] public int BestLeaderboardRank { get; set; } = 0;
     [Export] public Dictionary<int, double> BestLevelTimes { get; set; } = new();
     
     [Export] public bool HasSeenWelcomeScreen { get; set; } = false;

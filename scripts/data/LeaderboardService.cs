@@ -11,10 +11,15 @@ public partial class LeaderboardService : Node
 
     [Export] public string SupabaseUrl { get; set; } = "https://jyltrpmblsmwbzrdfnsj.supabase.co";
     [Export] public string SupabaseKey { get; set; } = "sb_publishable_FOMUlgZSwVecfOabXTx0iw_dyoWWRiL";
+private const int TopPlayersLimit = 100;
 
     public event Action<bool, string> PlayerSynced;
     public event Action<List<LeaderboardEntry>> TopLoaded;
     public event Action<string> TopLoadFailed;
+
+    public event Action<int> CurrentPlayerRankLoaded;
+    public event Action<string> CurrentPlayerRankLoadFailed;
+
     public override void _Ready()
     {
         Instance = this;
@@ -33,6 +38,12 @@ public partial class LeaderboardService : Node
         if (string.IsNullOrWhiteSpace(data.PlayerId))
         {
             GD.PrintErr("[Leaderboard] PlayerId порожній");
+            return;
+        }
+
+        if (string.IsNullOrWhiteSpace(data.PlayerName))
+        {
+            GD.PrintErr("[Leaderboard] PlayerName порожній");
             return;
         }
 
@@ -67,6 +78,13 @@ public partial class LeaderboardService : Node
         {
             string responseText = Encoding.UTF8.GetString(responseBody);
 
+            if (result != (long)HttpRequest.Result.Success)
+            {
+                GD.PrintErr($"[Leaderboard] Network error while syncing player. Result: {result}");
+                PlayerSynced?.Invoke(false, $"Network error: {result}");
+                return;
+            }
+
             if (responseCode >= 200 && responseCode < 300)
             {
                 GD.Print("[Leaderboard] Player synced");
@@ -100,7 +118,7 @@ public partial class LeaderboardService : Node
             $"{SupabaseUrl.TrimEnd('/')}/rest/v1/leaderboard_players" +
             "?select=player_id,player_name,completed_levels,average_time_seconds,xp" +
             "&order=xp.desc,completed_levels.desc,average_time_seconds.asc" +
-            "&limit=10";
+            $"&limit={TopPlayersLimit}";
 
         string[] headers =
         {
@@ -143,6 +161,99 @@ public partial class LeaderboardService : Node
             TopLoadFailed?.Invoke("Немає підключення до інтернету");
             request.QueueFree();
         }
+    }
+
+    public void LoadCurrentPlayerRank()
+    {
+        if (SaveManager.Instance == null || SaveManager.Instance.Data == null)
+        {
+            CurrentPlayerRankLoadFailed?.Invoke("Дані гравця не знайдено");
+            return;
+        }
+
+        string currentPlayerId = SaveManager.Instance.Data.PlayerId;
+
+        if (string.IsNullOrWhiteSpace(currentPlayerId))
+        {
+            CurrentPlayerRankLoadFailed?.Invoke("PlayerId порожній");
+            return;
+        }
+
+        string url =
+            $"{SupabaseUrl.TrimEnd('/')}/rest/v1/leaderboard_players" +
+            "?select=player_id" +
+            "&order=xp.desc,completed_levels.desc,average_time_seconds.asc";
+
+        string[] headers =
+        {
+            $"apikey: {SupabaseKey}",
+            $"Authorization: Bearer {SupabaseKey}",
+            "Content-Type: application/json"
+        };
+
+        var request = CreateRequest((result, responseCode, responseHeaders, responseBody) =>
+        {
+            string responseText = Encoding.UTF8.GetString(responseBody);
+
+            if (result != (long)HttpRequest.Result.Success)
+            {
+                GD.PrintErr($"[Leaderboard] Rank network error. Result: {result}");
+                CurrentPlayerRankLoadFailed?.Invoke("Немає підключення до інтернету");
+                return;
+            }
+
+            if (responseCode < 200 || responseCode >= 300)
+            {
+                GD.PrintErr($"[Leaderboard] Rank load failed. Code: {responseCode}. Body: {responseText}");
+                CurrentPlayerRankLoadFailed?.Invoke("Не вдалося завантажити місце гравця");
+                return;
+            }
+
+            int rank = ParseCurrentPlayerRank(responseText, currentPlayerId);
+
+            if (rank <= 0)
+            {
+                CurrentPlayerRankLoadFailed?.Invoke("Гравця ще немає в лідерборді");
+                return;
+            }
+
+            CurrentPlayerRankLoaded?.Invoke(rank);
+        });
+
+        Error error = request.Request(
+            url,
+            headers,
+            HttpClient.Method.Get
+        );
+
+        if (error != Error.Ok)
+        {
+            GD.PrintErr($"[Leaderboard] Rank request error: {error}");
+            CurrentPlayerRankLoadFailed?.Invoke("Не вдалося виконати запит");
+            request.QueueFree();
+        }
+    }
+
+    private int ParseCurrentPlayerRank(string json, string currentPlayerId)
+    {
+        Variant parsed = Json.ParseString(json);
+
+        if (parsed.VariantType != Variant.Type.Array)
+            return -1;
+
+        var rows = parsed.AsGodotArray();
+
+        for (int i = 0; i < rows.Count; i++)
+        {
+            var row = rows[i].AsGodotDictionary();
+
+            string playerId = row["player_id"].AsString();
+
+            if (playerId == currentPlayerId)
+                return i + 1;
+        }
+
+        return -1;
     }
 
     private HttpRequest CreateRequest(Action<long, long, string[], byte[]> callback)
@@ -204,12 +315,13 @@ public partial class LeaderboardService : Node
 
         var rows = parsed.AsGodotArray();
 
-        foreach (Variant rowVariant in rows)
+        for (int i = 0; i < rows.Count; i++)
         {
-            var row = rowVariant.AsGodotDictionary();
+            var row = rows[i].AsGodotDictionary();
 
             result.Add(new LeaderboardEntry
             {
+                Rank = i + 1,
                 PlayerId = row["player_id"].AsString(),
                 PlayerName = row["player_name"].AsString(),
                 CompletedLevels = row["completed_levels"].AsInt32(),
@@ -220,12 +332,11 @@ public partial class LeaderboardService : Node
 
         return result;
     }
-    
-    
 }
 
 public class LeaderboardEntry
 {
+    public int Rank { get; set; }
     public string PlayerId { get; set; }
     public string PlayerName { get; set; }
     public int CompletedLevels { get; set; }

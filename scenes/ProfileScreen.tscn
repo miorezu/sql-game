@@ -1,0 +1,137 @@
+[gd_scene format=3 uid="uid://bk10gv1hynb36"]
+
+[ext_resource type="PackedScene" uid="uid://c07kdefxleccp" path="res://scenes/TopBarUI.tscn" id="1_1mq2r"]
+[ext_resource type="PackedScene" uid="uid://bpm7fi2o3j8a4" path="res://scenes/Leaderboard.tscn" id="2_nc308"]
+[ext_resource type="Script" uid="uid://cs4tpbybo5opo" path="res://scripts/presentation/screens/ProfileScreen.cs" id="2_pjkmf"]
+
+[node name="ProfileScreen" type="Control" unique_id=929300861]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="ColorRect" type="ColorRect" parent="." unique_id=1555839765]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 1.0020001
+anchor_bottom = 1.0
+offset_right = -0.30407715
+offset_bottom = -1.0
+color = Color(0.60172784, 0.251024, 0.58783734, 1)
+
+[node name="VBoxContainer" type="VBoxContainer" parent="." unique_id=1739545538]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+theme_override_constants/separation = 50
+
+[node name="TopBar" parent="VBoxContainer" unique_id=2080252660 instance=ExtResource("1_1mq2r")]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer" unique_id=897382059]
+layout_mode = 2
+theme_override_constants/separation = 150
+
+[node name="PanelContainer" type="PanelContainer" parent="VBoxContainer/HBoxContainer" unique_id=2081084945 node_paths=PackedStringArray("_playerNameValueLabel", "_profileCreatedAtValueLabel", "_xpValueLabel", "_completedLevelsValueLabel", "_totalBestTimeValueLabel", "_averageBestTimeValueLabel", "_currentRankValueLabel", "_bestRankValueLabel")]
+layout_mode = 2
+script = ExtResource("2_pjkmf")
+_playerNameValueLabel = NodePath("MarginContainer/VBoxContainer/GridContainer/NameValueLabel")
+_profileCreatedAtValueLabel = NodePath("MarginContainer/VBoxContainer/GridContainer/DataValueLabel")
+_xpValueLabel = NodePath("MarginContainer/VBoxContainer/GridContainer/XpValueLabel")
+_completedLevelsValueLabel = NodePath("MarginContainer/VBoxContainer/GridContainer/CompletedLevelsValueLabel")
+_totalBestTimeValueLabel = NodePath("MarginContainer/VBoxContainer/GridContainer/TotalTimeValueLabel2")
+_averageBestTimeValueLabel = NodePath("MarginContainer/VBoxContainer/GridContainer/AverageTimeValueLabel2")
+_currentRankValueLabel = NodePath("MarginContainer/VBoxContainer/GridContainer/RankPlaceValueLabel")
+_bestRankValueLabel = NodePath("MarginContainer/VBoxContainer/GridContainer/BestRankPlaceValueLabel")
+
+[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer/HBoxContainer/PanelContainer" unique_id=1216689513]
+custom_minimum_size = Vector2(500, 0)
+layout_mode = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 20
+
+[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/HBoxContainer/PanelContainer/MarginContainer" unique_id=841572074]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="VBoxContainer/HBoxContainer/PanelContainer/MarginContainer/VBoxContainer" unique_id=1716168876]
+layout_mode = 2
+theme_override_font_sizes/font_size = 22
+text = "Інформація користувача"
+
+[node name="GridContainer" type="GridContainer" parent="VBoxContainer/HBoxContainer/PanelContainer/MarginContainer/VBoxContainer" unique_id=1835482376]
+layout_mode = 2
+theme_override_constants/h_separation = 15
+theme_override_constants/v_separation = 25
+columns = 2
+
+[node name="Name" type="Label" parent="VBoxContainer/HBoxContainer/PanelContainer/MarginContainer/VBoxContainer/GridContainer" unique_id=2110750624]
+layout_mode = 2
+text = "Ім'я"
+
+[node name="NameValueLabel" type="Label" parent="VBoxContainer/HBoxContainer/PanelContainer/MarginContainer/VBoxContainer/GridContainer" unique_id=2112853960]
+layout_mode = 2
+
+[node name="Data" type="Label" parent="VBoxContainer/HBoxContainer/PanelContainer/MarginContainer/VBoxContainer/GridContainer" unique_id=802584948]
+layout_mode = 2
+text = "Профіль створено:"
+
+[node name="DataValueLabel" type="Label" parent="VBoxContainer/HBoxContainer/PanelContainer/MarginContainer/VBoxContainer/GridContainer" unique_id=1638254029]
+layout_mode = 2
+
+[node name="Xp" type="Label" parent="VBoxContainer/HBoxContainer/PanelContainer/MarginContainer/VBoxContainer/GridContainer" unique_id=2033319138]
+layout_mode = 2
+text = "Досвід:"
+
+[node name="XpValueLabel" type="Label" parent="VBoxContainer/HBoxContainer/PanelContainer/MarginContainer/VBoxContainer/GridContainer" unique_id=1489298226]
+layout_mode = 2
+
+[node name="CompletedLevels" type="Label" parent="VBoxContainer/HBoxContainer/PanelContainer/MarginContainer/VBoxContainer/GridContainer" unique_id=1131134938]
+layout_mode = 2
+text = "Пройдено рівнів:"
+
+[node name="CompletedLevelsValueLabel" type="Label" parent="VBoxContainer/HBoxContainer/PanelContainer/MarginContainer/VBoxContainer/GridContainer" unique_id=1035126072]
+layout_mode = 2
+
+[node name="Progress" type="Label" parent="VBoxContainer/HBoxContainer/PanelContainer/MarginContainer/VBoxContainer/GridContainer" unique_id=1823179459]
+visible = false
+layout_mode = 2
+text = "Прогрес навчання:"
+
+[node name="ProgressValueLabel" type="Label" parent="VBoxContainer/HBoxContainer/PanelContainer/MarginContainer/VBoxContainer/GridContainer" unique_id=195320619]
+visible = false
+layout_mode = 2
+
+[node name="TotalTime" type="Label" parent="VBoxContainer/HBoxContainer/PanelContainer/MarginContainer/VBoxContainer/GridContainer" unique_id=1670048586]
+layout_mode = 2
+text = "Сумарний час:"
+
+[node name="TotalTimeValueLabel2" type="Label" parent="VBoxContainer/HBoxContainer/PanelContainer/MarginContainer/VBoxContainer/GridContainer" unique_id=651497379]
+layout_mode = 2
+
+[node name="AverageTime" type="Label" parent="VBoxContainer/HBoxContainer/PanelContainer/MarginContainer/VBoxContainer/GridContainer" unique_id=1327180563]
+layout_mode = 2
+text = "Середній час рівня:"
+
+[node name="AverageTimeValueLabel2" type="Label" parent="VBoxContainer/HBoxContainer/PanelContainer/MarginContainer/VBoxContainer/GridContainer" unique_id=1135286897]
+layout_mode = 2
+
+[node name="RankPlace" type="Label" parent="VBoxContainer/HBoxContainer/PanelContainer/MarginContainer/VBoxContainer/GridContainer" unique_id=686175888]
+layout_mode = 2
+text = "Ваше місце в рейтингу:"
+
+[node name="RankPlaceValueLabel" type="Label" parent="VBoxContainer/HBoxContainer/PanelContainer/MarginContainer/VBoxContainer/GridContainer" unique_id=555982438]
+layout_mode = 2
+
+[node name="BestRankPlace" type="Label" parent="VBoxContainer/HBoxContainer/PanelContainer/MarginContainer/VBoxContainer/GridContainer" unique_id=1950452581]
+layout_mode = 2
+text = "Найкраще місце в рейтингу:"
+
+[node name="BestRankPlaceValueLabel" type="Label" parent="VBoxContainer/HBoxContainer/PanelContainer/MarginContainer/VBoxContainer/GridContainer" unique_id=1370911220]
+layout_mode = 2
+
+[node name="LeaderboardView" parent="VBoxContainer/HBoxContainer" unique_id=1275561435 instance=ExtResource("2_nc308")]
+layout_mode = 2

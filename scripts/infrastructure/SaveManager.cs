@@ -346,6 +346,9 @@ public partial class SaveManager : Node
         Data.PlayerName = playerName.Trim();
         Data.HasSeenWelcomeScreen = true;
 
+        if (string.IsNullOrWhiteSpace(Data.ProfileCreatedAt))
+            Data.ProfileCreatedAt = DateTime.Now.ToString("yyyy-MM-dd");
+
         Save();
 
         LeaderboardService.Instance?.SyncCurrentPlayer();

@@ -10,6 +10,7 @@ particles_anim_loop = false
 
 [node name="LeaderboardView" type="PanelContainer" unique_id=1275561435 node_paths=PackedStringArray("_tree", "_rankPlace")]
 material = SubResource("CanvasItemMaterial_0tlxa")
+custom_minimum_size = Vector2(500, 500)
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
