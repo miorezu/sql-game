@@ -18,6 +18,7 @@ config/icon="uid://c5xcdp71cmp4r"
 [autoload]
 
 GameState="*uid://xtwlafyyi3p7"
+LeaderboardService="*uid://d37nsppldsstc"
 SaveManager="*uid://dfci4sov1f8q2"
 SceneTransitionManager="*uid://c3ttt1y06ypol"
 

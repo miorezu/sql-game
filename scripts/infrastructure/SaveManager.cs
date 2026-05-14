@@ -1,5 +1,6 @@
 ﻿using System;
 using Godot;
+using SQLGame.scripts.data;
 
 public partial class SaveManager : Node
 {
@@ -12,7 +13,21 @@ public partial class SaveManager : Node
     public override void _Ready()
     {
         Instance = this;
+
         Load();
+        EnsurePlayerId();
+        EnsurePlayerName();
+
+        if (LeaderboardService.Instance != null)
+        {
+            LeaderboardService.Instance.PlayerSynced += OnPlayerSynced;
+            LeaderboardService.Instance.SyncCurrentPlayer();
+        }
+        else
+        {
+            GD.PrintErr("[Save] LeaderboardService.Instance == null");
+        }
+
         PrintDebugInfo();
     }
 
@@ -53,7 +68,32 @@ public partial class SaveManager : Node
             GD.Print("[Save] Створено новий файл збереження");
         }
     }
+    
+    private void EnsurePlayerId()
+    {
+        if (string.IsNullOrWhiteSpace(Data.PlayerId))
+        {
+            Data.PlayerId = Guid.NewGuid().ToString();
+            Save();
 
+            GD.Print($"Generated player id: {Data.PlayerId}");
+        }
+    }
+    
+    private void EnsurePlayerName()
+    {
+        if (string.IsNullOrWhiteSpace(Data.PlayerName))
+        {
+            string shortId = Data.PlayerId
+                .Replace("-", "")
+                .Substring(0, 6)
+                .ToUpper();
+
+            Data.PlayerName = $"Player-{shortId}";
+            Save();
+        }
+    }
+    
     private void EnsureDataValid()
     {
         if (Data == null)
@@ -72,9 +112,12 @@ public partial class SaveManager : Node
         if (levelOrder > Data.LastCompletedLevelOrder)
         {
             Data.LastCompletedLevelOrder = levelOrder;
+            Data.Xp += 10;
+            
         }
 
         Save();
+        LeaderboardService.Instance?.SyncCurrentPlayer();
     }
 
     public void RecordLevelComplete(int levelOrder, double timeSeconds)
@@ -82,11 +125,15 @@ public partial class SaveManager : Node
         if (levelOrder > Data.LastCompletedLevelOrder)
         {
             Data.LastCompletedLevelOrder = levelOrder;
+            Data.Xp += 10;
+            
         }
 
         SaveBestTime(levelOrder, timeSeconds);
 
         Save();
+        LeaderboardService.Instance?.SyncCurrentPlayer();
+        
     }
 
     private void SaveBestTime(int levelOrder, double timeSeconds)
@@ -203,4 +250,16 @@ public partial class SaveManager : Node
 
         GD.Print("================================");
     }
+    
+    private void OnPlayerSynced(bool success, string message)
+    {
+        if (success)
+        {
+            GD.Print("[Leaderboard] Синхронізація успішна");
+        }
+        else
+        {
+            GD.PrintErr($"[Leaderboard] Помилка синхронізації: {message}");
+        }
+    }   
 }
