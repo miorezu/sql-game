@@ -26,12 +26,12 @@ public partial class TopBarUi : PanelContainer
         [TopBarMode.MainMenu] = new(
             Layout: LayoutDirectionEnum.Rtl,
             Home: false, Timer: false, Restart: false,
-            Profile: true, Settings: true, Hint: false
+            Profile: true, Settings: false, Hint: false
         ),
         [TopBarMode.Level] = new(
             Layout: LayoutDirectionEnum.Ltr,
             Home: true, Timer: true, Restart: true,
-            Profile: false, Settings: true, Hint: true
+            Profile: false, Settings: false, Hint: true
         ),
         [TopBarMode.Profile] = new(
             Layout: LayoutDirectionEnum.Ltr,

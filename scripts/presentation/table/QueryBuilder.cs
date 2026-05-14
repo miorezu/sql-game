@@ -1,8 +1,5 @@
-    using System;
 using System.Collections.Generic;
 using Godot;
-
-
 
 public partial class QueryBuilder : FlowContainer
 {
@@ -17,8 +14,6 @@ public partial class QueryBuilder : FlowContainer
             return false;
 
         var block = dict["block"].As<SqlBlock>();
-        // if (block == null)
-        //     return false;
 
         return block != null;
     }
@@ -30,16 +25,18 @@ public partial class QueryBuilder : FlowContainer
 
         if (block == null)
             return;
-        
-        int insertIndex = GetInsertIndex(position, block);
-        
+
+        Vector2 globalPosition = position + GlobalPosition;
+
+        int insertIndex = GetInsertIndex(globalPosition, block);
+
         var oldParent = block.GetParent();
         if (oldParent != null)
             oldParent.RemoveChild(block);
 
         AddChild(block);
         MoveChild(block, insertIndex);
-        
+
         block.IsInBuilder = true;
     }
 
@@ -60,9 +57,13 @@ public partial class QueryBuilder : FlowContainer
             .Replace(" ,", ",")
             .Trim();
     }
+
     private int GetInsertIndex(Vector2 position, SqlBlock draggedBlock)
     {
         int index = 0;
+        float closestDist = float.MaxValue;
+        int closestIndex = 0;
+        bool insertBefore = true;
 
         foreach (Node child in GetChildren())
         {
@@ -72,20 +73,20 @@ public partial class QueryBuilder : FlowContainer
             if (child is not Control control)
                 continue;
 
-            Vector2 childCenter = control.Position + control.Size / 2f;
+            Vector2 childCenter = control.GlobalPosition + control.Size / 2f;
 
-            if (position.Y < childCenter.Y)
+            float dist = position.DistanceTo(childCenter);
+
+            if (dist < closestDist)
             {
-                if (Mathf.Abs(position.Y - childCenter.Y) > control.Size.Y / 2f)
-                    return index;
-
-                if (position.X < childCenter.X)
-                    return index;
+                closestDist = dist;
+                closestIndex = index;
+                insertBefore = position.X < childCenter.X;
             }
 
             index++;
         }
 
-        return index;
+        return insertBefore ? closestIndex : closestIndex + 1;
     }
 }

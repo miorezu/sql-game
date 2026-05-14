@@ -60,9 +60,9 @@ custom_minimum_size = Vector2(300, 300)
 layout_mode = 2
 
 [node name="QueryBuilder" type="FlowContainer" parent="VBoxContainer/HBoxContainer/Query/VBoxContainer/ScrollContainer" unique_id=1556329629]
-custom_minimum_size = Vector2(740, 300)
+custom_minimum_size = Vector2(850, 300)
 layout_mode = 2
-theme_override_constants/h_separation = 7
+theme_override_constants/h_separation = 10
 theme_override_constants/v_separation = 3
 script = ExtResource("3_tolt5")
 
