@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Godot;
 using SQLGame.scripts.data;
@@ -5,18 +6,20 @@ using SQLGame.scripts.data;
 public partial class LeaderboardView : Control
 {
     [Export] private Tree _tree;
+    [Export] private Label _rankPlace;
 
     public override void _Ready()
     {
         if (_tree == null)
         {
-            GD.PrintErr("[LeaderboardTreeView] Tree node не призначено!");
+            GD.PrintErr("[LeaderboardView] Tree не призначено");
             return;
         }
 
         if (LeaderboardService.Instance == null)
         {
             ShowMessage("Лідерборд недоступний");
+            SetRankText("Ваше місце в рейтингу: не визначено");
             return;
         }
 
@@ -38,6 +41,7 @@ public partial class LeaderboardView : Control
     public void LoadLeaderboard()
     {
         ShowMessage("Завантаження лідерборду...");
+        SetRankText("Ваше місце в рейтингу: завантажується...");
 
         LeaderboardService.Instance?.LoadTopPlayers();
     }
@@ -47,6 +51,7 @@ public partial class LeaderboardView : Control
         if (entries == null || entries.Count == 0)
         {
             ShowMessage("Поки немає результатів");
+            SetRankText("Ваше місце в рейтингу: поки немає результатів");
             return;
         }
 
@@ -56,6 +61,7 @@ public partial class LeaderboardView : Control
     private void OnTopLoadFailed(string message)
     {
         ShowMessage("Немає підключення до інтернету");
+        SetRankText("Ваше місце в рейтингу: -");
     }
 
     private void BuildTree(List<LeaderboardEntry> entries)
@@ -74,7 +80,9 @@ public partial class LeaderboardView : Control
 
         TreeItem root = _tree.CreateItem();
 
-        string currentPlayerId = SaveManager.Instance?.Data?.PlayerId ?? "";
+        string currentPlayerId = NormalizePlayerId(SaveManager.Instance?.Data?.PlayerId);
+
+        int currentPlayerRank = -1;
 
         for (int i = 0; i < entries.Count; i++)
         {
@@ -82,7 +90,10 @@ public partial class LeaderboardView : Control
 
             TreeItem item = _tree.CreateItem(root);
 
-            bool isCurrentPlayer = entry.PlayerId == currentPlayerId;
+            bool isCurrentPlayer = IsCurrentPlayer(entry, currentPlayerId);
+
+            if (isCurrentPlayer)
+                currentPlayerRank = i + 1;
 
             item.SetText(0, (i + 1).ToString());
 
@@ -104,6 +115,56 @@ public partial class LeaderboardView : Control
                 }
             }
         }
+
+        SetRankPlace(currentPlayerRank, entries.Count, !string.IsNullOrWhiteSpace(currentPlayerId));
+    }
+
+    private bool IsCurrentPlayer(LeaderboardEntry entry, string currentPlayerId)
+    {
+        if (entry == null)
+            return false;
+
+        if (string.IsNullOrWhiteSpace(currentPlayerId))
+            return false;
+
+        string entryPlayerId = NormalizePlayerId(entry.PlayerId);
+
+        if (string.IsNullOrWhiteSpace(entryPlayerId))
+            return false;
+
+        return string.Equals(entryPlayerId, currentPlayerId, StringComparison.Ordinal);
+    }
+
+    private static string NormalizePlayerId(string playerId)
+    {
+        return string.IsNullOrWhiteSpace(playerId) ? "" : playerId.Trim();
+    }
+
+    private void SetRankPlace(int rank, int totalPlayers, bool hasCurrentPlayerId)
+    {
+        if (_rankPlace == null)
+            return;
+
+        if (!hasCurrentPlayerId)
+        {
+            _rankPlace.Text = "Ваше місце в рейтингу: -";
+            return;
+        }
+
+        if (rank > 0)
+        {
+            _rankPlace.Text = $"Ваше місце в рейтингу: {rank} із {totalPlayers}";
+        }
+        else
+        {
+            _rankPlace.Text = $"Ваше місце в рейтингу: не знайдено серед {totalPlayers} результатів";
+        }
+    }
+
+    private void SetRankText(string text)
+    {
+        if (_rankPlace != null)
+            _rankPlace.Text = text;
     }
 
     private void ShowMessage(string message)
