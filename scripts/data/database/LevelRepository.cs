@@ -32,9 +32,11 @@ public static class LevelRepository
 
         level.LevelType = DatabaseHelper.NormalizeLevelType(level.LevelType);
 
-        var blocks = await connection.QueryAsync<string>(
+        var blocks = await connection.QueryAsync<LevelBlockRow>(
             """
-            SELECT block_text
+            SELECT 
+                block_text AS BlockText,
+                LOWER(block_type) AS BlockType
             FROM level_blocks
             WHERE level_id = @LevelId
             ORDER BY block_order
@@ -42,11 +44,19 @@ public static class LevelRepository
             new { LevelId = level.Id }
         );
 
-        level.SqlBlocks = blocks.ToArray();
+        level.SqlBlocks = blocks
+            .Select(block => new BlockData
+            {
+                Value = block.BlockText,
+                Type = SqlBlockParser.ParseBlockType(block.BlockType),
+                KeywordType = SqlBlockParser.ParseKeywordType(block.BlockText)
+            })
+            .ToArray();
 
         if (level.LevelType == "builder")
         {
-            level.BuilderSolutionBlocks = (await BuilderRepository.GetBuilderSolutionBlocks(level.Id, connection)).ToArray();
+            level.BuilderSolutionBlocks = 
+                (await BuilderRepository.GetBuilderSolutionBlocks(level.Id, connection)).ToArray();
         }
         else
         {
@@ -92,4 +102,10 @@ public static class LevelRepository
         var nextLevelOrder = await GetNextLevelOrder(currentLevelOrder);
         return nextLevelOrder.HasValue;
     }
+}
+
+public class LevelBlockRow
+{
+    public string BlockText { get; set; }
+    public string BlockType { get; set; }
 }

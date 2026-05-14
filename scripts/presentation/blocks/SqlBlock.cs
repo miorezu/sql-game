@@ -1,12 +1,12 @@
 using Godot;
-
-
+using SQLGame.scripts.data;
 
 public partial class SqlBlock : Button
 {
+    [Export] public bool ShowHint { get; set; } = true;
     [Export] public BlockType Type { get; set; }
     [Export] public string BlockValue { get; set; }
-    [Export] public KeywordTypes KeywordType { get; set; } 
+    [Export] public KeywordTypes KeywordType { get; set; } = KeywordTypes.none;
 
     [Export] private Label _helpLabel;
 
@@ -14,7 +14,7 @@ public partial class SqlBlock : Button
 
     public bool IsInBuilder { get; set; } = false;
 
-    public int? PairId { get; private set; } 
+    public int? PairId { get; private set; }
 
     public MatchSide MatchSide { get; private set; } = MatchSide.None;
 
@@ -27,6 +27,9 @@ public partial class SqlBlock : Button
         Type = data.Type;
         BlockValue = data.Value;
         KeywordType = data.KeywordType;
+
+        if (Type == BlockType.Keyword && KeywordType == KeywordTypes.none)
+            KeywordType = SqlBlockParser.ParseKeywordType(BlockValue);
 
         PairId = data.PairId;
         MatchSide = data.MatchSide;
@@ -46,28 +49,55 @@ public partial class SqlBlock : Button
 
     private void UpdateUi()
     {
-        Text = Type == BlockType.Keyword
-            ? KeywordType.ToString()
-            : BlockValue;
+        Text = GetBlockDisplayText();
 
         SelfModulate = SqlStyle.GetColorForType(Type);
 
-        SetTooltip();
+        SetHint();
     }
 
-    private void SetTooltip()
+    private string GetBlockDisplayText()
     {
-        if (_helpLabel == null)
-            return;
+        if (Type == BlockType.Keyword && KeywordType != KeywordTypes.none)
+            return KeywordType.ToString();
 
-        if (Type == BlockType.Keyword &&
-            SqlKeyword.Tooltips.TryGetValue(KeywordType, out string description))
+        return BlockValue;
+    }
+
+    private void SetHint()
+    {
+        if (!ShowHint)
         {
-            _helpLabel.TooltipText = description;
+            TooltipText = "";
+
+            if (_helpLabel != null)
+            {
+                _helpLabel.Visible = false;
+                _helpLabel.Text = "";
+                _helpLabel.TooltipText = "";
+                _helpLabel.MouseFilter = MouseFilterEnum.Ignore;
+            }
+
             return;
         }
 
-        _helpLabel.TooltipText = $"{Type}: {Text}";
+        string description = GetHintText();
+
+        TooltipText = description;
+
+        if (_helpLabel == null)
+            return;
+
+        _helpLabel.Visible = true;
+        _helpLabel.Text = "?";
+        _helpLabel.TooltipText = description;
+
+        _helpLabel.MouseFilter = MouseFilterEnum.Ignore;
+    }
+    
+    private string GetHintText()
+    {
+        return SqlKeyword.GetTooltip(Type, KeywordType, BlockValue);
     }
 
     public override Variant _GetDragData(Vector2 atPosition)
@@ -81,7 +111,8 @@ public partial class SqlBlock : Button
             { "match_side", (int)MatchSide }
         };
 
-        Control preview = Duplicate() as Control; //копія UI-елемента для відображення під час drag
+        Control preview = Duplicate() as Control;
+
         if (preview != null)
             SetDragPreview(preview);
 

@@ -58,13 +58,12 @@ public partial class TableLevel : Control
         foreach (Node child in _sqlBlocksContainer.GetChildren())
             child.QueueFree();
 
-        foreach (var query in levelData.SqlBlocks)
+        foreach (var blockData in levelData.SqlBlocks)
         {
             var block = _sqlBlockScene.Instantiate<SqlBlock>();
+            block.ShowHint = false;
 
-            block.BlockValue = query;
-            block.Type = BlockType.Value;
-            block.KeywordType = KeywordTypes.none;
+            block.Init(blockData);
 
             _sqlBlocksContainer.AddChild(block);
         }

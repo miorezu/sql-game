@@ -69,12 +69,14 @@ public partial class MatchLevel : Control
         foreach (var pair in pairs)
         {
             var block = _sqlBlockScene.Instantiate<SqlBlock>();
+            block.ShowHint = false;
             _leftItemsContainer.AddMatchBlock(block, pair.Id, pair.LeftText);
         }
 
         foreach (var pair in pairs.OrderBy(x => GD.Randf()))
         {
             var block = _sqlBlockScene.Instantiate<SqlBlock>();
+            block.ShowHint = false;
             _rightItemsContainer.AddMatchBlock(block, pair.Id, pair.RightText);
         }
     }

@@ -61,20 +61,18 @@ public partial class BuilderLevel : Control
 
         var shuffledBlocks = Shuffle(levelData.SqlBlocks);
 
-        foreach (var blockText in shuffledBlocks)
+        foreach (var blockData in shuffledBlocks)
         {
             var block = _sqlBlockScene.Instantiate<SqlBlock>();
-
-            block.BlockValue = blockText;
-            block.Type = BlockType.Value;
-            block.KeywordType = KeywordTypes.none;
+            block.ShowHint = true;
+            block.Init(blockData);
 
             ResetBlockColor(block);
 
             _availableBlocksContainer.AddChild(block);
         }
     }
-
+    
     private void ClearQueryBlocks()
     {
         if (_queryBlocksContainer == null)
@@ -200,21 +198,21 @@ public partial class BuilderLevel : Control
 
     private void ResetBlockColor(SqlBlock block)
     {
-        block.Modulate = Colors.White;
+        block.SelfModulate = Colors.White;
     }
 
     private void SetCorrectBlockColor(SqlBlock block)
     {
-        block.Modulate = new Color(0.55f, 1.0f, 0.55f);
+        block.SelfModulate = new Color(0.55f, 1.0f, 0.55f);
     }
 
     private void SetWrongPositionBlockColor(SqlBlock block)
     {
-        block.Modulate = new Color(1.0f, 0.85f, 0.35f);
+        block.SelfModulate = new Color(1.0f, 0.85f, 0.35f);
     }
 
     private void SetWrongBlockColor(SqlBlock block)
     {
-        block.Modulate = new Color(1.0f, 0.45f, 0.45f);
+        block.SelfModulate = new Color(1.0f, 0.45f, 0.45f);
     }
 }

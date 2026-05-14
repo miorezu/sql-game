@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 
 public class LevelData
 {
@@ -10,7 +11,7 @@ public class LevelData
     public string ExpectedTableName { get; set; }
     public int LevelOrder { get; set; }
     public string LevelType { get; set; }
-    public string[] SqlBlocks { get; set; }
+    public BlockData[] SqlBlocks { get; set; } = Array.Empty<BlockData>();
     public string[] BuilderSolutionBlocks { get; set; } = Array.Empty<string>();
 
 }
