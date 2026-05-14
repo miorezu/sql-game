@@ -20,6 +20,8 @@ public partial class SceneTransitionManager : CanvasLayer
     public override void _Ready()
     {
         Instance = this;
+
+        ProcessMode = ProcessModeEnum.Always;
         Layer = 100;
 
         if (_fadeRect == null || _loadingContent == null || _loadingLabel == null)
@@ -32,7 +34,7 @@ public partial class SceneTransitionManager : CanvasLayer
         _fadeRect.Modulate = new Color(1, 1, 1, 0);
 
         _loadingContent.Visible = false;
-        
+
         if (_showOnStartup)
             CallDeferred(nameof(PlayStartupFade));
     }
@@ -143,6 +145,7 @@ public partial class SceneTransitionManager : CanvasLayer
     private async Task FadeTo(float targetAlpha)
     {
         Tween tween = CreateTween();
+        tween.SetPauseMode(Tween.TweenPauseMode.Process);
 
         tween.TweenProperty(
             _fadeRect,
