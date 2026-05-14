@@ -9,12 +9,28 @@ public partial class LevelSelectScreen : Control
 
     public override void _Ready()
     {
-        _topBar.SetMode(TopBarUi.TopBarMode.MainMenu);
+        SetupTopBar();
         SetupLevelButtons();
+
         if (_welcomeScreen != null)
             _welcomeScreen.TryShow();
         else
             GD.PrintErr("WelcomeScreen не призначено");
+    }
+
+    private void SetupTopBar()
+    {
+        if (_topBar == null)
+            return;
+
+        _topBar.SetMode(TopBarUi.TopBarMode.MainMenu);
+        _topBar.ProfilePressed += OnProfilePressed;
+        
+    }
+
+    private void OnProfilePressed()
+    {
+        SceneLoader.LoadProfileScreen();
     }
 
     public void SetupLevelButtons()

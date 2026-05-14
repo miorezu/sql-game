@@ -2,8 +2,9 @@ using System;
 using Godot;
 using SQLGame.scripts.data;
 
-public partial class ProfileScreen : PanelContainer
+public partial class ProfileScreen : Control
 {
+    [Export] private TopBarUi _topBar;
     [Export] private Label _playerNameValueLabel;
     [Export] private Label _profileCreatedAtValueLabel;
     [Export] private Label _xpValueLabel;
@@ -15,10 +16,19 @@ public partial class ProfileScreen : PanelContainer
 
     public override void _Ready()
     {
+        SetupTopBar();
         SubscribeLeaderboardEvents();
 
         Refresh();
         LoadCurrentRank();
+    }
+
+    private void SetupTopBar()
+    {
+        if (_topBar == null)
+            return;
+        _topBar.SetMode(TopBarUi.TopBarMode.Profile);
+        _topBar.HomePressed += OnSelectLevelMenuPressed;
     }
 
     public override void _ExitTree()
@@ -215,5 +225,12 @@ public partial class ProfileScreen : PanelContainer
             return date.ToString("dd.MM.yyyy");
 
         return value;
+    }
+
+    private void OnSelectLevelMenuPressed()
+    {
+        GD.Print("[ProfileScreen] Select level menu pressed");
+
+        SceneLoader.LoadSelectLevelMenu();
     }
 }

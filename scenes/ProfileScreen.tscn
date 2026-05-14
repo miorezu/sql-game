@@ -4,13 +4,23 @@
 [ext_resource type="PackedScene" uid="uid://bpm7fi2o3j8a4" path="res://scenes/Leaderboard.tscn" id="2_nc308"]
 [ext_resource type="Script" uid="uid://cs4tpbybo5opo" path="res://scripts/presentation/screens/ProfileScreen.cs" id="2_pjkmf"]
 
-[node name="ProfileScreen" type="Control" unique_id=929300861]
+[node name="ProfileScreen" type="Control" unique_id=929300861 node_paths=PackedStringArray("_topBar", "_playerNameValueLabel", "_profileCreatedAtValueLabel", "_xpValueLabel", "_completedLevelsValueLabel", "_totalBestTimeValueLabel", "_averageBestTimeValueLabel", "_currentRankValueLabel", "_bestRankValueLabel")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+script = ExtResource("2_pjkmf")
+_topBar = NodePath("VBoxContainer/TopBar")
+_playerNameValueLabel = NodePath("VBoxContainer/HBoxContainer/PanelContainer/MarginContainer/VBoxContainer/GridContainer/NameValueLabel")
+_profileCreatedAtValueLabel = NodePath("VBoxContainer/HBoxContainer/PanelContainer/MarginContainer/VBoxContainer/GridContainer/DataValueLabel")
+_xpValueLabel = NodePath("VBoxContainer/HBoxContainer/PanelContainer/MarginContainer/VBoxContainer/GridContainer/XpValueLabel")
+_completedLevelsValueLabel = NodePath("VBoxContainer/HBoxContainer/PanelContainer/MarginContainer/VBoxContainer/GridContainer/CompletedLevelsValueLabel")
+_totalBestTimeValueLabel = NodePath("VBoxContainer/HBoxContainer/PanelContainer/MarginContainer/VBoxContainer/GridContainer/TotalTimeValueLabel2")
+_averageBestTimeValueLabel = NodePath("VBoxContainer/HBoxContainer/PanelContainer/MarginContainer/VBoxContainer/GridContainer/AverageTimeValueLabel2")
+_currentRankValueLabel = NodePath("VBoxContainer/HBoxContainer/PanelContainer/MarginContainer/VBoxContainer/GridContainer/RankPlaceValueLabel")
+_bestRankValueLabel = NodePath("VBoxContainer/HBoxContainer/PanelContainer/MarginContainer/VBoxContainer/GridContainer/BestRankPlaceValueLabel")
 
 [node name="ColorRect" type="ColorRect" parent="." unique_id=1555839765]
 layout_mode = 1
@@ -29,22 +39,14 @@ theme_override_constants/separation = 50
 
 [node name="TopBar" parent="VBoxContainer" unique_id=2080252660 instance=ExtResource("1_1mq2r")]
 layout_mode = 2
+Mode = 2
 
 [node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer" unique_id=897382059]
 layout_mode = 2
 theme_override_constants/separation = 150
 
-[node name="PanelContainer" type="PanelContainer" parent="VBoxContainer/HBoxContainer" unique_id=2081084945 node_paths=PackedStringArray("_playerNameValueLabel", "_profileCreatedAtValueLabel", "_xpValueLabel", "_completedLevelsValueLabel", "_totalBestTimeValueLabel", "_averageBestTimeValueLabel", "_currentRankValueLabel", "_bestRankValueLabel")]
+[node name="PanelContainer" type="PanelContainer" parent="VBoxContainer/HBoxContainer" unique_id=2081084945]
 layout_mode = 2
-script = ExtResource("2_pjkmf")
-_playerNameValueLabel = NodePath("MarginContainer/VBoxContainer/GridContainer/NameValueLabel")
-_profileCreatedAtValueLabel = NodePath("MarginContainer/VBoxContainer/GridContainer/DataValueLabel")
-_xpValueLabel = NodePath("MarginContainer/VBoxContainer/GridContainer/XpValueLabel")
-_completedLevelsValueLabel = NodePath("MarginContainer/VBoxContainer/GridContainer/CompletedLevelsValueLabel")
-_totalBestTimeValueLabel = NodePath("MarginContainer/VBoxContainer/GridContainer/TotalTimeValueLabel2")
-_averageBestTimeValueLabel = NodePath("MarginContainer/VBoxContainer/GridContainer/AverageTimeValueLabel2")
-_currentRankValueLabel = NodePath("MarginContainer/VBoxContainer/GridContainer/RankPlaceValueLabel")
-_bestRankValueLabel = NodePath("MarginContainer/VBoxContainer/GridContainer/BestRankPlaceValueLabel")
 
 [node name="MarginContainer" type="MarginContainer" parent="VBoxContainer/HBoxContainer/PanelContainer" unique_id=1216689513]
 custom_minimum_size = Vector2(500, 0)

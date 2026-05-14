@@ -3,7 +3,6 @@
 [ext_resource type="Script" uid="uid://ddorsd2jan41k" path="res://scripts/presentation/screens/LevelSelectScreen.cs" id="1_rd6qf"]
 [ext_resource type="PackedScene" uid="uid://c07kdefxleccp" path="res://scenes/TopBarUI.tscn" id="2_4a4xe"]
 [ext_resource type="PackedScene" uid="uid://dpxo7mhangn6r" path="res://scenes/LevelMapButton.tscn" id="2_b6wlh"]
-[ext_resource type="PackedScene" uid="uid://bpm7fi2o3j8a4" path="res://scenes/Leaderboard.tscn" id="3_4a4xe"]
 [ext_resource type="PackedScene" uid="uid://i6ifbag400pj" path="res://scenes/WelcomeScreen.tscn" id="5_u0a2w"]
 
 [node name="LevelSelectScreen" type="Control" unique_id=988360067 node_paths=PackedStringArray("_mapContent", "_topBar", "_welcomeScreen")]
@@ -13,6 +12,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+mouse_filter = 1
 script = ExtResource("1_rd6qf")
 _mapContent = NodePath("VBoxContainer2/VBoxContainer/ScrollContainer/Container")
 _topBar = NodePath("VBoxContainer2/TopBar")
@@ -25,6 +25,7 @@ anchor_right = 1.0020001
 anchor_bottom = 1.0
 offset_right = -0.30407715
 offset_bottom = -1.0
+mouse_filter = 2
 color = Color(0, 0.48582184, 0.39470935, 1)
 
 [node name="VBoxContainer2" type="VBoxContainer" parent="." unique_id=975206104]
@@ -112,13 +113,6 @@ offset_bottom = 143.0
 grow_horizontal = 1
 grow_vertical = 1
 LevelOrder = 5
-
-[node name="LeaderboardView" parent="." unique_id=1275561435 instance=ExtResource("3_4a4xe")]
-layout_mode = 1
-offset_left = 769.0
-offset_top = 134.0
-offset_right = -201.0
-offset_bottom = -185.0
 
 [node name="WelcomeScreen" parent="." unique_id=2128121447 instance=ExtResource("5_u0a2w")]
 visible = false
