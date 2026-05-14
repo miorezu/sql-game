@@ -16,13 +16,17 @@ public partial class SaveManager : Node
         Instance = this;
 
         Load();
+        EnsureDataValid();
         EnsurePlayerId();
-        EnsurePlayerName();
 
         if (LeaderboardService.Instance != null)
         {
             LeaderboardService.Instance.PlayerSynced += OnPlayerSynced;
-            LeaderboardService.Instance.SyncCurrentPlayer();
+
+            if (Data.HasSeenWelcomeScreen && !string.IsNullOrWhiteSpace(Data.PlayerName))
+            {
+                LeaderboardService.Instance.SyncCurrentPlayer();
+            }
         }
         else
         {
@@ -332,5 +336,20 @@ public partial class SaveManager : Node
         }
 
         return password;
+    }
+    
+    public void CompleteWelcomeScreen(string playerName)
+    {
+        if (Data == null)
+            Data = new SaveData();
+
+        Data.PlayerName = playerName.Trim();
+        Data.HasSeenWelcomeScreen = true;
+
+        Save();
+
+        LeaderboardService.Instance?.SyncCurrentPlayer();
+
+        GD.Print($"[SAVE] Welcome completed. PlayerName: {Data.PlayerName}");
     }
 }

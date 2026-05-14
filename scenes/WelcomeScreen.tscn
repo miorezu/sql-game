@@ -1,0 +1,61 @@
+[gd_scene format=3 uid="uid://i6ifbag400pj"]
+
+[ext_resource type="Script" uid="uid://caia6bbw3yfqc" path="res://scripts/presentation/WelcomeScreen.cs" id="1_myxqs"]
+[ext_resource type="Texture2D" uid="uid://b8d7xwovkmgvs" path="res://sprites/Sprite-0002.png" id="1_xkx7n"]
+
+[node name="WelcomeScreen" type="Control" unique_id=2128121447 node_paths=PackedStringArray("_nameInput", "_confirmButton", "_errorLabel")]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_myxqs")
+_nameInput = NodePath("CenterContainer/PanelContainer/MarginContainer/VBoxContainer/EnterName")
+_confirmButton = NodePath("CenterContainer/PanelContainer/MarginContainer/VBoxContainer/ConfirmButton")
+_errorLabel = NodePath("CenterContainer/PanelContainer/MarginContainer/VBoxContainer/ErrorLabel")
+
+[node name="ColorRect" type="ColorRect" parent="." unique_id=700668585]
+layout_mode = 0
+offset_right = 1280.0
+offset_bottom = 720.0
+color = Color(1.0588765e-06, 0.4813214, 0.46344584, 1)
+
+[node name="CenterContainer" type="CenterContainer" parent="." unique_id=692008037]
+custom_minimum_size = Vector2(1280, 720)
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="PanelContainer" type="PanelContainer" parent="CenterContainer" unique_id=2061000538]
+custom_minimum_size = Vector2(600, 350)
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="CenterContainer/PanelContainer" unique_id=747163890]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CenterContainer/PanelContainer/MarginContainer" unique_id=622815492]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="CenterContainer/PanelContainer/MarginContainer/VBoxContainer" unique_id=1278509534]
+layout_mode = 2
+
+[node name="DescriptionLabel" type="Label" parent="CenterContainer/PanelContainer/MarginContainer/VBoxContainer" unique_id=1704803454]
+custom_minimum_size = Vector2(500, 0)
+layout_mode = 2
+autowrap_mode = 2
+
+[node name="EnterName" type="LineEdit" parent="CenterContainer/PanelContainer/MarginContainer/VBoxContainer" unique_id=836697639]
+layout_mode = 2
+placeholder_text = "Введіть  ім'я:"
+
+[node name="ErrorLabel" type="Label" parent="CenterContainer/PanelContainer/MarginContainer/VBoxContainer" unique_id=1482424311]
+layout_mode = 2
+
+[node name="ConfirmButton" type="TextureButton" parent="CenterContainer/PanelContainer/MarginContainer/VBoxContainer" unique_id=368604362]
+layout_mode = 2
+texture_normal = ExtResource("1_xkx7n")

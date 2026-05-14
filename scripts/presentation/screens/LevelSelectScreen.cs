@@ -5,11 +5,16 @@ public partial class LevelSelectScreen : Control
 {
     [Export] private Control _mapContent;
     [Export] private TopBarUi _topBar;
+    [Export] private WelcomeScreen _welcomeScreen;
 
     public override void _Ready()
     {
         _topBar.SetMode(TopBarUi.TopBarMode.MainMenu);
         SetupLevelButtons();
+        if (_welcomeScreen != null)
+            _welcomeScreen.TryShow();
+        else
+            GD.PrintErr("WelcomeScreen не призначено");
     }
 
     public void SetupLevelButtons()
