@@ -2,15 +2,20 @@
 
 [ext_resource type="Script" uid="uid://d02n5a46du1h7" path="res://scripts/presentation/level/TopBarUi.cs" id="1_66sx5"]
 [ext_resource type="Texture2D" uid="uid://toikuvurcgn7" path="res://sprites/ui/icons/Home.svg" id="2_upp2f"]
+[ext_resource type="FontFile" uid="uid://bek7n5nuh3iit" path="res://sprites/fonts/ZeroCool.ttf" id="3_ry612"]
 [ext_resource type="Texture2D" uid="uid://cl82uymico1xk" path="res://sprites/ui/icons/Replay.svg" id="3_upp2f"]
 [ext_resource type="Texture2D" uid="uid://ctyql0ao3dm46" path="res://sprites/ui/icons/Player.svg" id="4_ry612"]
 [ext_resource type="Texture2D" uid="uid://qhhx7a2qmtnx" path="res://sprites/ui/icons/Gear.svg" id="5_x1gth"]
 [ext_resource type="Texture2D" uid="uid://b4jje56foh0hk" path="res://sprites/ui/icons/Question.svg" id="6_l530g"]
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_x1gth"]
+bg_color = Color(0.7411765, 0.8156863, 0.99215686, 1)
+
 [node name="TopBarUi" type="PanelContainer" unique_id=2080252660 node_paths=PackedStringArray("_homeButton", "_timerLabel", "_restartButton", "_profileButton", "_settingsButton", "_hintButton")]
 custom_minimum_size = Vector2(1280, 72)
 offset_right = 50.0
 offset_bottom = 50.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_x1gth")
 script = ExtResource("1_66sx5")
 _homeButton = NodePath("TopBar/Home")
 _timerLabel = NodePath("TopBar/TimeLabel")
@@ -33,24 +38,30 @@ stretch_mode = 3
 layout_mode = 2
 
 [node name="TimeLabel" type="Label" parent="TopBar" unique_id=1749809055]
-custom_minimum_size = Vector2(1000, 40)
+custom_minimum_size = Vector2(1090, 40)
 layout_mode = 2
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 5
+theme_override_fonts/font = ExtResource("3_ry612")
+theme_override_font_sizes/font_size = 35
+text = "67:97"
 horizontal_alignment = 1
 
 [node name="RestartLevel" type="TextureButton" parent="TopBar" unique_id=1615295748]
-visible = false
 custom_minimum_size = Vector2(40, 40)
 layout_mode = 2
 texture_normal = ExtResource("3_upp2f")
 stretch_mode = 3
 
 [node name="Profile" type="TextureButton" parent="TopBar" unique_id=2069115542]
+visible = false
 custom_minimum_size = Vector2(40, 40)
 layout_mode = 2
 texture_normal = ExtResource("4_ry612")
 stretch_mode = 3
 
 [node name="Settings" type="TextureButton" parent="TopBar" unique_id=1755487969]
+visible = false
 custom_minimum_size = Vector2(40, 40)
 layout_mode = 2
 texture_normal = ExtResource("5_x1gth")

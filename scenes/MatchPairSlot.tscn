@@ -3,12 +3,16 @@
 [ext_resource type="Script" uid="uid://dhfjgo3obtdqx" path="res://scripts/presentation/match/MatchPairSlot.cs" id="1_xqk67"]
 [ext_resource type="Script" uid="uid://ws0d4rdmyw06" path="res://scripts/presentation/match/MatchDropArea.cs" id="2_ttfg6"]
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_xqk67"]
+bg_color = Color(1, 1, 1, 1)
+
 [node name="MatchPairSlot" type="PanelContainer" unique_id=616134456 node_paths=PackedStringArray("_leftDropArea", "_rightDropArea")]
 custom_minimum_size = Vector2(260, 40)
 offset_right = 272.0
 offset_bottom = 40.0
 size_flags_horizontal = 4
 size_flags_vertical = 4
+theme_override_styles/panel = SubResource("StyleBoxFlat_xqk67")
 script = ExtResource("1_xqk67")
 _leftDropArea = NodePath("HBoxContainer/LeftDropArea")
 _rightDropArea = NodePath("HBoxContainer/RightDropArea")
@@ -24,7 +28,9 @@ script = ExtResource("2_ttfg6")
 [node name="Label" type="Label" parent="HBoxContainer" unique_id=942474215]
 custom_minimum_size = Vector2(20, 0)
 layout_mode = 2
-text = "<->"
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 28
+text = "⇔"
 
 [node name="RightDropArea" type="PanelContainer" parent="HBoxContainer" unique_id=993231619]
 custom_minimum_size = Vector2(120, 0)

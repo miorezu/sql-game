@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://b8d7xwovkmgvs"
-path="res://.godot/imported/Sprite-0002.png-006a7d573f00d71cff50d745e035eded.ctex"
+uid="uid://b1tnisul2jevm"
+path="res://.godot/imported/locked170.png-b19ace68ac9c05bbd708d360466eccf7.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://sprites/Sprite-0002.png"
-dest_files=["res://.godot/imported/Sprite-0002.png-006a7d573f00d71cff50d745e035eded.ctex"]
+source_file="res://sprites/ui/level/locked170.png"
+dest_files=["res://.godot/imported/locked170.png-b19ace68ac9c05bbd708d360466eccf7.ctex"]
 
 [params]
 

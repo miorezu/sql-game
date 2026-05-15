@@ -81,7 +81,16 @@ public partial class QueryBuilder : FlowContainer
             {
                 closestDist = dist;
                 closestIndex = index;
-                insertBefore = position.X < childCenter.X;
+
+                bool lowerRow = position.Y > childCenter.Y + control.Size.Y / 2f;
+                bool upperRow = position.Y < childCenter.Y - control.Size.Y / 2f;
+
+                if (lowerRow)
+                    insertBefore = false;
+                else if (upperRow)
+                    insertBefore = true;
+                else
+                    insertBefore = position.X < childCenter.X;
             }
 
             index++;

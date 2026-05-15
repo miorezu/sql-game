@@ -5,16 +5,21 @@
 
 [node name="SQLBlock" type="Button" unique_id=1855077396 node_paths=PackedStringArray("_helpLabel")]
 custom_minimum_size = Vector2(120, 40)
+offset_right = 120.0
+offset_bottom = 40.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_fonts/font = ExtResource("1_cfnci")
 theme_override_font_sizes/font_size = 20
 script = ExtResource("1_josbt")
 _helpLabel = NodePath("Help")
 
 [node name="Help" type="Label" parent="." unique_id=1786299668]
-visible = false
-layout_mode = 0
-offset_left = 109.72
-offset_right = 119.72
-offset_bottom = 23.0
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.93100005
+anchor_right = 0.998
+anchor_bottom = 0.57500005
+offset_right = -0.040000916
 mouse_filter = 1
 text = "?"
+horizontal_alignment = 2

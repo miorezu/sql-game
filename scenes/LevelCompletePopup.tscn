@@ -1,74 +1,109 @@
 [gd_scene format=3 uid="uid://x6ppuh8hnet4"]
 
 [ext_resource type="Script" uid="uid://cpe1o0vf441ec" path="res://scripts/presentation/screens/LevelCompletePopup.cs" id="1_apapc"]
-[ext_resource type="Texture2D" uid="uid://b8d7xwovkmgvs" path="res://sprites/Sprite-0002.png" id="2_64myp"]
+[ext_resource type="Texture2D" uid="uid://dy6fjri6kubvb" path="res://sprites/ui/panel/Large.svg" id="2_btflc"]
+[ext_resource type="FontFile" uid="uid://bek7n5nuh3iit" path="res://sprites/fonts/ZeroCool.ttf" id="3_2b6xx"]
+[ext_resource type="FontFile" uid="uid://csfljwauc3f2o" path="res://sprites/fonts/Sagewold-Regular.ttf" id="4_am7xt"]
+[ext_resource type="Texture2D" uid="uid://q1ufe8i53baj" path="res://sprites/ui/icons/LevelsButton.svg" id="5_2b6xx"]
+[ext_resource type="Texture2D" uid="uid://doiem5x5fiad" path="res://sprites/ui/icons/ArrowRightButton.svg" id="6_am7xt"]
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_0fq50"]
+texture = ExtResource("2_btflc")
+modulate_color = Color(0.6426924, 0.7878747, 1, 1)
 
 [node name="LevelCompletePopup" type="Control" unique_id=1487273030 node_paths=PackedStringArray("_titleLabel", "_selectLevelButton", "_nextLevelButton")]
+custom_minimum_size = Vector2(1280, 720)
 layout_mode = 3
-anchor_right = 0.30400002
-anchor_bottom = 0.54
-offset_left = 417.0
-offset_top = 134.0
-offset_right = 416.792
-offset_bottom = 134.07999
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 1
 script = ExtResource("1_apapc")
-_titleLabel = NodePath("Panel/VBoxContainer/Label")
+_titleLabel = NodePath("Panel/VBoxContainer/Congratulations")
 _selectLevelButton = NodePath("Panel/VBoxContainer/HBoxContainer/AllLevels")
 _nextLevelButton = NodePath("Panel/VBoxContainer/HBoxContainer/NextLevel")
 
-[node name="ColorRect" type="ColorRect" parent="." unique_id=1811899080]
-visible = false
-custom_minimum_size = Vector2(350, 350)
-layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.009000001
-anchor_right = 1.0090001
-anchor_bottom = 0.99700004
-offset_left = -0.1500001
-offset_top = -1.0
-offset_right = -0.15002441
-offset_bottom = 0.049987793
-mouse_filter = 1
-
 [node name="Panel" type="Panel" parent="." unique_id=1936472737]
 layout_mode = 0
-offset_left = 3.0
-offset_top = -1.0
-offset_right = 353.0
-offset_bottom = 349.0
+offset_left = 488.0
+offset_top = 155.0
+offset_right = 838.0
+offset_bottom = 505.0
 mouse_filter = 1
+theme_override_styles/panel = SubResource("StyleBoxTexture_0fq50")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="Panel" unique_id=1540393130]
 custom_minimum_size = Vector2(350, 350)
 layout_mode = 0
-offset_right = 40.0
-offset_bottom = 40.0
+offset_left = 1.0
+offset_top = 2.0
+offset_right = 351.0
+offset_bottom = 352.0
 mouse_filter = 2
+theme_override_constants/separation = 5
 
-[node name="Label" type="Label" parent="Panel/VBoxContainer" unique_id=466925843]
+[node name="Congratulations" type="Label" parent="Panel/VBoxContainer" unique_id=466925843]
 custom_minimum_size = Vector2(350, 100)
 layout_mode = 2
-text = "Вітаю! Рівень пройден!"
+theme_override_constants/outline_size = 3
+theme_override_fonts/font = ExtResource("3_2b6xx")
+theme_override_font_sizes/font_size = 28
+text = "Вітаю! 
+Ви пройшли рівень!"
+horizontal_alignment = 1
+
+[node name="XP" type="Label" parent="Panel/VBoxContainer" unique_id=866371305]
+layout_mode = 2
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 2
+theme_override_fonts/font = ExtResource("4_am7xt")
+theme_override_font_sizes/font_size = 30
+text = "Ви отримали 100 ХР"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Time" type="Label" parent="Panel/VBoxContainer" unique_id=2021407973]
+layout_mode = 2
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 2
+theme_override_fonts/font = ExtResource("4_am7xt")
+theme_override_font_sizes/font_size = 30
+text = "Пройден за 12:03"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Errors" type="Label" parent="Panel/VBoxContainer" unique_id=937126381]
+layout_mode = 2
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 2
+theme_override_fonts/font = ExtResource("4_am7xt")
+theme_override_font_sizes/font_size = 30
+text = "Зроблено помилок: 7"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Space" type="Control" parent="Panel/VBoxContainer" unique_id=62774109]
+custom_minimum_size = Vector2(30, 25)
+layout_mode = 2
 
 [node name="HBoxContainer" type="HBoxContainer" parent="Panel/VBoxContainer" unique_id=106255572]
 custom_minimum_size = Vector2(350, 50)
 layout_mode = 2
 mouse_filter = 2
+theme_override_constants/separation = 55
 alignment = 1
 
 [node name="AllLevels" type="TextureButton" parent="Panel/VBoxContainer/HBoxContainer" unique_id=1972533475]
 custom_minimum_size = Vector2(100, 50)
 layout_mode = 2
-texture_normal = ExtResource("2_64myp")
+texture_normal = ExtResource("5_2b6xx")
 stretch_mode = 0
 
 [node name="NextLevel" type="TextureButton" parent="Panel/VBoxContainer/HBoxContainer" unique_id=1345823576]
-modulate = Color(1, 0.29803923, 1, 1)
 z_index = 5
 custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
-texture_normal = ExtResource("2_64myp")
+texture_normal = ExtResource("6_am7xt")
 stretch_mode = 0

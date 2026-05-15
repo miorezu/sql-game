@@ -3,6 +3,11 @@
 [ext_resource type="PackedScene" uid="uid://c07kdefxleccp" path="res://scenes/TopBarUI.tscn" id="1_1mq2r"]
 [ext_resource type="PackedScene" uid="uid://bpm7fi2o3j8a4" path="res://scenes/Leaderboard.tscn" id="2_nc308"]
 [ext_resource type="Script" uid="uid://cs4tpbybo5opo" path="res://scripts/presentation/screens/ProfileScreen.cs" id="2_pjkmf"]
+[ext_resource type="FontFile" uid="uid://bek7n5nuh3iit" path="res://sprites/fonts/ZeroCool.ttf" id="3_a020l"]
+[ext_resource type="Theme" uid="uid://cp2eyb2qjw6gx" path="res://resources/base_font_theme.tres" id="4_a020l"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_5nkgg"]
+bg_color = Color(0.16862746, 0, 0.3372549, 0.38039216)
 
 [node name="ProfileScreen" type="Control" unique_id=929300861 node_paths=PackedStringArray("_topBar", "_playerNameValueLabel", "_profileCreatedAtValueLabel", "_xpValueLabel", "_completedLevelsValueLabel", "_totalBestTimeValueLabel", "_averageBestTimeValueLabel", "_currentRankValueLabel", "_bestRankValueLabel")]
 layout_mode = 3
@@ -29,7 +34,7 @@ anchor_right = 1.0020001
 anchor_bottom = 1.0
 offset_right = -0.30407715
 offset_bottom = -1.0
-color = Color(0.60172784, 0.251024, 0.58783734, 1)
+color = Color(0.84705883, 0.7882353, 1, 1)
 
 [node name="VBoxContainer" type="VBoxContainer" parent="." unique_id=1739545538]
 layout_mode = 0
@@ -47,6 +52,7 @@ theme_override_constants/separation = 150
 
 [node name="PanelContainer" type="PanelContainer" parent="VBoxContainer/HBoxContainer" unique_id=2081084945]
 layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_5nkgg")
 
 [node name="MarginContainer" type="MarginContainer" parent="VBoxContainer/HBoxContainer/PanelContainer" unique_id=1216689513]
 custom_minimum_size = Vector2(500, 0)
@@ -61,7 +67,10 @@ layout_mode = 2
 
 [node name="Label" type="Label" parent="VBoxContainer/HBoxContainer/PanelContainer/MarginContainer/VBoxContainer" unique_id=1716168876]
 layout_mode = 2
-theme_override_font_sizes/font_size = 22
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 4
+theme_override_fonts/font = ExtResource("3_a020l")
+theme_override_font_sizes/font_size = 30
 text = "Інформація користувача"
 
 [node name="GridContainer" type="GridContainer" parent="VBoxContainer/HBoxContainer/PanelContainer/MarginContainer/VBoxContainer" unique_id=1835482376]
@@ -72,68 +81,86 @@ columns = 2
 
 [node name="Name" type="Label" parent="VBoxContainer/HBoxContainer/PanelContainer/MarginContainer/VBoxContainer/GridContainer" unique_id=2110750624]
 layout_mode = 2
+theme = ExtResource("4_a020l")
 text = "Ім'я"
 
 [node name="NameValueLabel" type="Label" parent="VBoxContainer/HBoxContainer/PanelContainer/MarginContainer/VBoxContainer/GridContainer" unique_id=2112853960]
 layout_mode = 2
+theme = ExtResource("4_a020l")
 
 [node name="Data" type="Label" parent="VBoxContainer/HBoxContainer/PanelContainer/MarginContainer/VBoxContainer/GridContainer" unique_id=802584948]
 layout_mode = 2
+theme = ExtResource("4_a020l")
 text = "Профіль створено:"
 
 [node name="DataValueLabel" type="Label" parent="VBoxContainer/HBoxContainer/PanelContainer/MarginContainer/VBoxContainer/GridContainer" unique_id=1638254029]
 layout_mode = 2
+theme = ExtResource("4_a020l")
 
 [node name="Xp" type="Label" parent="VBoxContainer/HBoxContainer/PanelContainer/MarginContainer/VBoxContainer/GridContainer" unique_id=2033319138]
 layout_mode = 2
+theme = ExtResource("4_a020l")
 text = "Досвід:"
 
 [node name="XpValueLabel" type="Label" parent="VBoxContainer/HBoxContainer/PanelContainer/MarginContainer/VBoxContainer/GridContainer" unique_id=1489298226]
 layout_mode = 2
+theme = ExtResource("4_a020l")
 
 [node name="CompletedLevels" type="Label" parent="VBoxContainer/HBoxContainer/PanelContainer/MarginContainer/VBoxContainer/GridContainer" unique_id=1131134938]
 layout_mode = 2
+theme = ExtResource("4_a020l")
 text = "Пройдено рівнів:"
 
 [node name="CompletedLevelsValueLabel" type="Label" parent="VBoxContainer/HBoxContainer/PanelContainer/MarginContainer/VBoxContainer/GridContainer" unique_id=1035126072]
 layout_mode = 2
+theme = ExtResource("4_a020l")
 
 [node name="Progress" type="Label" parent="VBoxContainer/HBoxContainer/PanelContainer/MarginContainer/VBoxContainer/GridContainer" unique_id=1823179459]
 visible = false
 layout_mode = 2
+theme = ExtResource("4_a020l")
 text = "Прогрес навчання:"
 
 [node name="ProgressValueLabel" type="Label" parent="VBoxContainer/HBoxContainer/PanelContainer/MarginContainer/VBoxContainer/GridContainer" unique_id=195320619]
 visible = false
 layout_mode = 2
+theme = ExtResource("4_a020l")
 
 [node name="TotalTime" type="Label" parent="VBoxContainer/HBoxContainer/PanelContainer/MarginContainer/VBoxContainer/GridContainer" unique_id=1670048586]
 layout_mode = 2
+theme = ExtResource("4_a020l")
 text = "Сумарний час:"
 
 [node name="TotalTimeValueLabel2" type="Label" parent="VBoxContainer/HBoxContainer/PanelContainer/MarginContainer/VBoxContainer/GridContainer" unique_id=651497379]
 layout_mode = 2
+theme = ExtResource("4_a020l")
 
 [node name="AverageTime" type="Label" parent="VBoxContainer/HBoxContainer/PanelContainer/MarginContainer/VBoxContainer/GridContainer" unique_id=1327180563]
 layout_mode = 2
+theme = ExtResource("4_a020l")
 text = "Середній час рівня:"
 
 [node name="AverageTimeValueLabel2" type="Label" parent="VBoxContainer/HBoxContainer/PanelContainer/MarginContainer/VBoxContainer/GridContainer" unique_id=1135286897]
 layout_mode = 2
+theme = ExtResource("4_a020l")
 
 [node name="RankPlace" type="Label" parent="VBoxContainer/HBoxContainer/PanelContainer/MarginContainer/VBoxContainer/GridContainer" unique_id=686175888]
 layout_mode = 2
+theme = ExtResource("4_a020l")
 text = "Ваше місце в рейтингу:"
 
 [node name="RankPlaceValueLabel" type="Label" parent="VBoxContainer/HBoxContainer/PanelContainer/MarginContainer/VBoxContainer/GridContainer" unique_id=555982438]
 layout_mode = 2
+theme = ExtResource("4_a020l")
 
 [node name="BestRankPlace" type="Label" parent="VBoxContainer/HBoxContainer/PanelContainer/MarginContainer/VBoxContainer/GridContainer" unique_id=1950452581]
 layout_mode = 2
+theme = ExtResource("4_a020l")
 text = "Найкраще місце в рейтингу:"
 
 [node name="BestRankPlaceValueLabel" type="Label" parent="VBoxContainer/HBoxContainer/PanelContainer/MarginContainer/VBoxContainer/GridContainer" unique_id=1370911220]
 layout_mode = 2
+theme = ExtResource("4_a020l")
 
 [node name="LeaderboardView" parent="VBoxContainer/HBoxContainer" unique_id=1275561435 instance=ExtResource("2_nc308")]
 layout_mode = 2

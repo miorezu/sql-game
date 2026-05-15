@@ -66,33 +66,27 @@ public partial class SqlBlock : Button
 
     private void SetHint()
     {
+        TooltipText = "";
+
+        if (_helpLabel == null)
+            return;
+
         if (!ShowHint)
         {
-            TooltipText = "";
-
-            if (_helpLabel != null)
-            {
-                _helpLabel.Visible = false;
-                _helpLabel.Text = "";
-                _helpLabel.TooltipText = "";
-                _helpLabel.MouseFilter = MouseFilterEnum.Ignore;
-            }
-
+            _helpLabel.Visible = false;
+            _helpLabel.Text = "";
+            _helpLabel.TooltipText = "";
+            _helpLabel.MouseFilter = MouseFilterEnum.Ignore;
             return;
         }
 
         string description = GetHintText();
 
-        TooltipText = description;
-
-        if (_helpLabel == null)
-            return;
-
         _helpLabel.Visible = true;
         _helpLabel.Text = "?";
         _helpLabel.TooltipText = description;
 
-        _helpLabel.MouseFilter = MouseFilterEnum.Ignore;
+        _helpLabel.MouseFilter = MouseFilterEnum.Stop;
     }
     
     private string GetHintText()

@@ -5,6 +5,9 @@
 [ext_resource type="PackedScene" uid="uid://dpxo7mhangn6r" path="res://scenes/LevelMapButton.tscn" id="2_b6wlh"]
 [ext_resource type="PackedScene" uid="uid://i6ifbag400pj" path="res://scenes/WelcomeScreen.tscn" id="5_u0a2w"]
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_4a4xe"]
+bg_color = Color(0.7420494, 0.8140937, 0.99186367, 1)
+
 [node name="LevelSelectScreen" type="Control" unique_id=988360067 node_paths=PackedStringArray("_mapContent", "_topBar", "_welcomeScreen")]
 layout_mode = 3
 anchors_preset = 15
@@ -26,7 +29,7 @@ anchor_bottom = 1.0
 offset_right = -0.30407715
 offset_bottom = -1.0
 mouse_filter = 2
-color = Color(0, 0.48582184, 0.39470935, 1)
+color = Color(0.35332644, 0.4188015, 0.5832403, 1)
 
 [node name="VBoxContainer2" type="VBoxContainer" parent="." unique_id=975206104]
 layout_mode = 0
@@ -35,6 +38,7 @@ offset_bottom = 796.0
 
 [node name="TopBar" parent="VBoxContainer2" unique_id=2080252660 instance=ExtResource("2_4a4xe")]
 layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_4a4xe")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer2" unique_id=2125423821]
 layout_mode = 2

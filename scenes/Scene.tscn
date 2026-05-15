@@ -64,11 +64,11 @@ mouse_filter = 2
 script = ExtResource("4_i2t4f")
 
 [node name="LevelCompletePopup" parent="." unique_id=1487273030 instance=ExtResource("7_5kwoq")]
-visible = false
 z_index = 4
 layout_mode = 1
-offset_left = 416.896
-offset_right = 416.896
+anchors_preset = 15
+offset_right = 1280.0
+offset_bottom = 720.0
 
 [node name="TutorialController" type="Control" parent="." unique_id=1974636755 node_paths=PackedStringArray("_tutorialOverlay")]
 anchors_preset = 0

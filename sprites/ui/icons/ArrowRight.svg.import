@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://c0gihh8u141de"
-path="res://.godot/imported/profile.png-9e58bbb3f7e691a3051041f7c2eaa5a0.ctex"
+uid="uid://dvp2dsdi5wvkg"
+path="res://.godot/imported/ArrowRight.svg-0d367b776331781a2d73fb7bc36145cc.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://sprites/profile.png"
-dest_files=["res://.godot/imported/profile.png-9e58bbb3f7e691a3051041f7c2eaa5a0.ctex"]
+source_file="res://sprites/ui/icons/ArrowRight.svg"
+dest_files=["res://.godot/imported/ArrowRight.svg-0d367b776331781a2d73fb7bc36145cc.ctex"]
 
 [params]
 
@@ -38,3 +38,6 @@ process/hdr_as_srgb=false
 process/hdr_clamp_exposure=false
 process/size_limit=0
 detect_3d/compress_to=1
+svg/scale=1.0
+editor/scale_with_editor_scale=false
+editor/convert_colors_with_editor_theme=false

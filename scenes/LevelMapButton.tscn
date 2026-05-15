@@ -16,11 +16,15 @@ grow_horizontal = 2
 grow_vertical = 2
 texture_normal = ExtResource("1_s7o0k")
 script = ExtResource("2_akrqu")
+CompletedColor = Color(0.54509807, 0.8784314, 0.6901961, 1)
+CurrentColor = Color(0.49803922, 0.7019608, 1, 1)
+LockedColor = Color(0.84705883, 0.7882353, 1, 1)
 _bestTimeLbl = NodePath("BestTime")
 _lockIcon = NodePath("LockIcon")
 _numberLevelLbl = NodePath("Label")
 
 [node name="LockIcon" type="TextureRect" parent="." unique_id=1249942500]
+modulate = Color(0.84705883, 0.7882353, 1, 1)
 layout_mode = 0
 offset_right = 170.0
 offset_bottom = 170.0

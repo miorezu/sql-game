@@ -2,9 +2,22 @@
 
 [ext_resource type="Script" uid="uid://d1r510cveaxv0" path="res://scripts/presentation/table/TableLevel.cs" id="1_7oj3h"]
 [ext_resource type="Script" uid="uid://h6x153drhkj4" path="res://scripts/presentation/table/TableTreeView.cs" id="3_etb3l"]
+[ext_resource type="FontFile" uid="uid://bek7n5nuh3iit" path="res://sprites/fonts/ZeroCool.ttf" id="3_xg7xg"]
 [ext_resource type="Script" uid="uid://clea6magiq6qh" path="res://scripts/presentation/table/QueryBuilder.cs" id="4_7oj3h"]
 [ext_resource type="PackedScene" uid="uid://oiwo131hxpn0" path="res://scenes/SQLBlock.tscn" id="4_etb3l"]
 [ext_resource type="Script" uid="uid://dau73n48am63h" path="res://scripts/presentation/blocks/BlockPalette.cs" id="5_7oj3h"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_etb3l"]
+bg_color = Color(0.49803922, 0.7019608, 1, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ysyoe"]
+bg_color = Color(0.84705883, 0.7882353, 1, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_xcgii"]
+bg_color = Color(0.49803922, 0.7019608, 1, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_1u5di"]
+bg_color = Color(0.49803922, 0.7019608, 1, 1)
 
 [node name="TableLevel" type="Control" unique_id=679337163 node_paths=PackedStringArray("_sourceTreeView", "_expectedTreeView", "_sqlBlocksContainer", "_queryBuilder", "_blocksContainer", "_queryDropArea")]
 layout_mode = 3
@@ -15,10 +28,10 @@ mouse_filter = 1
 script = ExtResource("1_7oj3h")
 _sourceTreeView = NodePath("VBoxContainer/HBoxContainer/SourcePanel/VBoxContainer/Control")
 _expectedTreeView = NodePath("VBoxContainer/HBoxContainer/Target/VBoxContainer/Control")
-_sqlBlocksContainer = NodePath("VBoxContainer/BlockPanel/HBoxContainer/BlocksContainer")
+_sqlBlocksContainer = NodePath("VBoxContainer/BlockPanel/MarginContainer/BlocksContainer")
 _sqlBlockScene = ExtResource("4_etb3l")
 _queryBuilder = NodePath("VBoxContainer/HBoxContainer/Query/VBoxContainer/ScrollContainer/QueryBuilder")
-_blocksContainer = NodePath("VBoxContainer/BlockPanel/HBoxContainer/BlocksContainer")
+_blocksContainer = NodePath("VBoxContainer/BlockPanel/MarginContainer/BlocksContainer")
 _queryDropArea = NodePath("VBoxContainer/HBoxContainer/Query/VBoxContainer/ScrollContainer/QueryBuilder")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="." unique_id=46182614]
@@ -32,13 +45,20 @@ layout_mode = 2
 [node name="SourcePanel" type="PanelContainer" parent="VBoxContainer/HBoxContainer" unique_id=957335526]
 custom_minimum_size = Vector2(440, 415)
 layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_etb3l")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/HBoxContainer/SourcePanel" unique_id=747723436]
 layout_mode = 2
 
 [node name="Label" type="Label" parent="VBoxContainer/HBoxContainer/SourcePanel/VBoxContainer" unique_id=970349853]
 layout_mode = 2
-text = "Вихідна таблиця"
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 3
+theme_override_fonts/font = ExtResource("3_xg7xg")
+theme_override_font_sizes/font_size = 30
+text = "Початкова таблиця"
+horizontal_alignment = 1
+vertical_alignment = 1
 
 [node name="Control" type="Control" parent="VBoxContainer/HBoxContainer/SourcePanel/VBoxContainer" unique_id=1353610622 node_paths=PackedStringArray("_tree")]
 layout_mode = 2
@@ -46,11 +66,12 @@ script = ExtResource("3_etb3l")
 _tree = NodePath("SourceTable")
 
 [node name="SourceTable" type="Tree" parent="VBoxContainer/HBoxContainer/SourcePanel/VBoxContainer/Control" unique_id=437994831]
-custom_minimum_size = Vector2(440, 300)
+custom_minimum_size = Vector2(440, 370)
 layout_mode = 0
 offset_top = 4.0
 offset_right = 400.0
 offset_bottom = 304.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
 columns = 5
 column_titles_visible = true
 hide_root = true
@@ -58,13 +79,20 @@ hide_root = true
 [node name="Query" type="PanelContainer" parent="VBoxContainer/HBoxContainer" unique_id=1085344398]
 custom_minimum_size = Vector2(400, 415)
 layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_ysyoe")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/HBoxContainer/Query" unique_id=1475481279]
 layout_mode = 2
 
 [node name="Label" type="Label" parent="VBoxContainer/HBoxContainer/Query/VBoxContainer" unique_id=730370693]
 layout_mode = 2
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 3
+theme_override_fonts/font = ExtResource("3_xg7xg")
+theme_override_font_sizes/font_size = 30
 text = "SQL "
+horizontal_alignment = 1
+vertical_alignment = 1
 
 [node name="ScrollContainer" type="ScrollContainer" parent="VBoxContainer/HBoxContainer/Query/VBoxContainer" unique_id=1606742698]
 custom_minimum_size = Vector2(300, 300)
@@ -85,13 +113,20 @@ text = "Check"
 [node name="Target" type="PanelContainer" parent="VBoxContainer/HBoxContainer" unique_id=1227268845]
 custom_minimum_size = Vector2(440, 415)
 layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_xcgii")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/HBoxContainer/Target" unique_id=1939480013]
 layout_mode = 2
 
 [node name="Label" type="Label" parent="VBoxContainer/HBoxContainer/Target/VBoxContainer" unique_id=260117942]
 layout_mode = 2
-text = "Очікуваний результат / завдання"
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 3
+theme_override_fonts/font = ExtResource("3_xg7xg")
+theme_override_font_sizes/font_size = 30
+text = "Очікуваний результат"
+horizontal_alignment = 1
+vertical_alignment = 1
 
 [node name="Control" type="Control" parent="VBoxContainer/HBoxContainer/Target/VBoxContainer" unique_id=632282040 node_paths=PackedStringArray("_tree")]
 layout_mode = 2
@@ -101,82 +136,83 @@ _tree = NodePath("ExpectedTable")
 [node name="ExpectedTable" type="Tree" parent="VBoxContainer/HBoxContainer/Target/VBoxContainer/Control" unique_id=769554755]
 layout_mode = 0
 offset_top = 4.0
-offset_right = 427.0
-offset_bottom = 304.0
+offset_right = 430.0
+offset_bottom = 374.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
 
 [node name="BlockPanel" type="PanelContainer" parent="VBoxContainer" unique_id=1301707458]
 custom_minimum_size = Vector2(1280, 225)
 layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_1u5di")
 
-[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/BlockPanel" unique_id=396458713]
+[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer/BlockPanel" unique_id=260412305]
 layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
 
-[node name="BlocksContainer" type="FlowContainer" parent="VBoxContainer/BlockPanel/HBoxContainer" unique_id=1639618772]
+[node name="BlocksContainer" type="FlowContainer" parent="VBoxContainer/BlockPanel/MarginContainer" unique_id=1639618772]
 custom_minimum_size = Vector2(1100, 100)
 layout_mode = 2
 script = ExtResource("5_7oj3h")
 
-[node name="SQLBlock" parent="VBoxContainer/BlockPanel/HBoxContainer/BlocksContainer" unique_id=1855077396 instance=ExtResource("4_etb3l")]
+[node name="SQLBlock" parent="VBoxContainer/BlockPanel/MarginContainer/BlocksContainer" unique_id=1855077396 instance=ExtResource("4_etb3l")]
 layout_mode = 2
 
-[node name="SQLBlock2" parent="VBoxContainer/BlockPanel/HBoxContainer/BlocksContainer" unique_id=1726466568 instance=ExtResource("4_etb3l")]
+[node name="SQLBlock2" parent="VBoxContainer/BlockPanel/MarginContainer/BlocksContainer" unique_id=1726466568 instance=ExtResource("4_etb3l")]
 layout_mode = 2
 KeywordType = 1
 
-[node name="SQLBlock3" parent="VBoxContainer/BlockPanel/HBoxContainer/BlocksContainer" unique_id=193179531 instance=ExtResource("4_etb3l")]
+[node name="SQLBlock3" parent="VBoxContainer/BlockPanel/MarginContainer/BlocksContainer" unique_id=193179531 instance=ExtResource("4_etb3l")]
 layout_mode = 2
 KeywordType = 2
 
-[node name="SQLBlock4" parent="VBoxContainer/BlockPanel/HBoxContainer/BlocksContainer" unique_id=2066350771 instance=ExtResource("4_etb3l")]
+[node name="SQLBlock4" parent="VBoxContainer/BlockPanel/MarginContainer/BlocksContainer" unique_id=2066350771 instance=ExtResource("4_etb3l")]
 layout_mode = 2
 KeywordType = 9
 
-[node name="SQLBlock5" parent="VBoxContainer/BlockPanel/HBoxContainer/BlocksContainer" unique_id=1913354110 instance=ExtResource("4_etb3l")]
+[node name="SQLBlock5" parent="VBoxContainer/BlockPanel/MarginContainer/BlocksContainer" unique_id=1913354110 instance=ExtResource("4_etb3l")]
 layout_mode = 2
 KeywordType = 6
 
-[node name="SQLBlock6" parent="VBoxContainer/BlockPanel/HBoxContainer/BlocksContainer" unique_id=664584157 instance=ExtResource("4_etb3l")]
+[node name="SQLBlock6" parent="VBoxContainer/BlockPanel/MarginContainer/BlocksContainer" unique_id=664584157 instance=ExtResource("4_etb3l")]
 layout_mode = 2
 Type = 2
 BlockValue = "student"
 
-[node name="SQLBlock7" parent="VBoxContainer/BlockPanel/HBoxContainer/BlocksContainer" unique_id=1592286086 instance=ExtResource("4_etb3l")]
+[node name="SQLBlock7" parent="VBoxContainer/BlockPanel/MarginContainer/BlocksContainer" unique_id=1592286086 instance=ExtResource("4_etb3l")]
 layout_mode = 2
 Type = 2
 BlockValue = "gpa"
-KeywordType = 10
 
-[node name="SQLBlock8" parent="VBoxContainer/BlockPanel/HBoxContainer/BlocksContainer" unique_id=645606479 instance=ExtResource("4_etb3l")]
+[node name="SQLBlock8" parent="VBoxContainer/BlockPanel/MarginContainer/BlocksContainer" unique_id=645606479 instance=ExtResource("4_etb3l")]
 layout_mode = 2
 Type = 3
 BlockValue = ","
 
-[node name="SQLBlock9" parent="VBoxContainer/BlockPanel/HBoxContainer/BlocksContainer" unique_id=129737501 instance=ExtResource("4_etb3l")]
+[node name="SQLBlock9" parent="VBoxContainer/BlockPanel/MarginContainer/BlocksContainer" unique_id=129737501 instance=ExtResource("4_etb3l")]
 layout_mode = 2
 text = "UNI"
 Type = 1
 BlockValue = "UNI"
-KeywordType = 10
 
-[node name="SQLBlock10" parent="VBoxContainer/BlockPanel/HBoxContainer/BlocksContainer" unique_id=673304655 instance=ExtResource("4_etb3l")]
+[node name="SQLBlock10" parent="VBoxContainer/BlockPanel/MarginContainer/BlocksContainer" unique_id=673304655 instance=ExtResource("4_etb3l")]
 layout_mode = 2
 text = "INSERT INTO level1_source (name, position)VALUES ('Svitlana', 'HR');"
 Type = 4
 BlockValue = "INSERT INTO level1_source (name, position)VALUES ('Svitlana', 'HR');"
-KeywordType = 10
 
-[node name="SQLBlock11" parent="VBoxContainer/BlockPanel/HBoxContainer/BlocksContainer" unique_id=1419822334 instance=ExtResource("4_etb3l")]
+[node name="SQLBlock11" parent="VBoxContainer/BlockPanel/MarginContainer/BlocksContainer" unique_id=1419822334 instance=ExtResource("4_etb3l")]
 layout_mode = 2
 text = "INSERT INTO level1_source (name, position)VALUES ('Andrii', 'Developer');"
 Type = 4
 BlockValue = "INSERT INTO level1_source (name, position)VALUES ('Andrii', 'Developer');"
-KeywordType = 10
 
-[node name="SQLBlock12" parent="VBoxContainer/BlockPanel/HBoxContainer/BlocksContainer" unique_id=849346681 instance=ExtResource("4_etb3l")]
+[node name="SQLBlock12" parent="VBoxContainer/BlockPanel/MarginContainer/BlocksContainer" unique_id=849346681 instance=ExtResource("4_etb3l")]
 layout_mode = 2
 text = "INSERT INTO level1_source (name, position)VALUES ('Olga', 'Manager');"
 Type = 4
 BlockValue = "INSERT INTO level1_source (name, position)VALUES ('Olga', 'Manager');"
-KeywordType = 10
 
 [connection signal="pressed" from="VBoxContainer/HBoxContainer/Query/VBoxContainer/CheckButton" to="." method="OnCheckButtonPressed"]
