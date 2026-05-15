@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://iqnggwbx2ald"]
 
-[ext_resource type="Script" uid="uid://ccqgon83kd3g7" path="res://scripts/presentation/level/TutorialOverlay.cs" id="1_xi232"]
+[ext_resource type="Script" uid="uid://ccqgon83kd3g7" path="res://scripts/presentation/tutorial/TutorialOverlay.cs" id="1_xi232"]
 [ext_resource type="PackedScene" uid="uid://oiwo131hxpn0" path="res://scenes/SQLBlock.tscn" id="2_jc0cb"]
 [ext_resource type="Texture2D" uid="uid://dhf2umsy21i1t" path="res://sprites/ui/panel/Dummy.svg" id="3_pg1uw"]
 [ext_resource type="Texture2D" uid="uid://bts012j216j20" path="res://sprites/ui/panel/Titled.svg" id="5_67end"]
@@ -35,7 +35,6 @@ offset_left = 276.0
 offset_top = 458.0
 offset_right = 396.0
 offset_bottom = 498.0
-theme_override_font_sizes/font_size = 20
 
 [node name="GhostBlock2" parent="." unique_id=1862246875 instance=ExtResource("2_jc0cb")]
 self_modulate = Color(0.0627451, 0.45882353, 0.8117647, 1)
@@ -44,7 +43,6 @@ offset_left = 116.0
 offset_top = 455.0
 offset_right = 236.0
 offset_bottom = 495.0
-theme_override_font_sizes/font_size = 20
 
 [node name="VBoxContainer" type="VBoxContainer" parent="." unique_id=497678282]
 z_index = 5

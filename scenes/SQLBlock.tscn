@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://oiwo131hxpn0"]
 
 [ext_resource type="FontFile" uid="uid://bek7n5nuh3iit" path="res://sprites/fonts/ZeroCool.ttf" id="1_cfnci"]
-[ext_resource type="Script" uid="uid://bhluir77x8o4y" path="res://scripts/presentation/blocks/SqlBlock.cs" id="1_josbt"]
+[ext_resource type="Script" uid="uid://bhluir77x8o4y" path="res://scripts/presentation/levels/blocks/SqlBlock.cs" id="1_josbt"]
 
 [node name="SQLBlock" type="Button" unique_id=1855077396 node_paths=PackedStringArray("_helpLabel")]
 custom_minimum_size = Vector2(120, 40)

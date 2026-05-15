@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://bx64xjlv2yo6s"]
 
-[ext_resource type="Script" uid="uid://dhfjgo3obtdqx" path="res://scripts/presentation/match/MatchPairSlot.cs" id="1_xqk67"]
-[ext_resource type="Script" uid="uid://ws0d4rdmyw06" path="res://scripts/presentation/match/MatchDropArea.cs" id="2_ttfg6"]
+[ext_resource type="Script" uid="uid://dhfjgo3obtdqx" path="res://scripts/presentation/levels/match/MatchPairSlot.cs" id="1_xqk67"]
+[ext_resource type="Script" uid="uid://ws0d4rdmyw06" path="res://scripts/presentation/levels/match/MatchDropArea.cs" id="2_ttfg6"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_xqk67"]
 bg_color = Color(1, 1, 1, 1)

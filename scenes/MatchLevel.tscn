@@ -1,8 +1,8 @@
 [gd_scene format=3 uid="uid://du3akrir51byj"]
 
-[ext_resource type="Script" uid="uid://dv2wiyy4vb1b1" path="res://scripts/presentation/match/MatchLevel.cs" id="1_l5vuo"]
-[ext_resource type="Script" uid="uid://dau73n48am63h" path="res://scripts/presentation/blocks/BlockPalette.cs" id="3_l0cdy"]
-[ext_resource type="Script" uid="uid://d4mq5y35k45w7" path="res://scripts/presentation/match/MatchBuilder.cs" id="4_470rs"]
+[ext_resource type="Script" uid="uid://dv2wiyy4vb1b1" path="res://scripts/presentation/levels/match/MatchLevel.cs" id="1_l5vuo"]
+[ext_resource type="Script" uid="uid://dau73n48am63h" path="res://scripts/presentation/levels/blocks/BlockPalette.cs" id="3_l0cdy"]
+[ext_resource type="Script" uid="uid://d4mq5y35k45w7" path="res://scripts/presentation/levels/match/MatchBuilder.cs" id="4_470rs"]
 [ext_resource type="PackedScene" uid="uid://oiwo131hxpn0" path="res://scenes/SQLBlock.tscn" id="4_l0cdy"]
 [ext_resource type="FontFile" uid="uid://bek7n5nuh3iit" path="res://sprites/fonts/ZeroCool.ttf" id="4_l5vuo"]
 [ext_resource type="PackedScene" uid="uid://bx64xjlv2yo6s" path="res://scenes/MatchPairSlot.tscn" id="4_t7fmg"]

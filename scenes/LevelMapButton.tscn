@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://dpxo7mhangn6r"]
 
 [ext_resource type="Texture2D" uid="uid://crxnl0thihra5" path="res://sprites/ui/level/unlocked170.png" id="1_s7o0k"]
-[ext_resource type="Script" uid="uid://7hdrdkvp2wjm" path="res://scripts/presentation/level/LevelMapButton.cs" id="2_akrqu"]
+[ext_resource type="Script" uid="uid://7hdrdkvp2wjm" path="res://scripts/presentation/ui/LevelMapButton.cs" id="2_akrqu"]
 [ext_resource type="Texture2D" uid="uid://b1tnisul2jevm" path="res://sprites/ui/level/locked170.png" id="3_5lj22"]
 [ext_resource type="FontFile" uid="uid://bek7n5nuh3iit" path="res://sprites/fonts/ZeroCool.ttf" id="4_5lj22"]
 [ext_resource type="FontFile" uid="uid://bv1ifpra860mp" path="res://sprites/fonts/TitleBubblezGraffiti-Regular.ttf" id="4_akrqu"]

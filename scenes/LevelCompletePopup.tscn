@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://x6ppuh8hnet4"]
 
-[ext_resource type="Script" uid="uid://cpe1o0vf441ec" path="res://scripts/presentation/screens/LevelCompletePopup.cs" id="1_apapc"]
+[ext_resource type="Script" uid="uid://cpe1o0vf441ec" path="res://scripts/presentation/ui/LevelCompletePopup.cs" id="1_apapc"]
 [ext_resource type="Texture2D" uid="uid://dy6fjri6kubvb" path="res://sprites/ui/panel/Large.svg" id="2_btflc"]
 [ext_resource type="FontFile" uid="uid://bek7n5nuh3iit" path="res://sprites/fonts/ZeroCool.ttf" id="3_2b6xx"]
 [ext_resource type="FontFile" uid="uid://csfljwauc3f2o" path="res://sprites/fonts/Sagewold-Regular.ttf" id="4_am7xt"]

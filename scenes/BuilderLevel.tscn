@@ -1,11 +1,11 @@
 [gd_scene format=3 uid="uid://bkygtyl082by6"]
 
-[ext_resource type="Script" uid="uid://bawauw0wiuqyp" path="res://scripts/BuilderLevel.cs" id="1_wgq7g"]
+[ext_resource type="Script" uid="uid://bawauw0wiuqyp" path="res://scripts/presentation/levels/builder/BuilderLevel.cs" id="1_wgq7g"]
 [ext_resource type="PackedScene" uid="uid://oiwo131hxpn0" path="res://scenes/SQLBlock.tscn" id="2_rybbw"]
 [ext_resource type="FontFile" uid="uid://bek7n5nuh3iit" path="res://sprites/fonts/ZeroCool.ttf" id="3_ios3q"]
-[ext_resource type="Script" uid="uid://clea6magiq6qh" path="res://scripts/presentation/table/QueryBuilder.cs" id="3_tolt5"]
+[ext_resource type="Script" uid="uid://clea6magiq6qh" path="res://scripts/presentation/levels/table/QueryBuilder.cs" id="3_tolt5"]
 [ext_resource type="FontFile" uid="uid://csfljwauc3f2o" path="res://sprites/fonts/Sagewold-Regular.ttf" id="4_ca5wd"]
-[ext_resource type="Script" uid="uid://dau73n48am63h" path="res://scripts/presentation/blocks/BlockPalette.cs" id="4_ios3q"]
+[ext_resource type="Script" uid="uid://dau73n48am63h" path="res://scripts/presentation/levels/blocks/BlockPalette.cs" id="4_ios3q"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_q2cd8"]
 bg_color = Color(0.49803922, 0.7019608, 1, 1)
@@ -23,10 +23,10 @@ offset_right = 1280.0
 offset_bottom = 640.0
 mouse_filter = 1
 script = ExtResource("1_wgq7g")
+_sqlBlockScene = ExtResource("2_rybbw")
 _taskLabel = NodePath("VBoxContainer/HBoxContainer/SourcePanel/VBoxContainer/MarginContainer/Task")
 _availableBlocksContainer = NodePath("VBoxContainer/BlockPanel/MarginContainer/BlockContainer")
 _queryBlocksContainer = NodePath("VBoxContainer/HBoxContainer/Query/VBoxContainer/ScrollContainer/QueryBuilder")
-_sqlBlockScene = ExtResource("2_rybbw")
 _checkButton = NodePath("VBoxContainer/HBoxContainer/Query/VBoxContainer/Button")
 _blocksContainer = NodePath("VBoxContainer/BlockPanel/MarginContainer/BlockContainer")
 _queryBuilder = NodePath("VBoxContainer/HBoxContainer/Query/VBoxContainer/ScrollContainer/QueryBuilder")

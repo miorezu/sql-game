@@ -1,11 +1,11 @@
 [gd_scene format=3 uid="uid://7wfecae4ddqc"]
 
-[ext_resource type="Script" uid="uid://d1r510cveaxv0" path="res://scripts/presentation/table/TableLevel.cs" id="1_7oj3h"]
-[ext_resource type="Script" uid="uid://h6x153drhkj4" path="res://scripts/presentation/table/TableTreeView.cs" id="3_etb3l"]
+[ext_resource type="Script" uid="uid://d1r510cveaxv0" path="res://scripts/presentation/levels/table/TableLevel.cs" id="1_7oj3h"]
+[ext_resource type="Script" uid="uid://h6x153drhkj4" path="res://scripts/presentation/levels/table/TableTreeView.cs" id="3_etb3l"]
 [ext_resource type="FontFile" uid="uid://bek7n5nuh3iit" path="res://sprites/fonts/ZeroCool.ttf" id="3_xg7xg"]
-[ext_resource type="Script" uid="uid://clea6magiq6qh" path="res://scripts/presentation/table/QueryBuilder.cs" id="4_7oj3h"]
+[ext_resource type="Script" uid="uid://clea6magiq6qh" path="res://scripts/presentation/levels/table/QueryBuilder.cs" id="4_7oj3h"]
 [ext_resource type="PackedScene" uid="uid://oiwo131hxpn0" path="res://scenes/SQLBlock.tscn" id="4_etb3l"]
-[ext_resource type="Script" uid="uid://dau73n48am63h" path="res://scripts/presentation/blocks/BlockPalette.cs" id="5_7oj3h"]
+[ext_resource type="Script" uid="uid://dau73n48am63h" path="res://scripts/presentation/levels/blocks/BlockPalette.cs" id="5_7oj3h"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_etb3l"]
 bg_color = Color(0.49803922, 0.7019608, 1, 1)
