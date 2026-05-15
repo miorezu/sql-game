@@ -1,15 +1,17 @@
 [gd_scene format=3 uid="uid://dpxo7mhangn6r"]
 
-[ext_resource type="Texture2D" uid="uid://1ks47s0nwswv" path="res://sprites/Sprite-0001.png" id="1_s7o0k"]
+[ext_resource type="Texture2D" uid="uid://crxnl0thihra5" path="res://sprites/ui/level/unlocked170.png" id="1_s7o0k"]
 [ext_resource type="Script" uid="uid://7hdrdkvp2wjm" path="res://scripts/presentation/level/LevelMapButton.cs" id="2_akrqu"]
-[ext_resource type="Texture2D" uid="uid://cymbycmyn4iau" path="res://sprites/lock.png" id="3_5lj22"]
+[ext_resource type="Texture2D" uid="uid://b1tnisul2jevm" path="res://sprites/ui/level/locked170.png" id="3_5lj22"]
+[ext_resource type="FontFile" uid="uid://bek7n5nuh3iit" path="res://sprites/fonts/ZeroCool.ttf" id="4_5lj22"]
+[ext_resource type="FontFile" uid="uid://bv1ifpra860mp" path="res://sprites/fonts/TitleBubblezGraffiti-Regular.ttf" id="4_akrqu"]
 
 [node name="LevelMapButton" type="TextureButton" unique_id=2070859198 node_paths=PackedStringArray("_bestTimeLbl", "_lockIcon", "_numberLevelLbl")]
 anchors_preset = -1
-anchor_right = 0.056
-anchor_bottom = 0.10300001
-offset_right = -0.51200104
-offset_bottom = 0.2559967
+anchor_right = 0.069000006
+anchor_bottom = 0.12200001
+offset_right = 81.67999
+offset_bottom = 82.159996
 grow_horizontal = 2
 grow_vertical = 2
 texture_normal = ExtResource("1_s7o0k")
@@ -20,27 +22,33 @@ _numberLevelLbl = NodePath("Label")
 
 [node name="LockIcon" type="TextureRect" parent="." unique_id=1249942500]
 layout_mode = 0
-offset_left = 29.0
-offset_top = 37.0
-offset_right = 69.0
-offset_bottom = 77.0
+offset_right = 170.0
+offset_bottom = 170.0
 texture = ExtResource("3_5lj22")
 
 [node name="Label" type="Label" parent="." unique_id=1988776562]
-modulate = Color(0, 0, 0, 1)
 layout_mode = 1
 anchors_preset = -1
 anchor_bottom = 0.038000003
-offset_left = 26.0
-offset_top = 21.0
-offset_right = 38.0
-offset_bottom = 67.454
-text = "
+offset_left = 61.0
+offset_top = 24.0
+offset_right = 103.0
+offset_bottom = 216.54
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 5
+theme_override_fonts/font = ExtResource("4_5lj22")
+theme_override_font_sizes/font_size = 85
+text = "2
 "
 
 [node name="BestTime" type="Label" parent="." unique_id=950711135]
 layout_mode = 0
-offset_left = 1.0
-offset_top = 64.0
-offset_right = 75.0
-offset_bottom = 87.0
+offset_left = 40.0
+offset_top = 115.0
+offset_right = 130.0
+offset_bottom = 151.0
+theme_override_fonts/font = ExtResource("4_akrqu")
+theme_override_font_sizes/font_size = 35
+text = "56:00"

@@ -18,7 +18,6 @@ public partial class LevelCompletePopup : Control
         Visible = false;
 
         ProcessMode = ProcessModeEnum.Always;
-
         MouseFilter = MouseFilterEnum.Stop;
 
         if (_nextLevelButton != null)
@@ -28,13 +27,16 @@ public partial class LevelCompletePopup : Control
             _selectLevelButton.Pressed += OnSelectLevelPressed;
     }
 
-    public void ShowPopup()
+    public void ShowPopup(bool hasNextLevel)
     {
         _isButtonPressed = false;
         SetButtonsDisabled(false);
 
         Visible = true;
         MoveToFront();
+
+        if (_nextLevelButton != null)
+            _nextLevelButton.Visible = hasNextLevel;
     }
 
     private void OnNextLevelPressed()
@@ -46,10 +48,10 @@ public partial class LevelCompletePopup : Control
         SetButtonsDisabled(true);
 
         Visible = false;
-
         GetTree().Paused = false;
 
         GD.Print("[POPUP] Натиснули Next");
+
         NextLevelPressed?.Invoke();
     }
 
@@ -65,6 +67,7 @@ public partial class LevelCompletePopup : Control
         GetTree().Paused = false;
 
         GD.Print("[POPUP] Натиснули Select Level(menu)");
+
         SelectLevelPressed?.Invoke();
     }
 

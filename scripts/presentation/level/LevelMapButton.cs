@@ -56,14 +56,17 @@ public partial class LevelMapButton : TextureButton
             case LevelStatus.Current:
                 SelfModulate = CurrentColor;
                 _lockIcon.Visible = false;
+                _numberLevelLbl.Visible = true;
                 break;
             case LevelStatus.Locked:
                 SelfModulate = LockedColor;
                 _lockIcon.Visible = true;
+                _numberLevelLbl.Visible = false;
                 break;
             case LevelStatus.Completed:
                 SelfModulate = CompletedColor;
                 _lockIcon.Visible = false;
+                _numberLevelLbl.Visible = true;
                 break;
             default:
                 SelfModulate = new Color(0, 0, 0);

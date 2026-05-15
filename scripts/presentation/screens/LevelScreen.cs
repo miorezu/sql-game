@@ -198,7 +198,7 @@ public partial class LevelScreen : Control
         return Task.CompletedTask;
     }
 
-    private void OnLevelCompleted()
+    private async void OnLevelCompleted()
     {
         if (_isLevelCompleted)
             return;
@@ -216,7 +216,9 @@ public partial class LevelScreen : Control
             _elapsedTime
         );
 
-        _levelCompletePopup?.ShowPopup();
+        bool hasNextLevel = await LevelRepository.HasNextLevel(_currentLevelData.LevelOrder);
+
+        _levelCompletePopup?.ShowPopup(hasNextLevel);
     }
 
     private async void OnNextLevelPressed()
