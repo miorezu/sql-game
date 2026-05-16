@@ -4,6 +4,9 @@ using Godot;
 public partial class LevelCompletePopup : Control
 {
     [Export] private Label _titleLabel;
+    [Export] private  Label _xpLabel;
+    [Export] private  Label _timeLabel;
+    [Export] private  Label _errorsLabel;
 
     [Export] private TextureButton _selectLevelButton;
     [Export] private TextureButton _nextLevelButton;
@@ -27,17 +30,22 @@ public partial class LevelCompletePopup : Control
             _selectLevelButton.Pressed += OnSelectLevelPressed;
     }
 
-    public void ShowPopup(bool hasNextLevel)
+    public void ShowPopup(LevelCompleteResult result)
     {
         _isButtonPressed = false;
         SetButtonsDisabled(false);
+
+        _xpLabel.Text = $"Отримано XP: {result.RewardXp}";
+        _timeLabel.Text = $"Пройден за: {SaveManager.FormatTime(result.ElapsedSeconds)}";
+        _errorsLabel.Text = $"Зроблено помилок: {result.WrongAttempts}";
 
         Visible = true;
         MoveToFront();
 
         if (_nextLevelButton != null)
-            _nextLevelButton.Visible = hasNextLevel;
+            _nextLevelButton.Visible = result.HasNextLevel;
     }
+
 
     private void OnNextLevelPressed()
     {

@@ -11,7 +11,7 @@
 texture = ExtResource("2_btflc")
 modulate_color = Color(0.6426924, 0.7878747, 1, 1)
 
-[node name="LevelCompletePopup" type="Control" unique_id=1487273030 node_paths=PackedStringArray("_titleLabel", "_selectLevelButton", "_nextLevelButton")]
+[node name="LevelCompletePopup" type="Control" unique_id=1487273030 node_paths=PackedStringArray("_titleLabel", "_xpLabel", "_timeLabel", "_errorsLabel", "_selectLevelButton", "_nextLevelButton")]
 custom_minimum_size = Vector2(1280, 720)
 layout_mode = 3
 anchors_preset = 15
@@ -22,6 +22,9 @@ grow_vertical = 2
 mouse_filter = 1
 script = ExtResource("1_apapc")
 _titleLabel = NodePath("Panel/VBoxContainer/Congratulations")
+_xpLabel = NodePath("Panel/VBoxContainer/XP")
+_timeLabel = NodePath("Panel/VBoxContainer/Time")
+_errorsLabel = NodePath("Panel/VBoxContainer/Errors")
 _selectLevelButton = NodePath("Panel/VBoxContainer/HBoxContainer/AllLevels")
 _nextLevelButton = NodePath("Panel/VBoxContainer/HBoxContainer/NextLevel")
 

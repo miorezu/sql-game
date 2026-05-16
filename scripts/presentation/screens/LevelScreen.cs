@@ -1,8 +1,6 @@
 ﻿using System.Threading.Tasks;
 using Godot;
 
-
-
 public partial class LevelScreen : Control
 {
     [Export] private TopBarUi _topBar;
@@ -14,17 +12,17 @@ public partial class LevelScreen : Control
     [Export] private PackedScene _builderLevelScene;
 
     [Export] private LevelCompletePopup _levelCompletePopup;
-    
+
     [Export] private TutorialController _tutorialController;
-    
+
     private Control _currentLevelView;
     private LevelData _currentLevelData;
-    
+
     private float _elapsedTime;
     private bool _isTimerRunning;
     private bool _isLevelCompleted;
     private int _wrongAttempts;
-    
+
     public override async void _Ready()
     {
         SetupTopBar();
@@ -211,15 +209,15 @@ public partial class LevelScreen : Control
         GD.Print($"[LevelScreen] Рівень {_currentLevelData.LevelOrder} — '{_currentLevelData.Title}' пройдено");
         GD.Print($"[LevelScreen] Час проходження: {SaveManager.FormatTime(_elapsedTime)}");
 
-        CompleteLevel(
+        LevelCompleteResult result = CompleteLevel(
             _currentLevelData,
             _elapsedTime,
             _wrongAttempts
         );
 
-        bool hasNextLevel = await LevelRepository.HasNextLevel(_currentLevelData.LevelOrder);
+        result.HasNextLevel = await LevelRepository.HasNextLevel(_currentLevelData.LevelOrder);
 
-        _levelCompletePopup?.ShowPopup(hasNextLevel);
+        _levelCompletePopup?.ShowPopup(result);
     }
 
     private async void OnNextLevelPressed()
@@ -353,7 +351,12 @@ public partial class LevelScreen : Control
             ? Node.ProcessModeEnum.Inherit
             : Node.ProcessModeEnum.Disabled;
     }
-    private void CompleteLevel(LevelData levelData, float elapsedSeconds, int wrongAttempts)
+
+    private LevelCompleteResult CompleteLevel(
+        LevelData levelData,
+        float elapsedSeconds,
+        int wrongAttempts
+    )
     {
         int calculatedXp = XpCalculator.CalculateLevelXp(
             levelData.BaseXp,
@@ -391,9 +394,20 @@ public partial class LevelScreen : Control
 
         SaveManager.Instance.Save();
         LeaderboardService.Instance?.SyncCurrentPlayer();
+
         GD.Print($"XP за проходження: {calculatedXp}");
         GD.Print($"Отримано XP: {rewardXp}");
+
+        return new LevelCompleteResult
+        {
+            LevelData = levelData,
+            CalculatedXp = calculatedXp,
+            RewardXp = rewardXp,
+            ElapsedSeconds = elapsedSeconds,
+            WrongAttempts = wrongAttempts
+        };
     }
+
     private void OnWrongAnswer()
     {
         _wrongAttempts++;
@@ -401,3 +415,4 @@ public partial class LevelScreen : Control
         GD.Print($"[LevelScreen] Неправильних спроб: {_wrongAttempts}");
     }
 }
+
