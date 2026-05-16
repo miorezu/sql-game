@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using Godot;
-using SQLGame.scripts.data;
 
 public partial class LeaderboardView : Control
 {

@@ -25,6 +25,7 @@ public partial class MatchLevel : Control
     public Control TargetSlot => _targetSlot;
     
     public event Action OnLevelCompleted;
+    public event Action OnWrongAnswer;
 
     public override void _Ready()
     {
@@ -91,6 +92,7 @@ public partial class MatchLevel : Control
         }
         else
         {
+            OnWrongAnswer?.Invoke();
             GD.Print("[Match] не пройдено");
         }
     }

@@ -13,5 +13,6 @@ public class LevelData
     public string LevelType { get; set; }
     public BlockData[] SqlBlocks { get; set; } = Array.Empty<BlockData>();
     public string[] BuilderSolutionBlocks { get; set; } = Array.Empty<string>();
-
+    public int BaseXp { get; set; }
+    public float TargetTimeSeconds { get; set; }
 }

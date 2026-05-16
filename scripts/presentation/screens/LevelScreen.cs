@@ -23,7 +23,8 @@ public partial class LevelScreen : Control
     private float _elapsedTime;
     private bool _isTimerRunning;
     private bool _isLevelCompleted;
-
+    private int _wrongAttempts;
+    
     public override async void _Ready()
     {
         SetupTopBar();
@@ -69,7 +70,7 @@ public partial class LevelScreen : Control
         var order = GameState.Instance.SelectedLevelOrder;
 
         _isLevelCompleted = false;
-
+        _wrongAttempts = 0;
         SetGameplayInputEnabled(true);
 
         _currentLevelData = await LevelRepository.GetLevelData(order);
@@ -149,7 +150,6 @@ public partial class LevelScreen : Control
         var level = _tableLevelScene.Instantiate<TableLevel>();
 
         level.OnLevelCompleted += OnLevelCompleted;
-
         _levelRoot.AddChild(level);
         _currentLevelView = level;
 
@@ -169,7 +169,7 @@ public partial class LevelScreen : Control
         var level = _matchLevelScene.Instantiate<MatchLevel>();
 
         level.OnLevelCompleted += OnLevelCompleted;
-
+        level.OnWrongAnswer += OnWrongAnswer;
         _levelRoot.AddChild(level);
         _currentLevelView = level;
 
@@ -189,7 +189,7 @@ public partial class LevelScreen : Control
         var level = _builderLevelScene.Instantiate<BuilderLevel>();
 
         level.OnLevelCompleted += OnLevelCompleted;
-
+        level.OnWrongAnswer += OnWrongAnswer;
         _levelRoot.AddChild(level);
         _currentLevelView = level;
 
@@ -211,9 +211,10 @@ public partial class LevelScreen : Control
         GD.Print($"[LevelScreen] Рівень {_currentLevelData.LevelOrder} — '{_currentLevelData.Title}' пройдено");
         GD.Print($"[LevelScreen] Час проходження: {SaveManager.FormatTime(_elapsedTime)}");
 
-        SaveManager.Instance.RecordLevelComplete(
-            _currentLevelData.LevelOrder,
-            _elapsedTime
+        CompleteLevel(
+            _currentLevelData,
+            _elapsedTime,
+            _wrongAttempts
         );
 
         bool hasNextLevel = await LevelRepository.HasNextLevel(_currentLevelData.LevelOrder);
@@ -308,6 +309,7 @@ public partial class LevelScreen : Control
 
             case MatchLevel matchLevel:
                 matchLevel.OnLevelCompleted -= OnLevelCompleted;
+                matchLevel.OnWrongAnswer -= OnWrongAnswer;
                 break;
 
             case TableLevel tableLevel:
@@ -316,6 +318,7 @@ public partial class LevelScreen : Control
 
             case BuilderLevel builderLevel:
                 builderLevel.OnLevelCompleted -= OnLevelCompleted;
+                builderLevel.OnWrongAnswer -= OnWrongAnswer;
                 break;
         }
 
@@ -349,5 +352,52 @@ public partial class LevelScreen : Control
         _gameplayUi.ProcessMode = enabled
             ? Node.ProcessModeEnum.Inherit
             : Node.ProcessModeEnum.Disabled;
+    }
+    private void CompleteLevel(LevelData levelData, float elapsedSeconds, int wrongAttempts)
+    {
+        int calculatedXp = XpCalculator.CalculateLevelXp(
+            levelData.BaseXp,
+            elapsedSeconds,
+            levelData.TargetTimeSeconds,
+            wrongAttempts
+        );
+
+        int maxXp = XpCalculator.CalculateMaxXp(levelData.BaseXp);
+
+        int previousBestXp = 0;
+
+        if (SaveManager.Instance.Data.BestLevelXp.ContainsKey(levelData.LevelOrder))
+        {
+            previousBestXp = SaveManager.Instance.Data.BestLevelXp[levelData.LevelOrder];
+        }
+
+        int rewardXp = XpCalculator.CalculateRewardXp(
+            calculatedXp,
+            previousBestXp,
+            maxXp
+        );
+
+        SaveManager.Instance.Data.Xp += rewardXp;
+
+        if (calculatedXp > previousBestXp)
+        {
+            SaveManager.Instance.Data.BestLevelXp[levelData.LevelOrder] = calculatedXp;
+        }
+
+        if (levelData.LevelOrder > SaveManager.Instance.Data.LastCompletedLevelOrder)
+        {
+            SaveManager.Instance.Data.LastCompletedLevelOrder = levelData.LevelOrder;
+        }
+
+        SaveManager.Instance.Save();
+        LeaderboardService.Instance?.SyncCurrentPlayer();
+        GD.Print($"XP за проходження: {calculatedXp}");
+        GD.Print($"Отримано XP: {rewardXp}");
+    }
+    private void OnWrongAnswer()
+    {
+        _wrongAttempts++;
+
+        GD.Print($"[LevelScreen] Неправильних спроб: {_wrongAttempts}");
     }
 }

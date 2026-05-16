@@ -1,6 +1,5 @@
 using System;
 using Godot;
-using SQLGame.scripts.data;
 
 public partial class ProfileScreen : Control
 {

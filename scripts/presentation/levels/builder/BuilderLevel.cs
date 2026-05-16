@@ -20,7 +20,8 @@ public partial class BuilderLevel : Control
     public QueryBuilder QueryBuilder => _queryBuilder;
     
     public event Action OnLevelCompleted;
-
+    public event Action OnWrongAnswer;
+    
     private LevelData _currentLevelData;
     private List<string> _correctBlocks = new();
 
@@ -98,6 +99,10 @@ public partial class BuilderLevel : Control
         {
             _isCompleted = true;
             OnLevelCompleted?.Invoke();
+        }
+        else
+        {
+            OnWrongAnswer?.Invoke();
         }
     }
 

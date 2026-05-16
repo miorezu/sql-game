@@ -1,6 +1,4 @@
-﻿namespace SQLGame.scripts.data;
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
 using Godot;

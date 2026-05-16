@@ -9,6 +9,7 @@ public partial class SaveData : Resource
     [Export] public string PlayerId { get; set; } = "";
     [Export] public int LastCompletedLevelOrder { get; set; } = 0;
     [Export] public int Xp { get; set; } = 0;
+    [Export] public Godot.Collections.Dictionary<int, int> BestLevelXp { get; set; } = new();
     
     [Export] public string ProfileCreatedAt { get; set; } = "";
     [Export] public int BestLeaderboardRank { get; set; } = 0;
