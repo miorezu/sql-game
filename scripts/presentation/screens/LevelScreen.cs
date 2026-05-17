@@ -206,6 +206,9 @@ public partial class LevelScreen : Control
         StopTimer();
         SetGameplayInputEnabled(false);
 
+        if (_currentLevelData.LevelType == "table")
+            DatabaseManager.DeleteRuntimeDb();
+
         GD.Print($"[LevelScreen] Рівень {_currentLevelData.LevelOrder} — '{_currentLevelData.Title}' пройдено");
         GD.Print($"[LevelScreen] Час проходження: {SaveManager.FormatTime(_elapsedTime)}");
 
@@ -248,6 +251,7 @@ public partial class LevelScreen : Control
     private void OnSelectLevelMenuPressed()
     {
         StopTimer();
+        DatabaseManager.DeleteRuntimeDb();
 
         GD.Print("[LevelScreen] Select level menu pressed");
 
@@ -263,8 +267,6 @@ public partial class LevelScreen : Control
 
         await SceneTransitionManager.Instance.FadeWithoutChangeScene(async () =>
         {
-            DatabaseManager.ResetUserDb();
-
             GameState.Instance.SelectedLevelOrder = _currentLevelData.LevelOrder;
 
             _levelCompletePopup?.Hide();
@@ -312,6 +314,7 @@ public partial class LevelScreen : Control
 
             case TableLevel tableLevel:
                 tableLevel.OnLevelCompleted -= OnLevelCompleted;
+                DatabaseManager.DeleteRuntimeDb();
                 break;
 
             case BuilderLevel builderLevel:
@@ -415,4 +418,3 @@ public partial class LevelScreen : Control
         GD.Print($"[LevelScreen] Неправильних спроб: {_wrongAttempts}");
     }
 }
-

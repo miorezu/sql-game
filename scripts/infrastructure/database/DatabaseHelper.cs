@@ -18,4 +18,10 @@ public static class DatabaseHelper
                 throw new Exception($"Unsafe identifier: {value}");
         }
     }
+
+    public static string QuoteIdentifier(string value)
+    {
+        EnsureSafeIdentifier(value);
+        return $"\"{value.Replace("\"", "\"\"")}\"";
+    }
 }

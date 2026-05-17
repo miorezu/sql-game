@@ -8,7 +8,7 @@ public static class BuilderRepository
 {
     public static async Task<List<string>> GetBuilderSolutionBlocks(int levelId)
     {
-        await using var connection = await DatabaseConnection.OpenConnection();
+        await using var connection = await DatabaseConnection.OpenContentConnection();
         return await GetBuilderSolutionBlocks(levelId, connection);
     }
 

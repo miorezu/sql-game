@@ -34,13 +34,15 @@ public partial class TableLevel : Control
         GD.Print("[TableLevel] _sourceTreeView = " + _sourceTreeView);
         GD.Print("[TableLevel] _expectedTreeView = " + _expectedTreeView);
 
+        await DatabaseManager.PrepareRuntimeForTableLevel(_currentLevelData);
+
         if (_sourceTreeView != null)
-            await _sourceTreeView.LoadTable(_currentLevelData.SourceTableName);
+            await _sourceTreeView.LoadTable(_currentLevelData.SourceTableName, DatabaseScope.Runtime);
         else
             GD.PrintErr("[TableLevel] _sourceTreeView == null");
 
         if (_expectedTreeView != null)
-            await _expectedTreeView.LoadTable(_currentLevelData.ExpectedTableName);
+            await _expectedTreeView.LoadTable(_currentLevelData.ExpectedTableName, DatabaseScope.Content);
         else
             GD.PrintErr("[TableLevel] _expectedTreeView == null");
 
@@ -51,7 +53,7 @@ public partial class TableLevel : Control
     {
         if (_sqlBlocksContainer == null || _sqlBlockScene == null)
         {
-            GD.PrintErr("[TableLevel] SQL blocks container або scene не задані.");
+            GD.PrintErr("[TableLevel] SQL blocks container Р°Р±Рѕ scene РЅРµ Р·Р°РґР°РЅС–.");
             return;
         }
 
@@ -94,7 +96,7 @@ public partial class TableLevel : Control
     {
         if (_queryBuilder == null)
         {
-            GD.PrintErr("[TableLevel] QueryBuilder не призначено в Inspector.");
+            GD.PrintErr("[TableLevel] QueryBuilder РЅРµ РїСЂРёР·РЅР°С‡РµРЅРѕ РІ Inspector.");
             return;
         }
 

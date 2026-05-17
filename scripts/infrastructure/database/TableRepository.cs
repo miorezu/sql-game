@@ -5,11 +5,11 @@ using Dapper;
 
 public static class TableRepository
 {
-    public static async Task<bool> TableExists(string tableName)
+    public static async Task<bool> TableExists(string tableName, DatabaseScope scope = DatabaseScope.Runtime)
     {
         DatabaseHelper.EnsureSafeIdentifier(tableName);
 
-        await using var connection = await DatabaseConnection.OpenConnection();
+        await using var connection = await DatabaseConnection.OpenConnection(scope);
 
         var count = await connection.ExecuteScalarAsync<int>(
             """
@@ -23,11 +23,11 @@ public static class TableRepository
         return count > 0;
     }
 
-    public static async Task<List<string>> GetColumnNames(string tableName)
+    public static async Task<List<string>> GetColumnNames(string tableName, DatabaseScope scope = DatabaseScope.Runtime)
     {
         DatabaseHelper.EnsureSafeIdentifier(tableName);
 
-        await using var connection = await DatabaseConnection.OpenConnection();
+        await using var connection = await DatabaseConnection.OpenConnection(scope);
 
         var columns = await connection.QueryAsync<string>(
             $"SELECT name FROM pragma_table_info('{tableName}')"
@@ -36,22 +36,47 @@ public static class TableRepository
         return columns.ToList();
     }
 
-    public static async Task<List<List<string>>> GetRows(string tableName, List<string> orderByColumns = null)
+    public static async Task<List<List<string>>> GetRows(
+        string tableName,
+        List<string> orderByColumns = null,
+        DatabaseScope scope = DatabaseScope.Runtime
+    )
     {
         DatabaseHelper.EnsureSafeIdentifier(tableName);
 
-        if (orderByColumns == null || orderByColumns.Count == 0)
+        await using var connection = await DatabaseConnection.OpenConnection(scope);
+
+        string tableSql = DatabaseHelper.QuoteIdentifier(tableName);
+        string sql = $"SELECT * FROM {tableSql}";
+
+        if (orderByColumns != null && orderByColumns.Count > 0)
         {
-            var result = await RawQueryService.ExecuteSql($"SELECT * FROM [{tableName}]");
-            return result.Rows;
+            foreach (var column in orderByColumns)
+                DatabaseHelper.EnsureSafeIdentifier(column);
+
+            string orderBy = string.Join(", ", orderByColumns.Select(DatabaseHelper.QuoteIdentifier));
+            sql += $" ORDER BY {orderBy}";
         }
 
-        foreach (var column in orderByColumns)
-            DatabaseHelper.EnsureSafeIdentifier(column);
+        await using var command = connection.CreateCommand();
+        command.CommandText = sql;
 
-        string orderBy = string.Join(", ", orderByColumns.Select(c => $"[{c}]"));
+        await using var reader = await command.ExecuteReaderAsync();
+        var rows = new List<List<string>>();
 
-        var orderedResult = await RawQueryService.ExecuteSql($"SELECT * FROM [{tableName}] ORDER BY {orderBy}");
-        return orderedResult.Rows;
+        while (await reader.ReadAsync())
+        {
+            var row = new List<string>();
+
+            for (int i = 0; i < reader.FieldCount; i++)
+            {
+                object value = reader.GetValue(i);
+                row.Add(value?.ToString() ?? "NULL");
+            }
+
+            rows.Add(row);
+        }
+
+        return rows;
     }
 }

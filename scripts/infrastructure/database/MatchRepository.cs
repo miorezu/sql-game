@@ -7,7 +7,7 @@ public static class MatchRepository
 {
     public static async Task<List<MatchPairData>> GetMatchPairs(int levelOrder)
     {
-        await using var connection = await DatabaseConnection.OpenConnection();
+        await using var connection = await DatabaseConnection.OpenContentConnection();
 
         var pairs = await connection.QueryAsync<MatchPairData>(
             """
@@ -30,7 +30,7 @@ public static class MatchRepository
 
     public static async Task<List<MatchPairData>> GetMatchPairsByLevelId(int levelId)
     {
-        await using var connection = await DatabaseConnection.OpenConnection();
+        await using var connection = await DatabaseConnection.OpenContentConnection();
 
         var pairs = await connection.QueryAsync<MatchPairData>(
             """

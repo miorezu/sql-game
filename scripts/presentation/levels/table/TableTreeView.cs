@@ -9,10 +9,12 @@ public partial class TableTreeView : Control
     [Export] private Tree _tree;
 
     private string _currentTableName;
+    private DatabaseScope _currentScope = DatabaseScope.Runtime;
 
-    public async Task LoadTable(string tableName)
+    public async Task LoadTable(string tableName, DatabaseScope scope = DatabaseScope.Runtime)
     {
         _currentTableName = tableName;
+        _currentScope = scope;
 
         if (_tree == null)
         {
@@ -22,15 +24,15 @@ public partial class TableTreeView : Control
 
         _tree.Clear();
 
-        bool exists = await TableRepository.TableExists(tableName);
+        bool exists = await TableRepository.TableExists(tableName, scope);
         if (!exists)
         {
             GD.PrintErr($"[LevelTreeView] Таблиця '{tableName}' не існує!");
             return;
         }
 
-        List<string> columns = await TableRepository.GetColumnNames(tableName);
-        List<List<string>> rows = await TableRepository.GetRows(tableName);
+        List<string> columns = await TableRepository.GetColumnNames(tableName, scope);
+        List<List<string>> rows = await TableRepository.GetRows(tableName, null, scope);
 
         _tree.Columns = columns.Count;
 
@@ -63,6 +65,6 @@ public partial class TableTreeView : Control
         }
 
         GD.Print($"[LevelTreeView] Refresh -> {_currentTableName}");
-        await LoadTable(_currentTableName);
+        await LoadTable(_currentTableName, _currentScope);
     }
 }

@@ -7,17 +7,17 @@ public static class LevelValidator
 {
     public static async Task<bool> AreTablesEqual(string sourceTable, string expectedTable)
     {
-        List<string> sourceColumns = await TableRepository.GetColumnNames(sourceTable);
-        List<string> expectedColumns = await TableRepository.GetColumnNames(expectedTable);
+        List<string> sourceColumns = await TableRepository.GetColumnNames(sourceTable, DatabaseScope.Runtime);
+        List<string> expectedColumns = await TableRepository.GetColumnNames(expectedTable, DatabaseScope.Content);
 
         if (!AreStringListsEqual(sourceColumns, expectedColumns))
             return false;
 
         List<List<string>> sourceRows =
-            await TableRepository.GetRows(sourceTable, sourceColumns);
+            await TableRepository.GetRows(sourceTable, sourceColumns, DatabaseScope.Runtime);
 
         List<List<string>> expectedRows =
-            await TableRepository.GetRows(expectedTable, expectedColumns);
+            await TableRepository.GetRows(expectedTable, expectedColumns, DatabaseScope.Content);
 
         if (sourceRows.Count != expectedRows.Count)
             return false;

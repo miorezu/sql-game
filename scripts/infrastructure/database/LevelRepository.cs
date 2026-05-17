@@ -8,7 +8,7 @@ public static class LevelRepository
 {
     public static async Task<LevelData> GetLevelData(int levelOrder)
 {
-    await using var connection = await DatabaseConnection.OpenConnection();
+    await using var connection = await DatabaseConnection.OpenContentConnection();
 
     var level = await connection.QueryFirstOrDefaultAsync<LevelData>(
         """
@@ -79,7 +79,7 @@ public static class LevelRepository
 
     public static async Task<int?> GetNextLevelOrder(int currentLevelOrder)
     {
-        await using var connection = await DatabaseConnection.OpenConnection();
+        await using var connection = await DatabaseConnection.OpenContentConnection();
 
         return await connection.QueryFirstOrDefaultAsync<int?>(
             """
