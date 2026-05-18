@@ -389,15 +389,9 @@ public partial class LevelScreen : Control
         {
             SaveManager.Instance.Data.BestLevelXp[levelData.LevelOrder] = calculatedXp;
         }
-
-        if (levelData.LevelOrder > SaveManager.Instance.Data.LastCompletedLevelOrder)
-        {
-            SaveManager.Instance.Data.LastCompletedLevelOrder = levelData.LevelOrder;
-        }
-
-        SaveManager.Instance.Save();
-        LeaderboardService.Instance?.SyncCurrentPlayer();
-
+        
+        SaveManager.Instance.RecordLevelComplete(levelData.LevelOrder, elapsedSeconds);
+        
         GD.Print($"XP за проходження: {calculatedXp}");
         GD.Print($"Отримано XP: {rewardXp}");
 

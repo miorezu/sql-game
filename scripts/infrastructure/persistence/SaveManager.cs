@@ -168,25 +168,12 @@ public partial class SaveManager : Node
             Data.BestLevelTimes = new Godot.Collections.Dictionary<int, double>();
         }
     }
-
-    public void RecordLevelComplete(int levelOrder)
-    {
-        if (levelOrder > Data.LastCompletedLevelOrder)
-        {
-            Data.LastCompletedLevelOrder = levelOrder;
-            Data.Xp += 10;
-        }
-
-        Save();
-        LeaderboardService.Instance?.SyncCurrentPlayer();
-    }
-
+    
     public void RecordLevelComplete(int levelOrder, double timeSeconds)
     {
         if (levelOrder > Data.LastCompletedLevelOrder)
         {
             Data.LastCompletedLevelOrder = levelOrder;
-            Data.Xp += 10;
         }
 
         SaveBestTime(levelOrder, timeSeconds);
