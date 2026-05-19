@@ -4,6 +4,8 @@ using System.Threading.Tasks;
 
 public static class LevelRepository
 {
+    public const int SupabaseDemoLevelOrder = 6;
+
     private static ILevelLoadingStrategy _loadingStrategy = new SqliteLevelLoadingStrategy();
 
     public static ILevelLoadingStrategy LoadingStrategy => _loadingStrategy;
@@ -18,8 +20,32 @@ public static class LevelRepository
         _loadingStrategy = new SqliteLevelLoadingStrategy();
     }
 
+    public static void UseSqliteLoadingStrategy()
+    {
+        SetLoadingStrategy(new SqliteLevelLoadingStrategy());
+    }
+
+    public static void UseSupabaseDemoLoadingStrategy()
+    {
+        SetLoadingStrategy(new SupabaseLevelLoadingStrategy());
+    }
+
+    public static void UseHybridDemoLoadingStrategy()
+    {
+        SetLoadingStrategy(
+            new RoutedLevelLoadingStrategy(
+                new SqliteLevelLoadingStrategy(),
+                new Dictionary<int, ILevelLoadingStrategy>
+                {
+                    { SupabaseDemoLevelOrder, new SupabaseLevelLoadingStrategy() },
+                }
+            )
+        );
+    }
+
     public static async Task<LevelData> GetLevelData(int levelOrder)
     {
+        Godot.GD.Print($"[LevelRepository] Strategy: {_loadingStrategy.GetType().Name}");
         return await _loadingStrategy.GetLevelData(levelOrder);
     }
 
