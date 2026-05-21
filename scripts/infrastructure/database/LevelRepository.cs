@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 public static class LevelRepository
 {
-    public const int SupabaseDemoLevelOrder = 6;
+    public const int SupabaseDemoLevelOrder = 0;
 
     private static ILevelLoadingStrategy _loadingStrategy = new SqliteLevelLoadingStrategy();
 

@@ -66,7 +66,6 @@ script = ExtResource("4_i2t4f")
 [node name="LevelCompletePopup" parent="." unique_id=1487273030 instance=ExtResource("7_5kwoq")]
 z_index = 4
 layout_mode = 1
-anchors_preset = 15
 offset_right = 1280.0
 offset_bottom = 720.0
 
