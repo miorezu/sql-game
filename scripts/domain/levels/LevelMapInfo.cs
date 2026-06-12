@@ -1,5 +1,3 @@
-using Godot;
-
 public class LevelMapInfo
 {
 	public string LevelCode { get; set; }

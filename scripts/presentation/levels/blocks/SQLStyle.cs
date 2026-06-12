@@ -9,9 +9,9 @@ public static class SqlStyle
         return type switch
         {
             BlockType.Keyword  => Colors.SkyBlue,       
-            BlockType.Table    => Colors.PaleGreen,     
+            BlockType.Table    => Colors.BlueViolet,     
             BlockType.Column   => Colors.LightGoldenrod, 
-            BlockType.Operator => Colors.Tomato,        
+            BlockType.Operator => Colors.LightPink,        
             BlockType.Value    => Colors.White,         
             _                  => Colors.Gray
         };

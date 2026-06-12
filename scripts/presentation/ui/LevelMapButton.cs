@@ -30,6 +30,14 @@ public partial class LevelMapButton : TextureButton
         ApplyBestTimeVisual();
     }
 
+    public void SetState(LevelButtonState state)
+    {
+        Status = state.Status;
+        Disabled = state.IsDisabled;
+        ApplyStatusVisual();
+        ApplyBestTimeVisual(state.BestTimeText);
+    }
+
     private void ApplyDisplayLabel()
     {
         if (_numberLevelLbl == null)
@@ -75,7 +83,7 @@ public partial class LevelMapButton : TextureButton
         }
     }
 
-    private void ApplyBestTimeVisual()
+    private void ApplyBestTimeVisual(string bestTimeText = "")
     {
         if (_bestTimeLbl == null)
             return;
@@ -87,16 +95,7 @@ public partial class LevelMapButton : TextureButton
             return;
         }
 
-        if (SaveManager.Instance == null)
-        {
-            _bestTimeLbl.Visible = false;
-            _bestTimeLbl.Text = "";
-            return;
-        }
-
-        double bestTime = SaveManager.Instance.GetBestTimeSeconds(LevelOrder);
-
-        if (bestTime <= 0)
+        if (string.IsNullOrWhiteSpace(bestTimeText))
         {
             _bestTimeLbl.Visible = false;
             _bestTimeLbl.Text = "";
@@ -104,6 +103,6 @@ public partial class LevelMapButton : TextureButton
         }
 
         _bestTimeLbl.Visible = true;
-        _bestTimeLbl.Text = SaveManager.FormatTime(bestTime);
+        _bestTimeLbl.Text = bestTimeText;
     }
 }

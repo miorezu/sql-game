@@ -34,15 +34,15 @@ public partial class TableLevel : Control
         GD.Print("[TableLevel] _sourceTreeView = " + _sourceTreeView);
         GD.Print("[TableLevel] _expectedTreeView = " + _expectedTreeView);
 
-        await DatabaseManager.PrepareRuntimeForTableLevel(_currentLevelData);
+        await TableLevelUseCase.PrepareLevel(_currentLevelData);
 
         if (_sourceTreeView != null)
-            await _sourceTreeView.LoadTable(_currentLevelData.SourceTableName, DatabaseScope.Runtime);
+            await _sourceTreeView.LoadTable(_currentLevelData.SourceTableName, TableDataSource.Runtime);
         else
             GD.PrintErr("[TableLevel] _sourceTreeView == null");
 
         if (_expectedTreeView != null)
-            await _expectedTreeView.LoadTable(_currentLevelData.ExpectedTableName, DatabaseScope.Content);
+            await _expectedTreeView.LoadTable(_currentLevelData.ExpectedTableName, TableDataSource.Content);
         else
             GD.PrintErr("[TableLevel] _expectedTreeView == null");
 
@@ -60,7 +60,7 @@ public partial class TableLevel : Control
         foreach (Node child in _sqlBlocksContainer.GetChildren())
             child.QueueFree();
 
-        foreach (var blockData in levelData.SqlBlocks)
+        foreach (var blockData in BlockRandomizer.Shuffle(levelData.SqlBlocks))
         {
             var block = _sqlBlockScene.Instantiate<SqlBlock>();
             block.ShowHint = false;
@@ -73,17 +73,14 @@ public partial class TableLevel : Control
 
     public async Task<QueryResult> ExecutePlayerSql(string sql)
     {
-        var result = await RawQueryService.ExecuteSql(sql);
+        var result = await TableLevelUseCase.ExecutePlayerSql(sql);
 
         if (_sourceTreeView != null)
             await _sourceTreeView.Refresh();
 
         if (_currentLevelData != null)
         {
-            bool isCompleted = await LevelValidator.AreTablesEqual(
-                _currentLevelData.SourceTableName,
-                _currentLevelData.ExpectedTableName
-            );
+            bool isCompleted = await TableLevelUseCase.IsCompleted(_currentLevelData);
 
             if (isCompleted)
                 OnLevelCompleted?.Invoke();

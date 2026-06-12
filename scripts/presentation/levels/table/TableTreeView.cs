@@ -1,20 +1,17 @@
-﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using Godot;
-
-
 
 public partial class TableTreeView : Control
 {
     [Export] private Tree _tree;
 
     private string _currentTableName;
-    private DatabaseScope _currentScope = DatabaseScope.Runtime;
+    private TableDataSource _currentSource = TableDataSource.Runtime;
 
-    public async Task LoadTable(string tableName, DatabaseScope scope = DatabaseScope.Runtime)
+    public async Task LoadTable(string tableName, TableDataSource source = TableDataSource.Runtime)
     {
         _currentTableName = tableName;
-        _currentScope = scope;
+        _currentSource = source;
 
         if (_tree == null)
         {
@@ -24,20 +21,18 @@ public partial class TableTreeView : Control
 
         _tree.Clear();
 
-        bool exists = await TableRepository.TableExists(tableName, scope);
-        if (!exists)
+        TableSnapshot snapshot = await TablePreviewUseCase.LoadTable(tableName, source);
+
+        if (!snapshot.Exists)
         {
             GD.PrintErr($"[LevelTreeView] Таблиця '{tableName}' не існує!");
             return;
         }
 
-        List<string> columns = await TableRepository.GetColumnNames(tableName, scope);
-        List<List<string>> rows = await TableRepository.GetRows(tableName, null, scope);
+        _tree.Columns = snapshot.Columns.Count;
 
-        _tree.Columns = columns.Count;
-
-        for (int i = 0; i < columns.Count; i++)
-            _tree.SetColumnTitle(i, columns[i]);
+        for (int i = 0; i < snapshot.Columns.Count; i++)
+            _tree.SetColumnTitle(i, snapshot.Columns[i]);
 
         _tree.ColumnTitlesVisible = true;
         _tree.HideRoot = true;
@@ -45,15 +40,15 @@ public partial class TableTreeView : Control
         TreeItem root = _tree.CreateItem();
         root.SetText(0, tableName);
 
-        foreach (var row in rows)
+        foreach (var row in snapshot.Rows)
         {
             TreeItem item = _tree.CreateItem(root);
 
-            for (int col = 0; col < row.Count && col < columns.Count; col++)
+            for (int col = 0; col < row.Count && col < snapshot.Columns.Count; col++)
                 item.SetText(col, row[col]);
         }
 
-        GD.Print($"[LevelTreeView] '{tableName}' завантажено: {rows.Count} рядків, {columns.Count} колонок.");
+        GD.Print($"[LevelTreeView] '{tableName}' завантажено: {snapshot.Rows.Count} рядків, {snapshot.Columns.Count} колонок.");
     }
 
     public async Task Refresh()
@@ -65,6 +60,6 @@ public partial class TableTreeView : Control
         }
 
         GD.Print($"[LevelTreeView] Refresh -> {_currentTableName}");
-        await LoadTable(_currentTableName, _currentScope);
+        await LoadTable(_currentTableName, _currentSource);
     }
 }

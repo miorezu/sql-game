@@ -1,10 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 
-/// <summary>
-/// Виконує довільний SQL. Використовувати лише для внутрішніх потреб (debug, SQL-рівні в грі).
-/// Ніколи не передавати сюди рядки від гравця без валідації.
-/// </summary>
+
 public static class RawQueryService
 {
     public static async Task<QueryResult> ExecuteSql(string sql)

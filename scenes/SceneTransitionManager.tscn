@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://c3ttt1y06ypol"]
 
-[ext_resource type="Script" uid="uid://bxokjiws6dwhn" path="res://scripts/infrastructure/navigation/SceneTransitionManager.cs" id="1_i4aeb"]
+[ext_resource type="Script" uid="uid://bxokjiws6dwhn" path="res://scripts/presentation/navigation/SceneTransitionManager.cs" id="1_i4aeb"]
 [ext_resource type="Texture2D" uid="uid://c5xcdp71cmp4r" path="res://icon.svg" id="2_80hpj"]
 [ext_resource type="FontFile" uid="uid://bek7n5nuh3iit" path="res://sprites/fonts/ZeroCool.ttf" id="3_3u2dd"]
 

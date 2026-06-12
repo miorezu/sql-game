@@ -254,19 +254,7 @@ public partial class SaveManager : Node
 
     public static string FormatTime(double totalSeconds)
     {
-        if (totalSeconds <= 0)
-        {
-            return "--:--";
-        }
-
-        var time = TimeSpan.FromSeconds(totalSeconds);
-
-        if (time.TotalHours >= 1)
-        {
-            return $"{(int)time.TotalHours:00}:{time.Minutes:00}:{time.Seconds:00}";
-        }
-
-        return $"{time.Minutes:00}:{time.Seconds:00}";
+        return TimeFormatter.Format(totalSeconds);
     }
 
     private void PrintDebugInfo()

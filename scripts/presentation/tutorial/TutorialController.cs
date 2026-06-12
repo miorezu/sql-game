@@ -4,7 +4,7 @@ using Godot;
 public partial class TutorialController : Node
 {
     [Export] private TutorialOverlay _tutorialOverlay;
- private bool _isTutorialRunning;
+    private bool _isTutorialRunning;
 
     public async Task<bool> ShowForLevel(
         LevelData levelData,
@@ -33,11 +33,8 @@ public partial class TutorialController : Node
             return false;
         }
 
-        if (SaveManager.Instance?.Data == null)
-        {
-            GD.PrintErr("[Tutorial] SaveManager або SaveData не ініціалізовані.");
+        if (!TutorialProgressUseCase.ShouldShowTutorial(levelData.LevelType, forceShow))
             return false;
-        }
 
         _isTutorialRunning = true;
 
@@ -45,51 +42,20 @@ public partial class TutorialController : Node
         {
             await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
 
-            var tutorialWasShown = false;
-            var shouldSave = false;
+            bool tutorialWasShown;
 
             switch (levelData.LevelType)
             {
                 case "table":
-                    if (!forceShow && SaveManager.Instance.Data.TableTutorialShown)
-                        return false;
-
                     tutorialWasShown = await ShowTableTutorial(levelView);
-
-                    if (tutorialWasShown && !SaveManager.Instance.Data.TableTutorialShown)
-                    {
-                        SaveManager.Instance.Data.TableTutorialShown = true;
-                        shouldSave = true;
-                    }
-
                     break;
 
                 case "builder":
-                    if (!forceShow && SaveManager.Instance.Data.BuilderTutorialShown)
-                        return false;
-
                     tutorialWasShown = await ShowBuilderTutorial(levelView);
-
-                    if (tutorialWasShown && !SaveManager.Instance.Data.BuilderTutorialShown)
-                    {
-                        SaveManager.Instance.Data.BuilderTutorialShown = true;
-                        shouldSave = true;
-                    }
-
                     break;
 
                 case "match":
-                    if (!forceShow && SaveManager.Instance.Data.MatchTutorialShown)
-                        return false;
-
                     tutorialWasShown = await ShowMatchTutorial(levelView);
-
-                    if (tutorialWasShown && !SaveManager.Instance.Data.MatchTutorialShown)
-                    {
-                        SaveManager.Instance.Data.MatchTutorialShown = true;
-                        shouldSave = true;
-                    }
-
                     break;
 
                 default:
@@ -97,8 +63,8 @@ public partial class TutorialController : Node
                     return false;
             }
 
-            if (shouldSave)
-                SaveManager.Instance.Save();
+            if (tutorialWasShown && !forceShow)
+                TutorialProgressUseCase.MarkTutorialShown(levelData.LevelType);
 
             return tutorialWasShown;
         }
@@ -204,18 +170,15 @@ public partial class TutorialController : Node
             return false;
         }
 
-        if (leftContainer.GetChildCount() == 0 || rightContainer.GetChildCount() == 0)
-        {
-            GD.PrintErr("[Tutorial] Match tutorial: немає блоків для демонстрації.");
-            return false;
-        }
+        var leftBlock = GetFirstDirectControl(leftContainer)
+                        ?? FindMatchBlockInTree(targetSlot, MatchSide.Left);
 
-        var leftBlock = leftContainer.GetChildOrNull<Control>(0);
-        var rightBlock = rightContainer.GetChildOrNull<Control>(0);
+        var rightBlock = GetFirstDirectControl(rightContainer)
+                         ?? FindMatchBlockInTree(targetSlot, MatchSide.Right);
 
         if (leftBlock == null || rightBlock == null)
         {
-            GD.PrintErr("[Tutorial] Match tutorial: лівий або правий блок не є Control.");
+            GD.PrintErr("[Tutorial] Match tutorial: немає лівого або правого блока для демонстрації.");
             return false;
         }
 
@@ -224,5 +187,41 @@ public partial class TutorialController : Node
             rightBlock,
             targetSlot
         );
+    }
+
+    private Control GetFirstDirectControl(Control container)
+    {
+        if (container == null)
+            return null;
+
+        foreach (Node child in container.GetChildren())
+        {
+            if (child is Control control)
+                return control;
+        }
+
+        return null;
+    }
+
+    private SqlBlock FindMatchBlockInTree(Control root, MatchSide matchSide)
+    {
+        if (root == null)
+            return null;
+
+        foreach (Node child in root.GetChildren())
+        {
+            if (child is SqlBlock block && block.MatchSide == matchSide)
+                return block;
+
+            if (child is Control control)
+            {
+                var nestedBlock = FindMatchBlockInTree(control, matchSide);
+
+                if (nestedBlock != null)
+                    return nestedBlock;
+            }
+        }
+
+        return null;
     }
 }

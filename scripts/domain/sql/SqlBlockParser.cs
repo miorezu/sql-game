@@ -1,5 +1,4 @@
 ﻿using System;
-using Godot;
 
 public static class SqlBlockParser
 {
@@ -11,16 +10,12 @@ public static class SqlBlockParser
         if (Enum.TryParse(value, true, out BlockType result))
             return result;
 
-        GD.PrintErr($"[SqlBlockParser] Невідомий block_type: {value}");
         return BlockType.Value;
     }
 
     public static KeywordTypes ParseKeywordType(string value)
     {
-        if (string.IsNullOrWhiteSpace(value))
-            return KeywordTypes.none;
-
-        if (Enum.TryParse(value, true, out KeywordTypes result))
+        if (SqlKeyword.TryParseKeywordType(value, out KeywordTypes result))
             return result;
 
         return KeywordTypes.none;

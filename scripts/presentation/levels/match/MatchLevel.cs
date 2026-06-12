@@ -61,20 +61,20 @@ public partial class MatchLevel : Control
             return;
         }
 
-        var pairs = await LevelRepository.GetMatchPairs(levelData.LevelOrder);
+        var pairs = await MatchLevelUseCase.GetMatchPairs(levelData);
 
         GD.Print("[MatchLevel] Pairs count = " + pairs.Count);
 
         _matchBuilder.CreateSlots(pairs.Count);
 
-        foreach (var pair in pairs)
+        foreach (var pair in BlockRandomizer.Shuffle(pairs))
         {
             var block = _sqlBlockScene.Instantiate<SqlBlock>();
             block.ShowHint = false;
             _leftItemsContainer.AddMatchBlock(block, pair.Id, pair.LeftText);
         }
 
-        foreach (var pair in pairs.OrderBy(x => GD.Randf()))
+        foreach (var pair in BlockRandomizer.Shuffle(pairs))
         {
             var block = _sqlBlockScene.Instantiate<SqlBlock>();
             block.ShowHint = false;
@@ -85,7 +85,7 @@ public partial class MatchLevel : Control
     private void OnCheckButtonPressed()
     {
         UpdateSlotColor(_matchBuilder);
-        if (LevelValidator.AreAllMatchPairsCorrect(_matchBuilder))
+        if (MatchPairValidator.AreAllMatchPairsCorrect(_matchBuilder))
         {
             GD.Print("[Match] Рівень пройдено");
             OnLevelCompleted?.Invoke();
@@ -107,7 +107,7 @@ public partial class MatchLevel : Control
                 continue;
             }
             
-            if (LevelValidator.AreMatchPairsCorrect(slot.GetLeftBlock(), slot.GetRightBlock()))
+            if (MatchPairValidator.AreMatchPairsCorrect(slot.GetLeftBlock(), slot.GetRightBlock()))
                 slot.SetCorrectColor();
             else
                 slot.SetErrorColor();

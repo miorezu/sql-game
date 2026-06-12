@@ -56,15 +56,9 @@ public sealed class SqliteLevelLoadingStrategy : ILevelLoadingStrategy
             })
             .ToArray();
 
-        if (level.LevelType == "builder")
-        {
-            level.BuilderSolutionBlocks =
-                (await BuilderRepository.GetBuilderSolutionBlocks(level.Id, connection)).ToArray();
-        }
-        else
-        {
-            level.BuilderSolutionBlocks = Array.Empty<string>();
-        }
+        level.BuilderSolutionBlocks = level.LevelType == "builder" ? 
+            (await BuilderRepository.GetBuilderSolutionBlocks(level.Id, connection)).ToArray() : 
+            Array.Empty<string>();
 
         PrintLoadedLevel(level);
 

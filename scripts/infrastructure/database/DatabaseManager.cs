@@ -81,6 +81,15 @@ public partial class DatabaseManager : Node
         return GetRuntimeDbPath();
     }
 
+    public static void EnsureContentDatabaseInitialized()
+    {
+        if (!string.IsNullOrWhiteSpace(_contentDbGodotPath))
+            return;
+
+        CleanupStaleTemporaryDatabases();
+        InitializeContentDatabase();
+    }
+
     private static void InitializeContentDatabase()
     {
         if (!FileAccess.FileExists(TemplateDbPath))

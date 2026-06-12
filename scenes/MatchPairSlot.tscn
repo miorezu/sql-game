@@ -36,3 +36,4 @@ text = "⇔"
 custom_minimum_size = Vector2(120, 0)
 layout_mode = 2
 script = ExtResource("2_ttfg6")
+_acceptedMatchSide = 2

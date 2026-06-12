@@ -36,7 +36,7 @@ public partial class LevelCompletePopup : Control
         SetButtonsDisabled(false);
 
         _xpLabel.Text = $"Отримано XP: {result.RewardXp}";
-        _timeLabel.Text = $"Пройден за: {SaveManager.FormatTime(result.ElapsedSeconds)}";
+        _timeLabel.Text = $"Пройден за: {TimeFormatter.Format(result.ElapsedSeconds)}";
         _errorsLabel.Text = $"Зроблено помилок: {result.WrongAttempts}";
 
         Visible = true;

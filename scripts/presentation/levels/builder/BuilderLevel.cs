@@ -60,7 +60,7 @@ public partial class BuilderLevel : Control
         foreach (Node child in _availableBlocksContainer.GetChildren())
             child.QueueFree();
 
-        var shuffledBlocks = Shuffle(levelData.SqlBlocks);
+        var shuffledBlocks = BlockRandomizer.Shuffle(levelData.SqlBlocks);
 
         foreach (var blockData in shuffledBlocks)
         {
@@ -183,22 +183,6 @@ public partial class BuilderLevel : Control
     private string NormalizeBlockValue(string value)
     {
         return value.Trim();
-    }
-
-    private List<T> Shuffle<T>(IEnumerable<T> source)
-    {
-        var list = source.ToList();
-
-        var random = new RandomNumberGenerator();
-        random.Randomize();
-
-        for (int i = list.Count - 1; i > 0; i--)
-        {
-            int j = random.RandiRange(0, i);
-            (list[i], list[j]) = (list[j], list[i]);
-        }
-
-        return list;
     }
 
     private void ResetBlockColor(SqlBlock block)

@@ -44,12 +44,21 @@ public partial class SceneTransitionManager : CanvasLayer
         if (_isTransitioning)
             return;
 
+        ulong transitionStartUsec = Time.GetTicksUsec();
+        string fromScene = GetTree().CurrentScene?.Name ?? "Unknown";
+
         if (_fadeRect == null || _loadingContent == null || _loadingLabel == null)
         {
             GD.PrintErr("[SceneTransition] FadeRect, LoadingContent або LoadingLabel не ініціалізовані.");
 
             var tree = Engine.GetMainLoop() as SceneTree;
             tree?.ChangeSceneToFile(scenePath);
+            MemoryLogger.Instance?.RecordSceneTransition(
+                fromScene,
+                tree?.CurrentScene?.Name ?? "Unknown",
+                scenePath,
+                ElapsedMilliseconds(transitionStartUsec)
+            );
             return;
         }
 
@@ -96,6 +105,13 @@ public partial class SceneTransitionManager : CanvasLayer
 
         _fadeRect.Visible = false;
         _isTransitioning = false;
+
+        MemoryLogger.Instance?.RecordSceneTransition(
+            fromScene,
+            GetTree().CurrentScene?.Name ?? "Unknown",
+            scenePath,
+            ElapsedMilliseconds(transitionStartUsec)
+        );
     }
 
     public async Task FadeWithoutChangeScene(Func<Task> action, bool showLoadingText = true)
@@ -155,6 +171,11 @@ public partial class SceneTransitionManager : CanvasLayer
         );
 
         await ToSignal(tween, Tween.SignalName.Finished);
+    }
+
+    private static double ElapsedMilliseconds(ulong startUsec)
+    {
+        return (Time.GetTicksUsec() - startUsec) / 1000.0;
     }
 
     private async void PlayStartupFade()

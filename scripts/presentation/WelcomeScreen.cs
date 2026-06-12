@@ -26,21 +26,7 @@ public partial class WelcomeScreen : Control
 
     public void TryShow()
     {
-        if (SaveManager.Instance == null)
-        {
-            GD.PrintErr("[WELCOME] SaveManager.Instance не знайдено!");
-            ShowScreen();
-            return;
-        }
-
-        if (SaveManager.Instance.Data == null)
-        {
-            GD.PrintErr("[WELCOME] SaveData не завантажено!");
-            ShowScreen();
-            return;
-        }
-
-        if (SaveManager.Instance.Data.HasSeenWelcomeScreen)
+        if (!WelcomeUseCase.ShouldShowWelcomeScreen())
         {
             Visible = false;
             return;
@@ -65,24 +51,11 @@ public partial class WelcomeScreen : Control
     {
         string playerName = _nameInput?.Text.Trim() ?? "";
 
-        if (string.IsNullOrWhiteSpace(playerName))
+        if (!WelcomeUseCase.TryCompleteWelcomeScreen(playerName, out string errorMessage))
         {
-            ShowError("Введіть ім'я користувача");
+            ShowError(errorMessage);
             return;
         }
-
-        if (playerName.Length > 24)
-        {
-            ShowError("Ім'я не повинно перевищувати 24 символи");
-            return;
-        }
-        if (playerName.Length < 2)
-        {
-            ShowError("Ім'я повинно мати хоча б 2 символи");
-            return;
-        }
-
-        SaveManager.Instance.CompleteWelcomeScreen(playerName);
 
         Visible = false;
         WelcomeCompleted?.Invoke();

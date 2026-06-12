@@ -10,10 +10,6 @@ using Godot;
 
 public sealed class SupabaseLevelLoadingStrategy : ILevelLoadingStrategy
 {
-    private const string DefaultSupabaseUrl = "https://jyltrpmblsmwbzrdfnsj.supabase.co";
-    private const string DefaultSupabaseKey = "sb_publishable_FOMUlgZSwVecfOabXTx0iw_dyoWWRiL";
-    private const string DefaultLevelsTableName = "demo_levels";
-
     private static readonly System.Net.Http.HttpClient Client = new()
     {
         Timeout = TimeSpan.FromSeconds(5)
@@ -28,14 +24,14 @@ public sealed class SupabaseLevelLoadingStrategy : ILevelLoadingStrategy
     private readonly string _levelsTableName;
 
     public SupabaseLevelLoadingStrategy(
-        string supabaseUrl = DefaultSupabaseUrl,
-        string supabaseKey = DefaultSupabaseKey,
-        string levelsTableName = DefaultLevelsTableName
+        string supabaseUrl = null,
+        string supabaseKey = null,
+        string levelsTableName = null
     )
     {
-        _supabaseUrl = supabaseUrl.TrimEnd('/');
-        _supabaseKey = supabaseKey;
-        _levelsTableName = levelsTableName;
+        _supabaseUrl = (supabaseUrl ?? SupabaseProjectSettings.Url).TrimEnd('/');
+        _supabaseKey = supabaseKey ?? SupabaseProjectSettings.Key;
+        _levelsTableName = levelsTableName ?? SupabaseProjectSettings.LevelsTableName;
     }
 
     public async Task<LevelData> GetLevelData(int levelOrder)

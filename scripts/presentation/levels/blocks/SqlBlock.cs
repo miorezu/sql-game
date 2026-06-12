@@ -58,7 +58,7 @@ public partial class SqlBlock : Button
     private string GetBlockDisplayText()
     {
         if (Type == BlockType.Keyword && KeywordType != KeywordTypes.none)
-            return KeywordType.ToString();
+            return SqlKeyword.GetDisplayText(KeywordType, BlockValue);
 
         return BlockValue;
     }

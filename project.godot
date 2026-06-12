@@ -8,19 +8,23 @@
 
 config_version=5
 
+[app]
+
+config/save_key="SQLGamification_Encrypted_Save_Key_2026_Leaderboard_LocalProgress"
+
 [application]
 
-config/name="SQLGame"
+config/name="SQLGamification"
 run/main_scene="uid://cjuum5vmuxvaw"
 config/features=PackedStringArray("4.6", "C#", "Forward Plus")
 config/icon="uid://c5xcdp71cmp4r"
 
 [autoload]
 
-GameState="*uid://xtwlafyyi3p7"
 LeaderboardService="*uid://d37nsppldsstc"
 SaveManager="*uid://dfci4sov1f8q2"
 SceneTransitionManager="*uid://c3ttt1y06ypol"
+MemoryLogger="*uid://ccaehy7req1jb"
 
 [display]
 
@@ -31,7 +35,7 @@ window/stretch/aspect="expand"
 
 [dotnet]
 
-project/assembly_name="SQLGame"
+project/assembly_name="SQLGamification"
 
 [physics]
 
@@ -40,3 +44,9 @@ project/assembly_name="SQLGame"
 [rendering]
 
 rendering_device/driver.windows="d3d12"
+
+[supabase]
+
+url="https://jyltrpmblsmwbzrdfnsj.supabase.co"
+key="sb_publishable_FOMUlgZSwVecfOabXTx0iw_dyoWWRiL"
+levels_table_name="demo_levels"

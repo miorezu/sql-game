@@ -10,14 +10,14 @@ public partial class LeaderboardView : Control
     {
         if (_tree == null)
         {
-            GD.PrintErr("[LeaderboardView] Tree node не призначено!");
+            GD.PrintErr("[LeaderboardView] Tree node не призначено.");
             return;
         }
 
         if (_rankPlace != null)
             _rankPlace.Text = "Ваше місце: завантаження...";
 
-        if (LeaderboardService.Instance == null)
+        if (!LeaderboardUseCase.IsAvailable)
         {
             ShowMessage("Лідерборд недоступний");
 
@@ -27,25 +27,16 @@ public partial class LeaderboardView : Control
             return;
         }
 
-        LeaderboardService.Instance.TopLoaded += OnTopLoaded;
-        LeaderboardService.Instance.TopLoadFailed += OnTopLoadFailed;
-
-        LeaderboardService.Instance.CurrentPlayerRankLoaded += OnCurrentPlayerRankLoaded;
-        LeaderboardService.Instance.CurrentPlayerRankLoadFailed += OnCurrentPlayerRankLoadFailed;
+        LeaderboardUseCase.SubscribeTopPlayers(OnTopLoaded, OnTopLoadFailed);
+        LeaderboardUseCase.SubscribeCurrentRank(OnCurrentPlayerRankLoaded, OnCurrentPlayerRankLoadFailed);
 
         LoadLeaderboard();
     }
 
     public override void _ExitTree()
     {
-        if (LeaderboardService.Instance != null)
-        {
-            LeaderboardService.Instance.TopLoaded -= OnTopLoaded;
-            LeaderboardService.Instance.TopLoadFailed -= OnTopLoadFailed;
-
-            LeaderboardService.Instance.CurrentPlayerRankLoaded -= OnCurrentPlayerRankLoaded;
-            LeaderboardService.Instance.CurrentPlayerRankLoadFailed -= OnCurrentPlayerRankLoadFailed;
-        }
+        LeaderboardUseCase.UnsubscribeTopPlayers(OnTopLoaded, OnTopLoadFailed);
+        LeaderboardUseCase.UnsubscribeCurrentRank(OnCurrentPlayerRankLoaded, OnCurrentPlayerRankLoadFailed);
     }
 
     public void LoadLeaderboard()
@@ -55,8 +46,8 @@ public partial class LeaderboardView : Control
         if (_rankPlace != null)
             _rankPlace.Text = "Ваше місце: завантаження...";
 
-        LeaderboardService.Instance?.LoadTopPlayers();
-        LeaderboardService.Instance?.LoadCurrentPlayerRank();
+        LeaderboardUseCase.LoadTopPlayers();
+        LeaderboardUseCase.LoadCurrentPlayerRank();
     }
 
     private void OnTopLoaded(List<LeaderboardEntry> entries)
@@ -77,20 +68,13 @@ public partial class LeaderboardView : Control
 
             item.SetText(0, entry.Rank.ToString());
             item.SetText(1, entry.PlayerName);
-            item.SetText(2, entry.Xp.ToString());
-            item.SetText(3, entry.CompletedLevels.ToString());
-            item.SetText(4, FormatAverageTime(entry.AverageTimeSeconds));
+            item.SetText(2, entry.RatingScore.ToString());
+            item.SetText(3, entry.Xp.ToString());
+            item.SetText(4, entry.CompletedLevels.ToString());
+            item.SetText(5, LeaderboardUseCase.FormatAverageTime(entry.AverageTimeSeconds));
 
-            if (SaveManager.Instance != null &&
-                SaveManager.Instance.Data != null &&
-                entry.PlayerId == SaveManager.Instance.Data.PlayerId)
-            {
-                item.SetCustomColor(0, new Color(0.35f, 0.75f, 1f));
-                item.SetCustomColor(1, new Color(0.35f, 0.75f, 1f));
-                item.SetCustomColor(2, new Color(0.35f, 0.75f, 1f));
-                item.SetCustomColor(3, new Color(0.35f, 0.75f, 1f));
-                item.SetCustomColor(4, new Color(0.35f, 0.75f, 1f));
-            }
+            if (entry.PlayerId == LeaderboardUseCase.CurrentPlayerId)
+                HighlightCurrentPlayer(item);
         }
     }
 
@@ -99,10 +83,12 @@ public partial class LeaderboardView : Control
         ShowMessage(message);
     }
 
-    private void OnCurrentPlayerRankLoaded(int rank)
+    private void OnCurrentPlayerRankLoaded(int rank, int totalPlayers)
     {
         if (_rankPlace != null)
-            _rankPlace.Text = $"Ваше місце: {rank}";
+            _rankPlace.Text = totalPlayers > 0
+                ? $"Ваше місце: {rank} з {totalPlayers}"
+                : $"Ваше місце: {rank}";
     }
 
     private void OnCurrentPlayerRankLoadFailed(string message)
@@ -117,7 +103,7 @@ public partial class LeaderboardView : Control
     {
         _tree.Clear();
 
-        _tree.Columns = 5;
+        _tree.Columns = 6;
         _tree.HideRoot = true;
 
         _tree.ScrollHorizontalEnabled = false;
@@ -125,9 +111,10 @@ public partial class LeaderboardView : Control
 
         _tree.SetColumnTitle(0, "№");
         _tree.SetColumnTitle(1, "Гравець");
-        _tree.SetColumnTitle(2, "XP");
-        _tree.SetColumnTitle(3, "Рівні");
-        _tree.SetColumnTitle(4, "Сер. час");
+        _tree.SetColumnTitle(2, "Рейтингові бали");
+        _tree.SetColumnTitle(3, "XP");
+        _tree.SetColumnTitle(4, "Рівні");
+        _tree.SetColumnTitle(5, "Сер. час");
 
         _tree.SetColumnTitlesVisible(true);
 
@@ -140,16 +127,20 @@ public partial class LeaderboardView : Control
         _tree.SetColumnClipContent(1, true);
 
         _tree.SetColumnExpand(2, false);
-        _tree.SetColumnCustomMinimumWidth(2, 60);
+        _tree.SetColumnCustomMinimumWidth(2, 95);
         _tree.SetColumnClipContent(2, true);
 
         _tree.SetColumnExpand(3, false);
-        _tree.SetColumnCustomMinimumWidth(3, 70);
+        _tree.SetColumnCustomMinimumWidth(3, 60);
         _tree.SetColumnClipContent(3, true);
 
         _tree.SetColumnExpand(4, false);
-        _tree.SetColumnCustomMinimumWidth(4, 90);
+        _tree.SetColumnCustomMinimumWidth(4, 70);
         _tree.SetColumnClipContent(4, true);
+
+        _tree.SetColumnExpand(5, false);
+        _tree.SetColumnCustomMinimumWidth(5, 90);
+        _tree.SetColumnClipContent(5, true);
     }
 
     private void ShowMessage(string message)
@@ -165,11 +156,11 @@ public partial class LeaderboardView : Control
         item.SetText(0, message);
     }
 
-    private string FormatAverageTime(double seconds)
+    private void HighlightCurrentPlayer(TreeItem item)
     {
-        if (seconds <= 0)
-            return "--:--";
+        var color = new Color(0.35f, 0.75f, 1f);
 
-        return SaveManager.FormatTime(seconds);
+        for (int column = 0; column < 6; column++)
+            item.SetCustomColor(column, color);
     }
 }

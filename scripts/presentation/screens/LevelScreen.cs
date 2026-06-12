@@ -65,17 +65,17 @@ public partial class LevelScreen : Control
 
     private async Task LoadSelectedLevel()
     {
-        var order = GameState.Instance.SelectedLevelOrder;
+        ulong levelLoadStartUsec = Time.GetTicksUsec();
 
         _isLevelCompleted = false;
         _wrongAttempts = 0;
         SetGameplayInputEnabled(true);
 
-        _currentLevelData = await LevelRepository.GetLevelData(order);
+        _currentLevelData = await LevelSessionUseCase.GetSelectedLevelData();
 
         if (_currentLevelData == null)
         {
-            GD.PrintErr($"[LevelScreen] Рівень з order={order} не знайдено.");
+            GD.PrintErr("[LevelScreen] Рівень не знайдено.");
             return;
         }
 
@@ -89,6 +89,11 @@ public partial class LevelScreen : Control
             GD.PrintErr("[LevelScreen] Level view was not created.");
             return;
         }
+
+        MemoryLogger.Instance?.RecordLevelLoad(
+            _currentLevelData,
+            ElapsedMilliseconds(levelLoadStartUsec)
+        );
 
         StartTimer();
 
@@ -206,19 +211,19 @@ public partial class LevelScreen : Control
         StopTimer();
         SetGameplayInputEnabled(false);
 
-        if (_currentLevelData.LevelType == "table")
-            DatabaseManager.DeleteRuntimeDb();
+        LevelSessionUseCase.CleanupRuntimeIfNeeded(_currentLevelData);
 
         GD.Print($"[LevelScreen] Рівень {_currentLevelData.LevelOrder} — '{_currentLevelData.Title}' пройдено");
-        GD.Print($"[LevelScreen] Час проходження: {SaveManager.FormatTime(_elapsedTime)}");
+        GD.Print($"[LevelScreen] Час проходження: {TimeFormatter.Format(_elapsedTime)}");
 
-        LevelCompleteResult result = CompleteLevel(
+        LevelCompleteResult result = await CompleteLevelUseCase.CompleteLevel(
             _currentLevelData,
             _elapsedTime,
             _wrongAttempts
         );
 
-        result.HasNextLevel = await LevelRepository.HasNextLevel(_currentLevelData.LevelOrder);
+        GD.Print($"XP за проходження: {result.CalculatedXp}");
+        GD.Print($"Отримано XP: {result.RewardXp}");
 
         _levelCompletePopup?.ShowPopup(result);
     }
@@ -230,9 +235,9 @@ public partial class LevelScreen : Control
 
         GD.Print("[LevelScreen] Next level pressed");
 
-        var hasNext = await LevelRepository.HasNextLevel(_currentLevelData.LevelOrder);
+        bool selectedNextLevel = await LevelSessionUseCase.SelectNextLevel(_currentLevelData);
 
-        if (!hasNext)
+        if (!selectedNextLevel)
         {
             GD.Print("[LevelScreen] Наступного рівня немає.");
             return;
@@ -240,8 +245,6 @@ public partial class LevelScreen : Control
 
         await SceneTransitionManager.Instance.FadeWithoutChangeScene(async () =>
         {
-            GameState.Instance.SelectedLevelOrder = _currentLevelData.LevelOrder + 1;
-
             _levelCompletePopup?.Hide();
 
             await LoadSelectedLevel();
@@ -251,7 +254,7 @@ public partial class LevelScreen : Control
     private void OnSelectLevelMenuPressed()
     {
         StopTimer();
-        DatabaseManager.DeleteRuntimeDb();
+        LevelSessionUseCase.CleanupRuntime();
 
         GD.Print("[LevelScreen] Select level menu pressed");
 
@@ -267,7 +270,7 @@ public partial class LevelScreen : Control
 
         await SceneTransitionManager.Instance.FadeWithoutChangeScene(async () =>
         {
-            GameState.Instance.SelectedLevelOrder = _currentLevelData.LevelOrder;
+            LevelSessionUseCase.SelectCurrentLevel(_currentLevelData);
 
             _levelCompletePopup?.Hide();
 
@@ -314,7 +317,7 @@ public partial class LevelScreen : Control
 
             case TableLevel tableLevel:
                 tableLevel.OnLevelCompleted -= OnLevelCompleted;
-                DatabaseManager.DeleteRuntimeDb();
+                LevelSessionUseCase.CleanupRuntime();
                 break;
 
             case BuilderLevel builderLevel:
@@ -355,60 +358,15 @@ public partial class LevelScreen : Control
             : Node.ProcessModeEnum.Disabled;
     }
 
-    private LevelCompleteResult CompleteLevel(
-        LevelData levelData,
-        float elapsedSeconds,
-        int wrongAttempts
-    )
-    {
-        int calculatedXp = XpCalculator.CalculateLevelXp(
-            levelData.BaseXp,
-            elapsedSeconds,
-            levelData.TargetTimeSeconds,
-            wrongAttempts
-        );
-
-        int maxXp = XpCalculator.CalculateMaxXp(levelData.BaseXp);
-
-        int previousBestXp = 0;
-
-        if (SaveManager.Instance.Data.BestLevelXp.ContainsKey(levelData.LevelOrder))
-        {
-            previousBestXp = SaveManager.Instance.Data.BestLevelXp[levelData.LevelOrder];
-        }
-
-        int rewardXp = XpCalculator.CalculateRewardXp(
-            calculatedXp,
-            previousBestXp,
-            maxXp
-        );
-
-        SaveManager.Instance.Data.Xp += rewardXp;
-
-        if (calculatedXp > previousBestXp)
-        {
-            SaveManager.Instance.Data.BestLevelXp[levelData.LevelOrder] = calculatedXp;
-        }
-        
-        SaveManager.Instance.RecordLevelComplete(levelData.LevelOrder, elapsedSeconds);
-        
-        GD.Print($"XP за проходження: {calculatedXp}");
-        GD.Print($"Отримано XP: {rewardXp}");
-
-        return new LevelCompleteResult
-        {
-            LevelData = levelData,
-            CalculatedXp = calculatedXp,
-            RewardXp = rewardXp,
-            ElapsedSeconds = elapsedSeconds,
-            WrongAttempts = wrongAttempts
-        };
-    }
-
     private void OnWrongAnswer()
     {
         _wrongAttempts++;
 
         GD.Print($"[LevelScreen] Неправильних спроб: {_wrongAttempts}");
+    }
+
+    private static double ElapsedMilliseconds(ulong startUsec)
+    {
+        return (Time.GetTicksUsec() - startUsec) / 1000.0;
     }
 }

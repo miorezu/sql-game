@@ -1,21 +1,23 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
+using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using Godot;
 
 public partial class LeaderboardService : Node
 {
     public static LeaderboardService Instance { get; private set; }
 
-    [Export] public string SupabaseUrl { get; set; } = "https://jyltrpmblsmwbzrdfnsj.supabase.co";
-    [Export] public string SupabaseKey { get; set; } = "sb_publishable_FOMUlgZSwVecfOabXTx0iw_dyoWWRiL";
-private const int TopPlayersLimit = 100;
+    private const int TopPlayersLimit = 100;
+    private const int LeaderboardCandidateLimit = 1000;
 
     public event Action<bool, string> PlayerSynced;
     public event Action<List<LeaderboardEntry>> TopLoaded;
     public event Action<string> TopLoadFailed;
 
-    public event Action<int> CurrentPlayerRankLoaded;
+    public event Action<int, int> CurrentPlayerRankLoaded;
     public event Action<string> CurrentPlayerRankLoadFailed;
 
     public override void _Ready()
@@ -23,12 +25,17 @@ private const int TopPlayersLimit = 100;
         Instance = this;
     }
 
-    public void SyncCurrentPlayer()
+    public async void SyncCurrentPlayer()
+    {
+        await SyncCurrentPlayerAsync();
+    }
+
+    private async Task<bool> SyncCurrentPlayerAsync()
     {
         if (SaveManager.Instance == null || SaveManager.Instance.Data == null)
         {
             GD.PrintErr("[Leaderboard] SaveManager або SaveData не знайдено");
-            return;
+            return false;
         }
 
         var data = SaveManager.Instance.Data;
@@ -36,18 +43,19 @@ private const int TopPlayersLimit = 100;
         if (string.IsNullOrWhiteSpace(data.PlayerId))
         {
             GD.PrintErr("[Leaderboard] PlayerId порожній");
-            return;
+            return false;
         }
 
         if (string.IsNullOrWhiteSpace(data.PlayerName))
         {
             GD.PrintErr("[Leaderboard] PlayerName порожній");
-            return;
+            return false;
         }
 
         int completedLevels = data.LastCompletedLevelOrder;
         int totalTimeSeconds = GetTotalBestTimeSeconds();
         double averageTimeSeconds = GetAverageBestTimeSeconds();
+        int ratingScore = await CalculateCurrentPlayerRatingScore(data);
 
         var body = new Godot.Collections.Dictionary
         {
@@ -57,20 +65,23 @@ private const int TopPlayersLimit = 100;
             { "total_time_seconds", totalTimeSeconds },
             { "average_time_seconds", averageTimeSeconds },
             { "xp", data.Xp },
+            { "rating_score", ratingScore },
             { "updated_at", DateTime.UtcNow.ToString("o") }
         };
 
-        string url = $"{SupabaseUrl.TrimEnd('/')}/rest/v1/leaderboard_players?on_conflict=player_id";
+        string url = $"{SupabaseProjectSettings.Url.TrimEnd('/')}/rest/v1/leaderboard_players?on_conflict=player_id";
 
         string[] headers =
         {
-            $"apikey: {SupabaseKey}",
-            $"Authorization: Bearer {SupabaseKey}",
+            $"apikey: {SupabaseProjectSettings.Key}",
+            $"Authorization: Bearer {SupabaseProjectSettings.Key}",
             "Content-Type: application/json",
             "Prefer: resolution=merge-duplicates,return=minimal"
         };
 
         string json = Json.Stringify(body);
+
+        var syncCompleted = new TaskCompletionSource<bool>();
 
         var request = CreateRequest((result, responseCode, responseHeaders, responseBody) =>
         {
@@ -80,6 +91,7 @@ private const int TopPlayersLimit = 100;
             {
                 GD.PrintErr($"[Leaderboard] Network error while syncing player. Result: {result}");
                 PlayerSynced?.Invoke(false, $"Network error: {result}");
+                syncCompleted.TrySetResult(false);
                 return;
             }
 
@@ -87,11 +99,13 @@ private const int TopPlayersLimit = 100;
             {
                 GD.Print("[Leaderboard] Player synced");
                 PlayerSynced?.Invoke(true, "Player synced");
+                syncCompleted.TrySetResult(true);
             }
             else
             {
                 GD.PrintErr($"[Leaderboard] Sync failed. Code: {responseCode}. Body: {responseText}");
                 PlayerSynced?.Invoke(false, responseText);
+                syncCompleted.TrySetResult(false);
             }
         });
 
@@ -107,21 +121,26 @@ private const int TopPlayersLimit = 100;
             GD.PrintErr($"[Leaderboard] Request error: {error}");
             PlayerSynced?.Invoke(false, error.ToString());
             request.QueueFree();
+            return false;
         }
+
+        return await syncCompleted.Task;
     }
 
-    public void LoadTopPlayers()
+    public async void LoadTopPlayers()
     {
+        await SyncCurrentPlayerAsync();
+
         string url =
-            $"{SupabaseUrl.TrimEnd('/')}/rest/v1/leaderboard_players" +
-            "?select=player_id,player_name,completed_levels,average_time_seconds,xp" +
-            "&order=xp.desc,completed_levels.desc,average_time_seconds.asc" +
-            $"&limit={TopPlayersLimit}";
+            $"{SupabaseProjectSettings.Url.TrimEnd('/')}/rest/v1/leaderboard_players" +
+            "?select=player_id,player_name,completed_levels,average_time_seconds,xp,rating_score" +
+            "&order=rating_score.desc,xp.desc,completed_levels.desc,average_time_seconds.asc" +
+            $"&limit={LeaderboardCandidateLimit}";
 
         string[] headers =
         {
-            $"apikey: {SupabaseKey}",
-            $"Authorization: Bearer {SupabaseKey}",
+            $"apikey: {SupabaseProjectSettings.Key}",
+            $"Authorization: Bearer {SupabaseProjectSettings.Key}",
             "Content-Type: application/json"
         };
 
@@ -161,7 +180,7 @@ private const int TopPlayersLimit = 100;
         }
     }
 
-    public void LoadCurrentPlayerRank()
+    public async void LoadCurrentPlayerRank()
     {
         if (SaveManager.Instance == null || SaveManager.Instance.Data == null)
         {
@@ -177,17 +196,52 @@ private const int TopPlayersLimit = 100;
             return;
         }
 
-        string url =
-            $"{SupabaseUrl.TrimEnd('/')}/rest/v1/leaderboard_players" +
-            "?select=player_id" +
-            "&order=xp.desc,completed_levels.desc,average_time_seconds.asc";
+        bool synced = await SyncCurrentPlayerAsync();
 
-        string[] headers =
+        if (!synced)
         {
-            $"apikey: {SupabaseKey}",
-            $"Authorization: Bearer {SupabaseKey}",
-            "Content-Type: application/json"
-        };
+            CurrentPlayerRankLoadFailed?.Invoke("Не вдалося синхронізувати гравця");
+            return;
+        }
+
+        try
+        {
+            LeaderboardEntry currentPlayer = await LoadCurrentPlayerEntry(currentPlayerId);
+
+            if (currentPlayer == null)
+            {
+                CurrentPlayerRankLoadFailed?.Invoke("Гравця ще немає в лідерборді");
+                return;
+            }
+
+            int totalPlayers = await CountLeaderboardRows("");
+            int playersAhead = await CountPlayersAhead(currentPlayer);
+            int rank = playersAhead + 1;
+
+            if (totalPlayers <= 0 || rank <= 0)
+            {
+                CurrentPlayerRankLoadFailed?.Invoke("Не вдалося завантажити місце гравця");
+                return;
+            }
+
+            CurrentPlayerRankLoaded?.Invoke(rank, totalPlayers);
+        }
+        catch (Exception ex)
+        {
+            GD.PrintErr($"[Leaderboard] Rank load failed: {ex.Message}");
+            CurrentPlayerRankLoadFailed?.Invoke("Не вдалося завантажити місце гравця");
+        }
+    }
+
+    private async Task<LeaderboardEntry> LoadCurrentPlayerEntry(string currentPlayerId)
+    {
+        string url =
+            $"{SupabaseProjectSettings.Url.TrimEnd('/')}/rest/v1/leaderboard_players" +
+            "?select=player_id,player_name,completed_levels,average_time_seconds,xp,rating_score" +
+            $"&player_id=eq.{EscapeFilterValue(currentPlayerId)}" +
+            "&limit=1";
+
+        var completed = new TaskCompletionSource<LeaderboardEntry>();
 
         var request = CreateRequest((result, responseCode, responseHeaders, responseBody) =>
         {
@@ -195,63 +249,179 @@ private const int TopPlayersLimit = 100;
 
             if (result != (long)HttpRequest.Result.Success)
             {
-                GD.PrintErr($"[Leaderboard] Rank network error. Result: {result}");
-                CurrentPlayerRankLoadFailed?.Invoke("Немає підключення до інтернету");
+                completed.TrySetException(new Exception($"Network error: {result}"));
                 return;
             }
 
             if (responseCode < 200 || responseCode >= 300)
             {
-                GD.PrintErr($"[Leaderboard] Rank load failed. Code: {responseCode}. Body: {responseText}");
-                CurrentPlayerRankLoadFailed?.Invoke("Не вдалося завантажити місце гравця");
+                completed.TrySetException(new Exception($"HTTP {responseCode}: {responseText}"));
                 return;
             }
 
-            int rank = ParseCurrentPlayerRank(responseText, currentPlayerId);
-
-            if (rank <= 0)
-            {
-                CurrentPlayerRankLoadFailed?.Invoke("Гравця ще немає в лідерборді");
-                return;
-            }
-
-            CurrentPlayerRankLoaded?.Invoke(rank);
+            completed.TrySetResult(ParseSingleLeaderboardEntry(responseText));
         });
 
         Error error = request.Request(
             url,
-            headers,
+            CreateSupabaseHeaders(),
             HttpClient.Method.Get
         );
 
         if (error != Error.Ok)
         {
-            GD.PrintErr($"[Leaderboard] Rank request error: {error}");
-            CurrentPlayerRankLoadFailed?.Invoke("Не вдалося виконати запит");
             request.QueueFree();
+            throw new Exception($"Request error: {error}");
         }
+
+        return await completed.Task;
     }
 
-    private int ParseCurrentPlayerRank(string json, string currentPlayerId)
+    private async Task<int> CountPlayersAhead(LeaderboardEntry currentPlayer)
     {
-        Variant parsed = Json.ParseString(json);
+        string scoreFilter = $"&rating_score=eq.{currentPlayer.RatingScore}";
+        string xpFilter = $"{scoreFilter}&xp=eq.{currentPlayer.Xp}";
+        string completedLevelsFilter = $"{xpFilter}&completed_levels=eq.{currentPlayer.CompletedLevels}";
+        string averageTimeFilter = currentPlayer.AverageTimeSeconds > 0
+            ? $"&average_time_seconds=eq.{FormatNumber(currentPlayer.AverageTimeSeconds)}"
+            : "&average_time_seconds=eq.0";
 
-        if (parsed.VariantType != Variant.Type.Array)
-            return -1;
+        int playersAhead = 0;
 
-        var rows = parsed.AsGodotArray();
+        playersAhead += await CountLeaderboardRows($"&rating_score=gt.{currentPlayer.RatingScore}");
+        playersAhead += await CountLeaderboardRows($"{scoreFilter}&xp=gt.{currentPlayer.Xp}");
+        playersAhead += await CountLeaderboardRows($"{xpFilter}&completed_levels=gt.{currentPlayer.CompletedLevels}");
 
-        for (int i = 0; i < rows.Count; i++)
+        if (currentPlayer.AverageTimeSeconds > 0)
         {
-            var row = rows[i].AsGodotDictionary();
+            playersAhead += await CountLeaderboardRows(
+                $"{completedLevelsFilter}&average_time_seconds=gt.0" +
+                $"&average_time_seconds=lt.{FormatNumber(currentPlayer.AverageTimeSeconds)}"
+            );
+        }
+        else
+        {
+            playersAhead += await CountLeaderboardRows(
+                $"{completedLevelsFilter}&average_time_seconds=gt.0"
+            );
+        }
 
-            string playerId = row["player_id"].AsString();
+        playersAhead += await CountLeaderboardRows(
+            $"{completedLevelsFilter}{averageTimeFilter}" +
+            $"&player_name=lt.{EscapeFilterValue(currentPlayer.PlayerName)}"
+        );
 
-            if (playerId == currentPlayerId)
-                return i + 1;
+        playersAhead += await CountLeaderboardRows(
+            $"{completedLevelsFilter}{averageTimeFilter}" +
+            $"&player_name=eq.{EscapeFilterValue(currentPlayer.PlayerName)}" +
+            $"&player_id=lt.{EscapeFilterValue(currentPlayer.PlayerId)}"
+        );
+
+        return playersAhead;
+    }
+
+    private async Task<int> CountLeaderboardRows(string filters)
+    {
+        string url =
+            $"{SupabaseProjectSettings.Url.TrimEnd('/')}/rest/v1/leaderboard_players" +
+            "?select=player_id" +
+            filters +
+            "&limit=1";
+
+        var completed = new TaskCompletionSource<int>();
+
+        var request = CreateRequest((result, responseCode, responseHeaders, responseBody) =>
+        {
+            string responseText = Encoding.UTF8.GetString(responseBody);
+
+            if (result != (long)HttpRequest.Result.Success)
+            {
+                completed.TrySetException(new Exception($"Network error: {result}"));
+                return;
+            }
+
+            if (responseCode < 200 || responseCode >= 300)
+            {
+                completed.TrySetException(new Exception($"HTTP {responseCode}: {responseText}"));
+                return;
+            }
+
+            int totalCount = ParseContentRangeTotal(responseHeaders);
+
+            if (totalCount < 0)
+            {
+                completed.TrySetException(new Exception("Content-Range count was not returned."));
+                return;
+            }
+
+            completed.TrySetResult(totalCount);
+        });
+
+        Error error = request.Request(
+            url,
+            CreateSupabaseHeaders("Prefer: count=exact"),
+            HttpClient.Method.Get
+        );
+
+        if (error != Error.Ok)
+        {
+            request.QueueFree();
+            throw new Exception($"Request error: {error}");
+        }
+
+        return await completed.Task;
+    }
+
+    private static string[] CreateSupabaseHeaders(params string[] additionalHeaders)
+    {
+        var headers = new List<string>
+        {
+            $"apikey: {SupabaseProjectSettings.Key}",
+            $"Authorization: Bearer {SupabaseProjectSettings.Key}",
+            "Content-Type: application/json"
+        };
+
+        headers.AddRange(additionalHeaders);
+        return headers.ToArray();
+    }
+
+    private static int ParseContentRangeTotal(string[] headers)
+    {
+        foreach (string header in headers)
+        {
+            int separatorIndex = header.IndexOf(':');
+
+            if (separatorIndex < 0)
+                continue;
+
+            string headerName = header.Substring(0, separatorIndex).Trim();
+
+            if (!headerName.Equals("Content-Range", StringComparison.OrdinalIgnoreCase))
+                continue;
+
+            string headerValue = header.Substring(separatorIndex + 1).Trim();
+            int slashIndex = headerValue.LastIndexOf('/');
+
+            if (slashIndex < 0)
+                continue;
+
+            string totalText = headerValue[(slashIndex + 1)..].Trim();
+
+            if (int.TryParse(totalText, NumberStyles.Integer, CultureInfo.InvariantCulture, out int total))
+                return total;
         }
 
         return -1;
+    }
+
+    private static string EscapeFilterValue(string value)
+    {
+        return Uri.EscapeDataString(value ?? "");
+    }
+
+    private static string FormatNumber(double value)
+    {
+        return value.ToString("0.##", CultureInfo.InvariantCulture);
     }
 
     private HttpRequest CreateRequest(Action<long, long, string[], byte[]> callback)
@@ -302,7 +472,40 @@ private const int TopPlayersLimit = 100;
         return Math.Round(total / data.BestLevelTimes.Count, 2);
     }
 
+    private async Task<int> CalculateCurrentPlayerRatingScore(SaveData data)
+    {
+        var timeRatios = new List<double>();
+        DatabaseManager.EnsureContentDatabaseInitialized();
+
+        if (data.BestLevelTimes != null)
+        {
+            foreach (var pair in data.BestLevelTimes)
+            {
+                try
+                {
+                    LevelData levelData = await LevelRepository.GetLevelData(pair.Key);
+
+                    if (levelData != null && levelData.TargetTimeSeconds > 0)
+                        timeRatios.Add(pair.Value / levelData.TargetTimeSeconds);
+                }
+                catch (Exception ex)
+                {
+                    GD.PrintErr($"[Leaderboard] Failed to load target time for level {pair.Key}: {ex.Message}");
+                }
+            }
+        }
+
+        return LeaderboardScoreCalculator.CalculateScore(data.Xp, timeRatios);
+    }
+
     private List<LeaderboardEntry> ParseTopPlayers(string json)
+    {
+        return ParseLeaderboardEntries(json)
+            .Take(TopPlayersLimit)
+            .ToList();
+    }
+
+    private List<LeaderboardEntry> ParseLeaderboardEntries(string json)
     {
         var result = new List<LeaderboardEntry>();
 
@@ -316,28 +519,55 @@ private const int TopPlayersLimit = 100;
         for (int i = 0; i < rows.Count; i++)
         {
             var row = rows[i].AsGodotDictionary();
-
-            result.Add(new LeaderboardEntry
-            {
-                Rank = i + 1,
-                PlayerId = row["player_id"].AsString(),
-                PlayerName = row["player_name"].AsString(),
-                CompletedLevels = row["completed_levels"].AsInt32(),
-                AverageTimeSeconds = row["average_time_seconds"].AsDouble(),
-                Xp = row["xp"].AsInt32()
-            });
+            result.Add(ParseLeaderboardEntry(row));
         }
+
+        result = result
+            .OrderByDescending(entry => entry.RatingScore)
+            .ThenByDescending(entry => entry.Xp)
+            .ThenByDescending(entry => entry.CompletedLevels)
+            .ThenBy(entry => entry.AverageTimeSeconds <= 0 ? double.MaxValue : entry.AverageTimeSeconds)
+            .ThenBy(entry => entry.PlayerName)
+            .ThenBy(entry => entry.PlayerId)
+            .ToList();
+
+        for (int i = 0; i < result.Count; i++)
+            result[i].Rank = i + 1;
 
         return result;
     }
-}
 
-public class LeaderboardEntry
-{
-    public int Rank { get; set; }
-    public string PlayerId { get; set; }
-    public string PlayerName { get; set; }
-    public int CompletedLevels { get; set; }
-    public double AverageTimeSeconds { get; set; }
-    public int Xp { get; set; }
+    private static LeaderboardEntry ParseSingleLeaderboardEntry(string json)
+    {
+        Variant parsed = Json.ParseString(json);
+
+        if (parsed.VariantType != Variant.Type.Array)
+            return null;
+
+        var rows = parsed.AsGodotArray();
+
+        if (rows.Count == 0)
+            return null;
+
+        return ParseLeaderboardEntry(rows[0].AsGodotDictionary());
+    }
+
+    private static LeaderboardEntry ParseLeaderboardEntry(Godot.Collections.Dictionary row)
+    {
+        int xp = row["xp"].AsInt32();
+        double averageTimeSeconds = row["average_time_seconds"].AsDouble();
+        int ratingScore = row.ContainsKey("rating_score")
+            ? row["rating_score"].AsInt32()
+            : 0;
+
+        return new LeaderboardEntry
+        {
+            PlayerId = row["player_id"].AsString(),
+            PlayerName = row["player_name"].AsString(),
+            CompletedLevels = row["completed_levels"].AsInt32(),
+            AverageTimeSeconds = averageTimeSeconds,
+            Xp = xp,
+            RatingScore = ratingScore > 0 || xp <= 0 ? ratingScore : xp
+        };
+    }
 }

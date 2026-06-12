@@ -286,6 +286,19 @@ grow_horizontal = 1
 grow_vertical = 1
 DisplayLabelOverride = "D"
 
+[node name="LevelMapButton19" parent="VBoxContainer2/VBoxContainer/ScrollContainer/Container" unique_id=426480647 instance=ExtResource("2_b6wlh")]
+layout_mode = 0
+anchors_preset = 0
+anchor_right = 0.0
+anchor_bottom = 0.0
+offset_left = 2764.0
+offset_top = 233.0
+offset_right = 2934.0
+offset_bottom = 403.0
+grow_horizontal = 1
+grow_vertical = 1
+LevelOrder = 18
+
 [node name="WelcomeScreen" parent="." unique_id=2128121447 instance=ExtResource("5_u0a2w")]
 visible = false
 layout_mode = 1
