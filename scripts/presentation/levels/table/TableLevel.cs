@@ -103,7 +103,10 @@ public partial class TableLevel : Control
         try
         {
             QueryResult result = await ExecutePlayerSql(sql);
-
+            foreach (Node child in _queryBuilder.GetChildren())
+            {
+                child.QueueFree();
+            }
             if (!result.HasRows)
             {
                 GD.Print($"[SQL] Query executed. Affected rows: {result.AffectedRows}");
